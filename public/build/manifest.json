@@ -8,10 +8,5 @@
     "file": "assets/app-42cf3997.js",
     "isEntry": true,
     "src": "resources/js/app.js"
-  },
-  "resources/js/date.js": {
-    "file": "assets/date-9bf84f3b.js",
-    "isEntry": true,
-    "src": "resources/js/date.js"
   }
 }
