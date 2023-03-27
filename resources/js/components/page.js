@@ -172,7 +172,7 @@ export default () => ({
         axios.post(data.url, data.formData, {
             headers: {
             'Content-Type': 'multipart/form-data',
-            'x_fr': data.fragment
+            'X-FR': data.fragment
             }
         }).then((r) => {
             this.$dispatch('formresponse', {target: data.target, content: r.data});

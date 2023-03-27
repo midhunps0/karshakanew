@@ -17,7 +17,7 @@ class SmartController extends Controller
     protected function buildResponse($view, $args = [])
     {
         // $fragment = $this->request->input('x_fr', 'fp');
-        $fragment = $this->request->header('x_fr', 'fp');
+        $fragment = $this->request->header('X-FR', 'fp');
         if ($fragment != 'fp') {
             return view($view, $args)->fragment($fragment);
         }
