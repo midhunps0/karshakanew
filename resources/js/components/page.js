@@ -129,7 +129,7 @@ export default () => ({
                 {
                     params: params,
                     headers: {
-                        'x_fr': fr
+                        'X-FR': fr
                     }
                 }
               ).then(
