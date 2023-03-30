@@ -3,43 +3,48 @@
     search: '',
     noMemberMsg: false,
     getMembersList() {
-        axios.get(
-            '{{ route('members.suggestionslist') }}', {
-                params: {
-                    membership_no: this.search
-                }
-            }
-        ).then((r) => {
-            if (r.data.members.length > 0) {
-                this.suggestions = r.data.members.map((m) => {
-                    return {
-                        id: m.id,
-                        name: m.name,
-                        membership_no: m.membership_no,
-                        aadhaar_no: m.aadhaar_no,
-                        taluk: m.taluk.name
+        this.noMemberMsg = false;
+        console.log('gml');
+        let temp = this.search.split('/');
+        if (temp.length >= 4 && temp[3].length != 0) {
+            axios.get(
+                '{{ route('members.suggestionslist') }}', {
+                    params: {
+                        membership_no: this.search
                     }
-                });
-            } else {
-                this.noMemberMsg = true;
-            }
-            console.log(this.suggestions);
-        }).catch((e) => {
-            console.log(e);
-        });
+                }
+            ).then((r) => {
+                if (r.data.members.length > 0) {
+                    this.suggestions = r.data.members.map((m) => {
+                        return {
+                            id: m.id,
+                            name: m.name,
+                            membership_no: m.membership_no,
+                            aadhaar_no: m.aadhaar_no,
+                            taluk: m.taluk.name
+                        }
+                    });
+                } else {
+                    this.noMemberMsg = true;
+                }
+                console.log(this.suggestions);
+            }).catch((e) => {
+                console.log(e);
+            });
+        }
     },
     selectMember(id) {
         $dispatch('selectmember', { id: id });
         this.search = '';
         this.suggestions = [];
     }
-}" class="relative w-full" action="" @submit.stop.prevent="getMembersList">
+}" class="relative w-full" action="" @submit.prevent.stop="">
     <h3 class="text-sm font-bold pb-3 text-warning">Find Member</h3>
     <div class="form-control w-full flex flex-row flex-wrap space-x-4 justify-start items-end">
         <label class="label w-32">
             <span class="label-text">Registration No.:</span>
         </label>
-        <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input="noMemberMsg = false;"/>
+        <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input="getMembersList();" />
         <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
     </div>
     <div x-show="suggestions.length > 0" x-transition

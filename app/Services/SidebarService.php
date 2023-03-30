@@ -57,6 +57,14 @@ class SidebarService implements SidebarServiceInterface
                 'show' => true
             ],
             [
+                'type' => 'menu_item',
+                'title' => 'Bulk Receipts',
+                'route' => 'feecollections.bulk.create',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
                 'type' => 'menu_group',
                 'title' => 'Access Control',
                 'icon' => 'easyadmin::icons.users',

@@ -20,7 +20,7 @@ use App\Http\Controllers\FeeCollectionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 })->name('home');
 
 Route::get('/dashboard', function () {
@@ -43,6 +43,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/taluks/{id}/villages', [TalukController::class, 'getVillages'])
         ->name('taluks.villages');
     RouteHelper::getEasyRoutes(modelName: "District");
+    Route::post('/members/verify/{aadhaarNo}', [MemberController::class, 'verifyAadhaar'])
+        ->name('members.verify_aadhaar');
     Route::get('/members/search', [MemberController::class, 'search'])
         ->name('members.search');
     Route::get('/members/suggestionslist', [MemberController::class, 'suggestionslist'])
@@ -65,6 +67,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         '/fees-collections/create-old',
         [FeeCollectionController::class, 'createOld']
     )->name('feecollections.old.create');
+    Route::get(
+        '/fees-collections/create-bulk',
+        [FeeCollectionController::class, 'createBulk']
+    )->name('feecollections.bulk.create');
     Route::get('feecollection/get/{id}', [FeeCollectionController::class, 'fetch'])
         ->name('receipt.fetch');
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");

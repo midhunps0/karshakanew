@@ -86,6 +86,7 @@ class IndexTable
      * @return IndexTable
      */
     public function addActionColumn(
+        string $viewRoute,
         string $editRoute,
         string $deleteRoute,
         string $uniqueKey = 'id',
@@ -93,6 +94,7 @@ class IndexTable
     ): IndexTable
     {
         $this->row[] = [
+            'view_route' => $viewRoute,
             'edit_route' => $editRoute,
             'delete_route' => $deleteRoute,
             'unique_key' => $uniqueKey,

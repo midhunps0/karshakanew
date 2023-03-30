@@ -404,9 +404,9 @@
                             @endif
                         </label>
                         @endif
-                        <button x-show="datepickerValue != ''" x-on:click.prevent.stop="reset();" class="absolute top-0 right-6 z-20 text-error text-opacity-50  px-3 py-2">
+                        {{-- <button x-show="datepickerValue != ''" x-on:click.prevent.stop="reset();" class="absolute top-0 right-6 z-20 text-error text-opacity-50  px-3 py-2">
                             <x-easyadmin::display.icon icon="easyadmin::icons.delete" height="h-6" width="w-6" />
-                        </button>
+                        </button> --}}
                         <button x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;" class="absolute top-0 right-0 px-3 py-2">
                             <svg class="h-6 w-6 text-base-content text-opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

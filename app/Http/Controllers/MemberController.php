@@ -24,6 +24,43 @@ class MemberController extends SmartController
         $this->indexView = 'admin.index';
     }
 
+    public function create()
+    {
+        $aadhaarNo = $this->request->input('an', null);
+        $view = 'admin.members.verify';
+        $data = [];
+        $fr = $this->request->header('X-FR', null);
+
+        if (isset($aadhaarNo) && isset($fr)) {
+            $view = 'easyadmin::admin.form';
+            $data = $this->connectorService->getCreatePageData($aadhaarNo);
+        }
+        try {
+            return $this->buildResponse($view, $data);
+        } catch (AuthorizationException $e) {
+            info($e);
+            return $this->buildResponse($this->unauthorisedView);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+    }
+
+    public function show($id)
+    {
+        $view = 'admin.members.show';
+        try {
+            $member = $this->connectorService->show($id);
+            return $this->buildResponse($view, ['member' => $member]);
+        } catch (AuthorizationException $e) {
+            info($e);
+            return $this->buildResponse($this->unauthorisedView);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+    }
+
     public function fetch($id)
     {
         try {
@@ -56,6 +93,31 @@ class MemberController extends SmartController
         } catch (Throwable $e) {
             info($e);
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+    }
+
+    public function verifyAadhaar($aadhaarNo)
+    {
+        try {
+            return response()->json(
+                $this->connectorService->verifyAadhaar($aadhaarNo)
+            );
+        } catch (AuthorizationException $e) {
+            info($e);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'error' => $e->__toString()
+                ]
+            );
+        } catch (Throwable $e) {
+            info($e);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'error' => $e->__toString()
+                ]
+            );
         }
     }
 

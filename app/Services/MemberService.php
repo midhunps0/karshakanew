@@ -129,6 +129,7 @@ class MemberService implements ModelViewConnector {
             relation: 'taluk'
         )->addActionColumn(
             editRoute: $this->getEditRoute(),
+            viewRoute: 'members.show',
             deleteRoute: $this->getDestroyRoute()
         );
 
@@ -209,12 +210,25 @@ class MemberService implements ModelViewConnector {
     //     ];
     // }
 
+    public function show($id)
+    {
+        return Member::with(
+            'district',
+            'taluk',
+            'village',
+            'tradeUnion',
+            'approvedBy',
+            'feePayments',
+        )->where('id', $id)
+            ->get()->first();
+    }
+
     public function buildSearchFormLayout(Type $args)
     {
         # code...
     }
 
-    public function getCreatePageData(): array
+    public function getCreatePageData($aadhaarNo = null): array
     {
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseCreate()) {
@@ -232,8 +246,11 @@ class MemberService implements ModelViewConnector {
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top',
                 width: 'full',
-                type: 'easyadmin::partials.simpleform'
+                type: 'easyadmin::partials.simpleform',
             ),
+            '_old' => [
+                'aadhaar_no' => $aadhaarNo
+            ]
         ];
     }
 
@@ -262,7 +279,7 @@ class MemberService implements ModelViewConnector {
     {
         return [
             'name' => ['required',],
-            'name_mal' => ['required',],
+            'name_mal' => ['sometimes',],
             'dob' => ['required',],
             'gender' => ['required',],
             'marital_status' => ['required',],
@@ -270,13 +287,13 @@ class MemberService implements ModelViewConnector {
             'aadhaar_no' => ['required',],
             'parent_guardian' => ['required',],
             'guardian_relationship' => ['required',],
-            'current_address' => ['required',],
-            'current_address_mal' => ['required',],
-            'ca_pincode' => ['required',],
+            'current_address' => ['required_if:copy_address,false',],
+            'current_address_mal' => ['sometimes',],
+            'ca_pincode' => ['sometimes',],
             'copy_address' => ['sometimes'],
-            'permanent_address' => ['required_if:copy_address,false',],
-            'permanent_address_mal' => ['required_if:copy_address,false',],
-            'pa_pincode' => ['required_if:copy_address,false',],
+            'permanent_address' => ['required',],
+            'permanent_address_mal' => ['sometimes',],
+            'pa_pincode' => ['sometimes',],
             'district' => ['sometimes',],
             'taluk' => ['required',],
             'village' => ['required',],
@@ -317,7 +334,6 @@ class MemberService implements ModelViewConnector {
                 inputType: 'text',
                 key: 'name_mal',
                 label: 'Name in Malayalam',
-                properties: ['required' => true],
             ),
             'gender' => FormHelper::makeSelect(
                 key: 'gender',
@@ -345,11 +361,16 @@ class MemberService implements ModelViewConnector {
                 label: 'Mobile No.',
                 properties: ['required' => true],
             ),
-            'aadhaar_no' => FormHelper::makeInput(
+            'aadhaar_no_display' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'aadhaar_no',
-                label: 'Aadhaar No.',
-                properties: ['required' => true],
+                label: 'Verified Aadhaar No.',
+                properties: ['required' => true, 'disabled' => true],
+            ),
+            'aadhaar_no' => FormHelper::makeInput(
+                inputType: 'hidden',
+                key: 'aadhaar_no',
+                properties: ['required' => true,],
             ),
             'election_card_no' => FormHelper::makeInput(
                 inputType: 'text',
@@ -375,21 +396,19 @@ class MemberService implements ModelViewConnector {
                 label: 'Relationship',
                 properties: ['required' => true],
             ),
-            'current_address' => FormHelper::makeTextarea(
-                key: 'current_address',
-                label: 'Current Address',
+            'permanent_address' => FormHelper::makeTextarea(
+                key: 'permanent_address',
+                label: 'Permanent Address',
                 properties: ['required' => true],
             ),
-            'current_address_mal' => FormHelper::makeTextarea(
-                key: 'current_address_mal',
-                label: 'Current Address In Malayalam',
-                properties: ['required' => true],
+            'permanent_address_mal' => FormHelper::makeTextarea(
+                key: 'permanent_address_mal',
+                label: 'Permanent Address In Malayalam',
             ),
-            'ca_pincode' => FormHelper::makeInput(
+            'pa_pincode' => FormHelper::makeInput(
                 inputType: 'text',
-                key: 'ca_pincode',
-                label: 'Current Addr. PIN Code',
-                properties: ['required' => true],
+                key: 'pa_pincode',
+                label: 'Permanent Addr. PIN Code',
             ),
             'residingDistrict' => FormHelper::makeSelect(
                 key: 'residingDistrict',
@@ -400,27 +419,25 @@ class MemberService implements ModelViewConnector {
             ),
             'copy_address' => FormHelper::makeCheckbox(
                 key: 'copy_address',
-                label: 'Same as current address',
+                label: 'Same as permanent address',
                 fireInputEvent: true
             ),
-            'permanent_address' => FormHelper::makeTextarea(
-                key: 'permanent_address',
-                label: 'Permanent Address',
+            'current_address' => FormHelper::makeTextarea(
+                key: 'current_address',
+                label: 'Current Address',
                 toggleOnEvents: ['copy_address' => [['==', true, false], ['==', false, true]]],
                 properties: ['required' => true],
             ),
-            'permanent_address_mal' => FormHelper::makeTextarea(
-                key: 'permanent_address_mal',
-                label: 'Permanent Address In Malayalam',
+            'current_address_mal' => FormHelper::makeTextarea(
+                key: 'current_address_mal',
+                label: 'Current Address In Malayalam',
                 toggleOnEvents: ['copy_address' => [['==', true, false], ['==', false, true]]],
-                properties: ['required' => true],
             ),
-            'pa_pincode' => FormHelper::makeInput(
+            'ca_pincode' => FormHelper::makeInput(
                 inputType: 'text',
-                key: 'pa_pincode',
-                label: 'Permanent Addr. PIN Code',
+                key: 'ca_pincode',
+                label: 'Current Addr. PIN Code',
                 toggleOnEvents: ['copy_address' => [['==', true, false], ['==', false, true]]],
-                properties: ['required' => true],
             ),
             'district' => FormHelper::makeSelect(
                 key: 'district',
@@ -613,6 +630,16 @@ class MemberService implements ModelViewConnector {
         $layout = (new ColumnLayout())
             ->addElements(
                 [
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('aadhaar_no_display'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('aadhaar_no'),
+                        ]
+                    ),
                     (new RowLayout(width: 'full'))
                         ->addElement(new SectionDivider('Personal Info')),
                     (new RowLayout(
@@ -647,9 +674,6 @@ class MemberService implements ModelViewConnector {
                             ))->addInputSlot('mobile_no'),
                             (new ColumnLayout(
                                 width: '1/4'
-                            ))->addInputSlot('aadhaar_no'),
-                            (new ColumnLayout(
-                                width: '1/4'
                             ))->addInputSlot('parent_guardian'),
                             (new ColumnLayout(
                                 width: '1/4'
@@ -657,23 +681,7 @@ class MemberService implements ModelViewConnector {
                         ]
                     ),
                     (new RowLayout(width: 'full'))
-                        ->addElement(new SectionDivider('Current Address')),
-                    (new RowLayout())->addElements(
-                        [
-                            (new ColumnLayout(
-                                width: '1/3'
-                            ))->addInputSlot('current_address'),
-                            (new ColumnLayout(
-                                width: '1/3'
-                            ))->addInputSlot('current_address_mal'),
-                            (new ColumnLayout(
-                                width: '1/3'
-                            ))->addInputSlot('ca_pincode'),
-                        ]
-                    ),
-                    (new RowLayout(width: 'full'))
                         ->addElement(new SectionDivider('Permanent Address')),
-                    (new RowLayout(width: 'full'))->addInputSlot('copy_address'),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(
@@ -685,6 +693,22 @@ class MemberService implements ModelViewConnector {
                             (new ColumnLayout(
                                 width: '1/3'
                             ))->addInputSlot('pa_pincode'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Current Address')),
+                    (new RowLayout(width: 'full'))->addInputSlot('copy_address'),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('current_address'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('current_address_mal'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('ca_pincode'),
                         ]
                     ),
                     (new RowLayout(width: 'full'))
@@ -996,19 +1020,22 @@ class MemberService implements ModelViewConnector {
             'fee_collections as fc', 'm.id', '=', 'fc.member_id'
         )->join(
             'fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id'
+        )->join(
+            'fee_types as ft', 'ft.id', '=', 'fi.fee_type_id'
         )->select('m.id', 'fc.id', 'fc.receipt_date', 'fi.*')
             ->where('m.id', $id)
-            ->orderBy('fc.receipt_date', 'desc')
+            ->where('ft.name', 'like', 'Annual Subscription')
+            ->orderBy('fi.period_to', 'desc')
             ->get()->first();
-        // dd($fc->period_to);
+        // dd($fi->period_to);
         if ($fi != null) {
             $lastPaid = Carbon::parse($fi->period_to);
             $from = $lastPaid;
             $to = $lastPaid;
             $from = $lastPaid->addDay()->startOfMonth()
-                ->subMonthsNoOverflow()->format('d-m-Y');
+                ->format('d-m-Y');
             $to = $lastPaid->subDay()->addMonths($months)
-                ->subMonthsNoOverflow()->endOfMonth()->format('d-m-Y');
+                ->endOfMonth()->format('d-m-Y');
             $result = [
                 'from' => $from,
                 'to' => $to,
@@ -1086,6 +1113,49 @@ class MemberService implements ModelViewConnector {
             return false;
         }
 
+    }
+
+    public function verifyAadhaar($aadhaarNo)
+    {
+        $aadhaarNo = str_replace(' ', '', $aadhaarNo);
+        info(strlen($aadhaarNo));
+        if (strlen($aadhaarNo) < 12) {
+            return [
+                'status' => 'Error',
+                'message' => 'Aadhaar number shall have 12 digits'
+            ];
+        } else {
+            $ch = curl_init();
+            $headers = array(
+                'Accept: application/json',
+                'Content-Type: application/json',
+            );
+            curl_setopt(
+                $ch,
+                CURLOPT_URL,
+                'https://aiis.lc.kerala.gov.in/index.php/aadharcheck/'.$aadhaarNo
+            );
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            // Timeout in seconds
+            // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            $val = curl_exec($ch);
+            info($val);
+            $result = json_decode($val);
+            // info($result);
+
+            return [
+                'status' => $result->Status,
+                'message' => $result->Message
+            ];
+        }
     }
 }
 

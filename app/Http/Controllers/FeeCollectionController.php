@@ -33,6 +33,18 @@ class FeeCollectionController extends SmartController
         );
     }
 
+    public function createBulk()
+    {
+        return $this->buildResponse(
+            'admin.bulk_receipt_create',
+            [
+                'form' => [
+                    'id' => 'form_bulk_fee_collections_create',
+                ]
+            ]
+        );
+    }
+
     public function fetch($id)
     {
         $result = $this->connectorService->fetch($id);
