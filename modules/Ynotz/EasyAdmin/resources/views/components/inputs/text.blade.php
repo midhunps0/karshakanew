@@ -197,7 +197,7 @@
     @endif
     x-show="showelement" x-transition.duration.300ms
     >
-    @if ($label_position != 'float')
+    @if ($type != 'hidden' && $label_position != 'float')
     <label for="{{$name}}" @class([
             'label',
             'justify-start',
@@ -236,7 +236,7 @@
             :required="required"
             />
 
-        @if ($label_position == 'float')
+        @if ($type != 'hidden' && $label_position == 'float')
         <label for="{{$name}}" class="absolute text-warning peer-placeholder-shown:text-base-content duration-300 transform -translate-y-4 scale-90 top-2 left-2 z-10 origin-[0] bg-base-100 px-2 peer-focus:px-2 peer-focus:text-warning peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-4 transition-all">
             {{-- {{$label}} --}}
             <span>{{$label}}</span>@if (isset($properties['required']) && $properties['required'])

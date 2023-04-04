@@ -4,6 +4,9 @@
         <div x-data="{
                 activeTab: 0,
             }">
+            <div class="text-right p-4">
+                <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
+            </div>
             <!--Tab Headings-->
             <div class="flex flex-row">
                 <div @click="activeTab=0" tabindex="0" class="cursor-pointer font-bold border-t border-r border-l border-base-content border-opacity-10 w-1/3 p-3 rounded-tl-lg rounded-tr-lg" :class="activeTab != 0 || 'bg-base-200'">Personal</div>
@@ -112,7 +115,30 @@
                                 <span>{{$member->bank_acc_no}}</span>
                             </div>
                         </div>
-                        <div class="flex flex-row flex-wrap items-start p-3">
+                        <div class="flex flex-col items-center p-3">
+                            <div><span class="text-warning underline">Nominees</span></div>
+                            <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                                <table class="table table-compact w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Relation</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($member->nominees as $n)
+                                            <tr>
+                                                <td>{{$n->name}}</td>
+                                                <td>{{$n->relation}}</td>
+                                                <td>{{$n->percentage}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="flex flex-row flex-wrap items-start justify-center p-3">
                             <div class="md:w-1/4 p-1 my-1">
                                 <span class="text-warning">Aadhaar Card:</span>
                                 <div class="block m-2 w-32 h-24">
@@ -132,18 +158,20 @@
                         </div>
 
                 </div>
-                <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
-                    <div class="md:max-w-3/4 mx-auto py-8 rounded-lg">
-                        <table class="table table-compact w-full border border-base-content border-opacity-10">
+                <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 py-4 rounded-b-lg">
+                    <div class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg">
+                        <table class="table table-compact w-full">
                             <thead>
-                                <th>Date</th>
-                                <th>Receipt No.</th>
-                                <th>particulars</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Tenure</th>
-                                <th>Amount</th>
-                                <th>Total Amount</th>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Receipt No.</th>
+                                    <th>particulars</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Tenure</th>
+                                    <th>Amount</th>
+                                    <th>Total Amount</th>
+                                </tr>
                             </thead>
                             @forelse ($member->feePayments as $fp)
                             <tbody class="border-b border-base-content border-opacity-30">
@@ -178,7 +206,7 @@
                 </div>
                 <div x-show="activeTab == 3" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="flex flex-row flex-wrap items-start">
-                        Tab 3
+                        Allowances
                     </div>
                 </div>
             </div>

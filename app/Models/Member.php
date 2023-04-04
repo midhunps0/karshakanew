@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Nominee;
 use App\Models\District;
 use App\Traits\TrackUserActions;
 use Illuminate\Database\Eloquent\Model;
@@ -93,6 +94,11 @@ class Member extends Model
             'id',
             'id'
         );
+    }
+
+    public function nominees()
+    {
+        return $this->hasMany(Nominee::class, 'member_id', 'id');
     }
 
     public function scopeUserAccessControlled(Builder $query)

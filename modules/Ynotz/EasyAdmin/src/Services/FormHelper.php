@@ -611,5 +611,37 @@ class FormHelper
         }
         return $data;
     }
+
+    public static function makeDynamicInput(
+        string $key,
+        string $label,
+        string $component,
+        bool $toggle = false,
+        array|null $displayText = null,
+        array $properties = null,
+        bool $fireInputEvent = false,
+        array $resetOnEvents = null,
+        array $toggleOnEvents = null,
+        bool $show = true,
+        bool $authorised = true,
+        string $width = 'full'
+    ) {
+        $data = [
+            'item_type' => 'input',
+            'input_type' => $component,
+            'key' => $key,
+            'label' => $label,
+            'fire_input_event' => $fireInputEvent,
+            'reset_on_events' => $resetOnEvents,
+            'toggle_on_events' => $toggleOnEvents,
+            'show' => $show,
+            'authorised' => $authorised,
+            'width' => $width
+        ];
+        if (isset($properties)) {
+            $data['properties'] = $properties;
+        }
+        return $data;
+    }
 }
 ?>

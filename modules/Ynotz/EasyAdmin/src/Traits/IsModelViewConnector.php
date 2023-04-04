@@ -283,6 +283,7 @@ trait IsModelViewConnector{
 
     public function update($id, array $data)
     {
+        info($data);
         $data = $this->processBeforeUpdate($data);
         info('update started');
         info($data);
@@ -312,6 +313,12 @@ info($mediaFields);
             //attach relationship instances as per the relation
             foreach ($relations as $rel => $val) {
                 $type = $this->getRelationType($rel);
+                info('rel:');
+                info($rel);
+                info('val:');
+                info($val);
+                info('type:');
+                info($type);
                 switch ($type) {
                     case 'BelongsTo':
                         // $relInstance = ($this->getRelatedModelClass($rel))::find($val);
@@ -326,11 +333,21 @@ info($mediaFields);
                         $instance->$rel()->save($val);
                         break;
                     case 'HasMany':
-                        foreach ($val as $id) {
-                            // $cl = ($this->getRelatedModelClass($rel))::find($id);
-                            $instance->$rel()->sync($id);
-                            break;
+                        $instance->$rel()->delete();
+                        $t = array();
+                        // info('instance relation');
+                        // info((new $this->modelClass)->$rel()->getRelated());
+                        // $related = $instance->$rel()->getRelated();
+                        // info('related');
+                        // info($related);
+                        foreach ($val as $v) {
+                            if (is_array($v)) {
+                                $t[] = $instance->$rel()->create($v);
+                                // $t[] = ($this->getRelatedModelClass($rel))::create($v);
+                            }
                         }
+                        $instance->$rel()->saveMany($t);
+                        break;
                 }
             }
 info('syncing existing media..');
@@ -507,16 +524,18 @@ info('syncing media complete.');
         return $ar[count($ar) - 1];
     }
 
-    // private function getRelatedModelClass(string $relation): string
-    // {
-    //     info('relation');
-    //     info($relation);
-    //     info($this->modelClass);
-    //     $obj = new ($this->modelClass)();
-    //     $r = $obj->$relation();
-    //     info($r->getRelated());
-    //     return $r->getRelated();
-    // }
+    private function getRelatedModelClass(string $relation): string
+    {
+        info('relation');
+        info($relation);
+        info($this->modelClass);
+        $obj = new ($this->modelClass);
+        $r = $obj->$relation();
+        info('related');
+        info($obj->$relation()->getRelated());
+        info($r->getRelated());
+        return $r->getRelated();
+    }
 
     private function isRelation($key): bool
     {

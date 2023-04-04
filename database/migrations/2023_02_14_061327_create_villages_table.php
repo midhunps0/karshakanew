@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('villages', function (Blueprint $table) {
             $table->id();
-            $table->integer('display_code')->unique(); // code to map to display ids (old db values)
+            $table->integer('display_code'); // code to map to display ids (old db values)
             $table->foreignId('taluk_id')->constrained('taluks', 'id')->onDelete('restrict');
             $table->string('name');
             $table->boolean('enabled')->default(true);

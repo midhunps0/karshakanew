@@ -76,7 +76,7 @@
                         querystr = '?adv_search[]=village::eq::' + this.village_id;
                     } else if (this.taluk_id != null &&  this.taluk_id != '') {
                         querystr = '?adv_search[]=taluk::eq::' + this.taluk_id;
-                    } else if (this.district_id != null && district_id != '') {
+                    } else if (this.district_id != null && this.district_id != '') {
                         querystr = '?adv_search[]=district::eq::' + this.district_id;
                     }
                     if (this.search_phrase != '') {

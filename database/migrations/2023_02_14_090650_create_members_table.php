@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); //
+            $table->string('name')->nullable(); //
             $table->string('name_mal')->nullable(); //
             $table->string('membership_no')->nullable();
             $table->foreignId('district_id')->nullable()->constrained()->onDelete('restrict');
@@ -54,6 +54,7 @@ return new class extends Migration
             $table->foreignId('caste_id')->nullable()->constrained('castes', 'id');
             $table->boolean('verified')->default(false);
             $table->boolean('active')->default(true);
+            $table->date('reg_date')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users', 'id');
             $table->timestamp('approved_at')->nullable(); // if null not approved
             $table->foreignId('created_by')->constrained('users', 'id');

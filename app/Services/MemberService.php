@@ -117,8 +117,13 @@ class MemberService implements ModelViewConnector {
         )->addColumn(
             fields: ['aadhaar_no']
         );
+        /**
+         * @var User
+         */
         $user = User::find(auth()->user()->id);
-        if ($user->hasPermissionTo('Member: View In Any District')) {
+        $deletePermission = $user->hasPermissionTo('Member: Delete In Any District') ||
+        $user->hasPermissionTo('Member: Delete In Own District');
+        if ($user->hasPermissionTo('Member: View In Any District') || $user->hasPermissionTo('Member: View In Own District')) {
             $columns = $columns->addColumn(
                 fields: ['name'],
                 relation: 'district'
@@ -128,9 +133,9 @@ class MemberService implements ModelViewConnector {
             fields: ['name'],
             relation: 'taluk'
         )->addActionColumn(
-            editRoute: $this->getEditRoute(),
             viewRoute: 'members.show',
-            deleteRoute: $this->getDestroyRoute()
+            deleteRoute: $this->getDestroyRoute(),
+            deletePermission: $deletePermission
         );
 
         return $columns->getRow();
@@ -219,6 +224,7 @@ class MemberService implements ModelViewConnector {
             'tradeUnion',
             'approvedBy',
             'feePayments',
+            'nominees'
         )->where('id', $id)
             ->get()->first();
     }
@@ -256,7 +262,7 @@ class MemberService implements ModelViewConnector {
 
     public function getEditPageData($id): array
     {
-        $member = ($this->modelClass)::where('id', $id)->get()->first();
+        $member = Member::with('nominees')->where('id', $id)->get()->first();
         return [
             'title' => 'Members',
             '_old' => $member,
@@ -309,7 +315,8 @@ class MemberService implements ModelViewConnector {
             'bank_passbook' => (new EAInputMediaValidator())
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
-                ->getRules()
+                ->getRules(),
+            'nominees' => ['array', 'sometimes']
         ];
     }
 
@@ -562,6 +569,11 @@ class MemberService implements ModelViewConnector {
                     ]
                 // fireInputEvent: true
             ),
+            'nominees' => FormHelper::makeDynamicInput(
+                key: 'nominees',
+                label: 'Nominees',
+                component: 'inputs.member-nominees'
+            )
         ];
     }
 
@@ -618,6 +630,11 @@ class MemberService implements ModelViewConnector {
                 'sort_column' => 'id',
             ],
             'tradeUnion' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+            'nominees' => [
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
@@ -757,6 +774,15 @@ class MemberService implements ModelViewConnector {
                             (new ColumnLayout(
                                 width: '1/2'
                             ))->addInputSlot('bank_passbook'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Nominees')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: 'full'
+                            ))->addInputSlot('nominees'),
                         ]
                     ),
                 ]

@@ -1,6 +1,7 @@
 <?php
 namespace Ynotz\EasyAdmin\Services;
 
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 use Ynotz\EasyAdmin\Exceptions\InvalidAdvSearchAttributeException;
 
 class IndexTable
@@ -86,20 +87,34 @@ class IndexTable
      * @return IndexTable
      */
     public function addActionColumn(
-        string $viewRoute,
-        string $editRoute,
-        string $deleteRoute,
+        string $viewRoute = null,
+        string $editRoute = null,
+        string $deleteRoute = null,
+        bool $viewPermission = true,
+        bool $editPermission = true,
+        bool $deletePermission = true,
         string $uniqueKey = 'id',
         string $component = 'easyadmin::display.actions'
     ): IndexTable
     {
-        $this->row[] = [
-            'view_route' => $viewRoute,
-            'edit_route' => $editRoute,
-            'delete_route' => $deleteRoute,
+        $data = [
             'unique_key' => $uniqueKey,
             'component' => $component
         ];
+
+        if (isset($viewRoute) && $viewPermission) {
+            $data['view_route'] = $viewRoute;
+        }
+
+        if (isset($editRoute) && $editPermission) {
+            $data['edit_route'] = $editRoute;
+        }
+
+        if (isset($deleteRoute) && $deletePermission) {
+            $data['delete_route'] = $deleteRoute;
+        }
+
+        $this->row[] = $data;
 
         return $this;
     }
