@@ -3,6 +3,7 @@
     @php
         $feeTypes = \App\Models\FeeType::all()->pluck('name', 'id');
         $typesWithTenure = config('generalSettings.fee_types_with_tenure');
+        $memberId = request()->input('m', null);
     @endphp
     <div class="w-full"
         x-data="{
@@ -252,6 +253,11 @@
                 $dispatch('formsubmit', { url: this.postUrl.replace('_X_', this.member.id), formData: fd, target: '{{$form['id']}}', fragment: 'create_form' });
             }
         }"
+        x-init="
+        @if (isset($memberId))
+            fetchMember({{$memberId}});
+        @endif
+        "
         >
         <div>
             <x-utils.memberfinder />

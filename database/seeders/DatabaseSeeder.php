@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
-        $this->call(TalukSeeder::class);
-        $this->call(VillageSeeder::class);
+        // $this->call(TalukSeeder::class);
+        // $this->call(VillageSeeder::class);
         $this->call(TradeUnionSeeder::class);
         $this->call(ReligionSeeder::class);
         $this->call(CasteSeeder::class);

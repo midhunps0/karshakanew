@@ -31,7 +31,10 @@ class Member extends Model
 
     protected $appends = [
         'aadhaar_card',
-        'bank_passbook'
+        'bank_passbook',
+        'election_card',
+        'wb_passbook_front',
+        'wb_passbook_back'
     ];
 
     public function district()
@@ -115,11 +118,23 @@ class Member extends Model
         return [
             'aadhaarCard'=> [
                 'disk' => 'local',
-                'folder' => 'public/images/aadhaar_no'
+                'folder' => 'public/images/aadhaar_card'
             ],
             'bankPassbook' => [
                 'disk' => 'local',
                 'folder' => 'public/images/bank_passbook'
+            ],
+            'electionCard' => [
+                'disk' => 'local',
+                'folder' => 'public/images/election_card'
+            ],
+            'wbPassbookFront' => [
+                'disk' => 'local',
+                'folder' => 'public/images/wb_passbook_front'
+            ],
+            'wbPassbookBack' => [
+                'disk' => 'local',
+                'folder' => 'public/images/wb_passbook_back'
             ],
         ];
     }
@@ -142,4 +157,30 @@ class Member extends Model
         );
     }
 
+    protected function electionCard(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('election_card');
+            },
+        );
+    }
+
+    protected function wbPassbookFront(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('wb_passbook_front');
+            },
+        );
+    }
+
+    protected function wbPassbookBack(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('wb_passbook_back');
+            },
+        );
+    }
 }

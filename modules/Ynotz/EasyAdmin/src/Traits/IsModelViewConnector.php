@@ -261,11 +261,14 @@ trait IsModelViewConnector{
                         $instance->$rel()->save($val);
                         break;
                     case 'HasMany':
-                        foreach ($val as $id) {
-                            // $cl = ($this->getRelatedModelClass($rel))::find($id);
-                            $instance->$rel()->save($id);
-                            break;
+                        $instance->$rel()->delete();
+                        $t = array();
+                        foreach ($val as $v) {
+                            if (is_array($v)) {
+                                $t[] = $instance->$rel()->create($v);
+                            }
                         }
+                        $instance->$rel()->saveMany($t);
                 }
             }
 
@@ -283,10 +286,7 @@ trait IsModelViewConnector{
 
     public function update($id, array $data)
     {
-        info($data);
         $data = $this->processBeforeUpdate($data);
-        info('update started');
-        info($data);
         $instance = $this->modelClass::find($id);
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseUpdate($instance)) {
@@ -305,7 +305,6 @@ trait IsModelViewConnector{
             }
         }
 
-info($mediaFields);
         DB::beginTransaction();
         try {
             $instance->update($ownFields);
@@ -313,12 +312,6 @@ info($mediaFields);
             //attach relationship instances as per the relation
             foreach ($relations as $rel => $val) {
                 $type = $this->getRelationType($rel);
-                info('rel:');
-                info($rel);
-                info('val:');
-                info($val);
-                info('type:');
-                info($type);
                 switch ($type) {
                     case 'BelongsTo':
                         // $relInstance = ($this->getRelatedModelClass($rel))::find($val);
@@ -335,15 +328,9 @@ info($mediaFields);
                     case 'HasMany':
                         $instance->$rel()->delete();
                         $t = array();
-                        // info('instance relation');
-                        // info((new $this->modelClass)->$rel()->getRelated());
-                        // $related = $instance->$rel()->getRelated();
-                        // info('related');
-                        // info($related);
                         foreach ($val as $v) {
                             if (is_array($v)) {
                                 $t[] = $instance->$rel()->create($v);
-                                // $t[] = ($this->getRelatedModelClass($rel))::create($v);
                             }
                         }
                         $instance->$rel()->saveMany($t);

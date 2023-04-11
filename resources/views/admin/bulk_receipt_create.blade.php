@@ -1,12 +1,12 @@
 <x-easyadmin::partials.adminpanel>
-    <h3 class="text-xl font-bold pb-3"><span>Bulk Receipts Creation</span>&nbsp;</h3>
+    <h3 class="text-xl font-bold pb-3"><span>Create New Receipt</span>&nbsp;</h3>
     @php
         $feeTypes = \App\Models\FeeType::all()->pluck('name', 'id');
         $typesWithTenure = config('generalSettings.fee_types_with_tenure');
+        $memberId = request()->input('m', null);
     @endphp
     <div class="w-full"
         x-data="{
-            memberslist: [],
             member: null,
             date: null,
             fees: [
@@ -29,6 +29,7 @@
             },
             showform: true,
             showreceipt: false,
+            disableForm: true,
             total() {
                 return this.fees.reduce((r, f) => {
                     return parseInt(r) + (f.amount != null ? parseInt(f.amount) : 0);
@@ -51,6 +52,18 @@
                     }
                 });
             },
+            resetFees() {
+                this.fees = [
+                    {
+                        particulars: '',
+                        tenure: null,
+                        from: null,
+                        to: null,
+                        amount: null,
+                        history: true,
+                    }
+                ];
+            },
             fetchMember(id = null) {
                 console.log('id: '+id);
                 if(id == null) { id = this.member.id; }
@@ -58,18 +71,9 @@
                     '{{route('members.fetch', '_X_')}}'.replace('_X_', id)
                 ).then((r) => {
                     this.member = r.data.member;
-                    this.fees = [
-                        {
-                            particulars: '',
-                            tenure: null,
-                            from: null,
-                            to: null,
-                            amount: null,
-                            history: true,
-                        }
-                    ];
                     this.notes = '';
                     this.date = null;
+                    this.disableForm = false;
                     $dispatch('easetdate', {date: null, key: 'date'});
                     console.log(this.member);
                 }).catch((e) => {
@@ -218,8 +222,10 @@
                 a.print();
             },
             newReceipt() {
+                this.member = null;
                 this.showreceipt = false;
-                this.fees = [
+                this.disableForm = true;
+                {{-- this.fees = [
                     {
                         particulars: '',
                         tenure: null,
@@ -228,7 +234,7 @@
                         amount: null,
                         history: true,
                     }
-                ];
+                ]; --}}
                 this.showform = true;
             },
             close() {
@@ -253,11 +259,16 @@
                 $dispatch('formsubmit', { url: this.postUrl.replace('_X_', this.member.id), formData: fd, target: '{{$form['id']}}', fragment: 'create_form' });
             }
         }"
+        x-init="
+        @if (isset($memberId))
+            fetchMember({{$memberId}});
+        @endif
+        "
         >
-        <div>
+        {{-- <div>
             <x-utils.memberfinder />
-        </div>
-        <div x-show="member != null">
+        </div> --}}
+        {{-- <div x-show="member != null">
             <h3 class="text-sm font-bold pb-3 text-warning">Create Receipt For:</h3>
             <div class="flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
                 <div class="p-0 min-w-72">
@@ -277,7 +288,7 @@
                         class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <form x-show="showform"
             @submit.prevent.stop="doSubmit();"
                 @formresponse.window="console.log($event.detail);
@@ -289,7 +300,7 @@
                         showform = false;
                         showreceipt = true;
                         fetchMember();
-                        $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', });
+                        {{-- $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', }); --}}
                         $dispatch('formerrors', {errors: []});
                     } else if (typeof $event.detail.content.errors != undefined) {
                         $dispatch('formerrors', {errors: $event.detail.content.errors});
@@ -310,12 +321,21 @@
             console.log(typesWithTenure);
             "
             >
-            <div x-show="member != null && showform" class="">
+            {{-- <div x-show="member != null && showform" class=""> --}}
+            <div class="">
                 <div class="my-4">
                     <div class="p-4 border border-base-content border-opacity-20 rounded-md bg-base-200">
                         <div>
                             <h3 class="text-md font-bold my-3 text-center underline text-warning"><span>Receipt Details</span>&nbsp;</h3>
                             <div class="flex flex-row justify-between mt-3 mb-6">
+                                <div>
+                                    <x-utils.memberfinder />
+                                </div>
+                                <div>
+                                    <span>Name: </span> <span class="font-bold" x-text="member != null ? member.name : ''"></span><br>
+                                    <span>Membership No.: </span> <span class="font-bold" x-text="member != null ? member.membership_no : ''"></span><br>
+                                    <span>Reg. Date: </span class="font-bold"> <span x-text="member != null ? member.approved_at : ''"></span>
+                                </div>
                                 <div>
                                     @php
                                         $now = Carbon\Carbon::now();
@@ -341,7 +361,8 @@
                                     <input type="text" class="input input-bordered input-sm">
                                 </div> --}}
                             </div>
-                            <div class="w-full overflow-x-scroll">
+                            <div class="w-full overflow-x-scroll relative">
+                                <div class="absolute w-full h-full top-0 left-0 z-20 bg-base-200 bg-opacity-40" x-show="disableForm"></div>
                                 <table class="table text-sm table-compact mx-auto w-full table-auto ">
                                     <tr>
                                         <td class="text-center">Particulars</td>

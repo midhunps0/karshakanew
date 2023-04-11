@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 
+use App\Models\Taluk;
+use App\Models\Member;
+use App\Models\Village;
 use App\Models\District;
 use App\Models\FeeCollection;
 
@@ -36,6 +39,29 @@ class AppHelper
         }
         $lastReceiptNumeric++;
         return Self::getBookNumber($district).'/'.$lastReceiptNumeric;
+    }
+
+    public static function getMembershipNumber(
+        int $district,
+        int $taluk,
+        int $village
+    ):string {
+            $dcode = District::find($district)->display_code;
+            $tcode = Taluk::find($taluk)->display_code;
+            $vcode = Village::find($village)->display_code;
+            $mnoSearch = $dcode.'/'.$tcode.'/'.$vcode.'/';
+            $nos = Member::select('membership_no')
+                ->where('membership_no', 'like', $mnoSearch.'%')
+                ->get()->toArray();
+            $slnos = array_map(
+                function ($n) {
+                    $t = explode('/', $n);
+                    return intval($t[count($t) - 1]);
+                },
+                $nos
+            );
+            $nextno = count($slnos) > 0 ? max($slnos) + 1 : 1;
+            return  $mnoSearch . $nextno;
     }
 }
 ?>

@@ -7,6 +7,7 @@ use App\Models\Village;
 use App\Models\District;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DistrictSeeder extends Seeder
@@ -51,6 +52,7 @@ class DistrictSeeder extends Seeder
                 );
                 $data[] = $d->id;
                 $this->districts[] = $data;
+                DB::insert('insert into district_code_map (old_id, new_id) values (?, ?)', [$data[0], $d->id]);
             }
             $count = 1;
         }
@@ -70,36 +72,27 @@ class DistrictSeeder extends Seeder
                 );
                 $data[] = $t->id;
                 $this->taluks[] = $data;
+                DB::insert('insert into taluk_code_map (old_id, new_id) values (?, ?)', [$data[0], $t->id]);
             }
             $count = 1;
         }
 
         $count = 0;
-        $vopen = fopen("seeds/taluks.csv", "r");
+        $vopen = fopen("seeds/villages.csv", "r");
         while (($data = fgetcsv($vopen, 1000, ",")) !== false) {
             if ($count > 0) {
-                Village::create(
+                $v = Village::create(
                     [
-                        'display_code' => intval($data[1]),
+                        'display_code' => intval($data[3]),
                         'name' => $data[2],
-                        'taluk_id' => $this->getTaluk($data[2]),
+                        'taluk_id' => $this->getTaluk($data[1]),
                         'enabled' => 1,
                     ]
                 );
+                DB::insert('insert into village_code_map (old_taluk_id, old_id, new_id) values (?, ?, ?)', [$data[1], $data[0], $v->id]);
             }
             $count = 1;
         }
-        // foreach($this->districts as $d) {
-        //     District::create(
-        //         [
-        //             'display_code' => $count,
-        //             'name' => $d,
-        //             'short_code' => Str::upper(substr($d, 0, 3)),
-        //             'enabled' => 1,
-        //         ]
-        //     );
-        //     $count++;
-        // }
     }
 
     private function getDistrict($id)
@@ -117,7 +110,7 @@ class DistrictSeeder extends Seeder
             return $t[0] == $id;
         });
         if (!isset(array_values($r)[0])) {
-            dd($id, $r);
+            dd($r, $id);
         }
         return array_values($r)[0][4];
     }

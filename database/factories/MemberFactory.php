@@ -34,7 +34,8 @@ class MemberFactory extends Factory
      */
     public function definition()
     {
-        $d = District::all()->random();
+        $dn = rand(1, 14);
+        $d = District::find($dn);
         $t = $d->taluks->random();
         $v = $t->villages->random();
         $mno = $d->display_code . '/'

@@ -53,50 +53,73 @@
                 this.items.push(JSON.parse(JSON.stringify(this.dummyItem)));
             },
             removeItem(i) {
-                if (this.items.length > 1) {
+                {{-- if (this.items.length > 1) { --}}
                     this.items = this.items.filter((n, index) => {
                         return i != index;
                     });
-                }
+                {{-- } --}}
             }
         }"
         x-init="
             dummyItem = {
                     name: '',
                     relation: '',
-                    percentage: ''
+                    percentage: '',
+                    dob: '',
+                    guardian_name: '',
+                    guardian_relation: ''
                 };
-            addDummyItem();
-            @if(count($_old->nominees) > 0)
+            {{-- addDummyItem(); --}}
+            @if(isset($_old['nominees']) && count($_old['nominees']) > 0)
             items = [];
-            @foreach ($_old->nominees as $n)
+            @foreach ($_old['nominees'] as $n)
                 items.push({
                     name: '{{$n->name}}',
                     relation: '{{$n->relation}}',
-                    percentage: '{{$n->percentage}}'
+                    percentage: '{{$n->percentage}}',
+                    dob: '{{$n->dob}}',
+                    guardian_name: '{{$n->guardian_name}}',
+                    guardian_relation: '{{$n->guardian_relation}}'
                 });
             @endforeach
             @endif
             console.log('items');
             console.log(items);
         ">
-        <table>
+        <div x-show="items.length == 0">
+            <button class="btn btn-sm btn-warning" @click.prevent.stop="addDummyItem();">
+                Add <x-easyadmin::display.icon icon="easyadmin::icons.plus"/>
+            </button>
+        </div>
+        <table x-show="items.length > 0">
             <tr>
                 <td>Name</td>
                 <td>Relation</td>
                 <td>Percentage</td>
+                <td>Date of birth</td>
+                <td>Guardian Name</td>
+                <td>Guardian Relation</td>
                 <td></td>
             </tr>
             <template x-for="(item, index) in items">
                 <tr>
                     <td>
-                        <input :name="'nominees['+index+'][name]'" class="input input-sm" type="text" x-model="item.name">
+                        <input :name="'nominees['+index+'][name]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.name" required>
                     </td>
                     <td>
-                        <input :name="'nominees['+index+'][relation]'" class="input input-sm" type="text" x-model="item.relation">
+                        <input :name="'nominees['+index+'][relation]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.relation" required>
                     </td>
                     <td>
-                        <input :name="'nominees['+index+'][percentage]'" class="input input-sm" type="text" x-model="item.percentage">
+                        <input :name="'nominees['+index+'][percentage]'" class="input input-sm border border-base-content border-opacity-20 max-w-24" type="text" x-model="item.percentage" required>
+                    </td>
+                    <td>
+                        <input :name="'nominees['+index+'][dob]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.dob" required>
+                    </td>
+                    <td>
+                        <input :name="'nominees['+index+'][guardian_name]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.guardian_name">
+                    </td>
+                    <td>
+                        <input :name="'nominees['+index+'][guardian_relation]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.guardian_relation">
                     </td>
                     <td>
                         <button x-show="index == items.length -1" @click.prevent.stop="addDummyItem()" class="btn btn-sm btn-warning">

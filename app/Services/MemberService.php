@@ -35,7 +35,10 @@ class MemberService implements ModelViewConnector {
 
     protected $mediaFields = [
         'aadhaar_card',
-        'bank_passbook'
+        'bank_passbook',
+        'election_card',
+        'wb_passbook_front',
+        'wb_passbook_back'
     ];
 
 
@@ -300,7 +303,7 @@ class MemberService implements ModelViewConnector {
             'permanent_address' => ['required',],
             'permanent_address_mal' => ['sometimes',],
             'pa_pincode' => ['sometimes',],
-            'district' => ['sometimes',],
+            'districtOffice' => ['required',],
             'taluk' => ['required',],
             'village' => ['required',],
             'tradeUnion' => ['required',],
@@ -313,6 +316,18 @@ class MemberService implements ModelViewConnector {
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
             'bank_passbook' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'election_card' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'wb_passbook_front' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'wb_passbook_back' => (new EAInputMediaValidator())
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
@@ -548,26 +563,57 @@ class MemberService implements ModelViewConnector {
             'aadhaar_card' => FormHelper::makeImageUploader(
                 key: 'aadhaar_card',
                 label: 'Aadhaar card',
-                properties: ['required' => true, 'multiple' => false],
+                properties: ['multiple' => false],
                 theme: 'regular',
                 allowGallery: false,
                 validations: [
                     'max_size' => '200 kb',
                     'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
                     ]
-                // fireInputEvent: true
             ),
             'bank_passbook' => FormHelper::makeImageUploader(
                 key: 'bank_passbook',
                 label: 'Bank Passbook',
-                properties: ['required' => true, 'multiple' => false],
+                properties: ['multiple' => false],
                 theme: 'regular',
                 allowGallery: false,
                 validations: [
                     'max_size' => '200 kb',
                     'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
                     ]
-                // fireInputEvent: true
+            ),
+            'election_card' => FormHelper::makeImageUploader(
+                key: 'election_card',
+                label: 'Election Card',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
+            'wb_passbook_front' => FormHelper::makeImageUploader(
+                key: 'wb_passbook_front',
+                label: 'Member Passbook Front',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
+            'wb_passbook_back' => FormHelper::makeImageUploader(
+                key: 'wb_passbook_back',
+                label: 'Member Passbook Back',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
             ),
             'nominees' => FormHelper::makeDynamicInput(
                 key: 'nominees',
@@ -765,24 +811,37 @@ class MemberService implements ModelViewConnector {
                         ]
                     ),
                     (new RowLayout(width: 'full'))
-                        ->addElement(new SectionDivider('Image Uploads')),
-                    (new RowLayout())->addElements(
-                        [
-                            (new ColumnLayout(
-                                width: '1/2'
-                            ))->addInputSlot('aadhaar_card'),
-                            (new ColumnLayout(
-                                width: '1/2'
-                            ))->addInputSlot('bank_passbook'),
-                        ]
-                    ),
-                    (new RowLayout(width: 'full'))
                         ->addElement(new SectionDivider('Nominees')),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(
                                 width: 'full'
                             ))->addInputSlot('nominees'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Image Uploads')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('aadhaar_card'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('bank_passbook'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('election_card'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('wb_passbook_front'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('wb_passbook_back'),
                         ]
                     ),
                 ]
@@ -995,6 +1054,13 @@ class MemberService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
+        info($data);
+        $data['membership_no'] = AppHelper::getMembershipNumber(
+            $data['districtOffice'],
+            $data['taluk'],
+            $data['village']
+        );
+        $data['district'] = $data['districtOffice'];
         if (filter_var($data['copy_address'], FILTER_VALIDATE_BOOLEAN)) {
             $data['permanent_address'] = $data['current_address'];
             $data['permanent_address_mal'] = $data['current_address_mal'];

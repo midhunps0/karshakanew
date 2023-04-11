@@ -1,4 +1,4 @@
-<form x-data="{
+<div x-data="{
     suggestions: [],
     search: '',
     noMemberMsg: false,
@@ -38,14 +38,16 @@
         this.search = '';
         this.suggestions = [];
     }
-}" class="relative w-full" action="" @submit.prevent.stop="">
-    <h3 class="text-sm font-bold pb-3 text-warning">Find Member</h3>
-    <div class="form-control w-full flex flex-row flex-wrap space-x-4 justify-start items-end">
+}" class="relative w-full">
+    {{-- <h3 class="text-sm font-bold pb-3 text-warning">Find Member</h3> --}}
+    <div class="form-control w-full flex flex-row flex-wrap space-x-4 justify-start items-start">
         <label class="label w-32">
             <span class="label-text">Registration No.:</span>
         </label>
-        <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input="getMembersList();" />
-        <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
+        <div>
+            <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input="noMemberMsg = false; getMembersList();" />
+            <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
+        </div>
     </div>
     <div x-show="suggestions.length > 0" x-transition
         class="absolute left-0 top-16 z-50 bg-base-200 p-2 text-sm border border-base-content border-opacity-20 rounded-md shadow-md text-base-content !text-opacity-30 max-h-192 overflow-y-scroll"
@@ -69,4 +71,4 @@
             </template>
         </table>
     </div>
-</form>
+</div>
