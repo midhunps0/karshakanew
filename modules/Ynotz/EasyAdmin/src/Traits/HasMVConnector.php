@@ -18,6 +18,7 @@ trait HasMVConnector {
     private $unauthorisedView = 'easyadmin::admin.unauthorised';
     private $errorView = 'easyadmin::admin.error';
     private $indexView = 'easyadmin::admin.indexpanel';
+    private $showView = 'easyadmin::admin.show';
     private $createView = 'easyadmin::admin.form';
     private $editView = 'easyadmin::admin.form';
 
@@ -52,6 +53,12 @@ trait HasMVConnector {
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         }
 
+    }
+
+    public function show($id)
+    {
+        $instance = $this->connectorService->show($id);
+        return $this->buildResponse($this->showView, ['model' => $instance]);
     }
 
     public function selectIds()

@@ -32,9 +32,10 @@ class Member extends Model
     protected $appends = [
         'aadhaar_card',
         'bank_passbook',
-        'election_card',
+        'ration_card',
         'wb_passbook_front',
-        'wb_passbook_back'
+        'wb_passbook_back',
+        'one_and_same_cert'
     ];
 
     public function district()
@@ -124,10 +125,6 @@ class Member extends Model
                 'disk' => 'local',
                 'folder' => 'public/images/bank_passbook'
             ],
-            'electionCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/election_card'
-            ],
             'wbPassbookFront' => [
                 'disk' => 'local',
                 'folder' => 'public/images/wb_passbook_front'
@@ -135,6 +132,10 @@ class Member extends Model
             'wbPassbookBack' => [
                 'disk' => 'local',
                 'folder' => 'public/images/wb_passbook_back'
+            ],
+            'oneAndSameCert' => [
+                'disk' => 'local',
+                'folder' => 'public/images/one_and_same_cert'
             ],
         ];
     }
@@ -157,11 +158,11 @@ class Member extends Model
         );
     }
 
-    protected function electionCard(): Attribute
+    protected function rationCard(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return $this->getSingleMediaForDisplay('election_card');
+                return $this->getSingleMediaForDisplay('ration_card');
             },
         );
     }
@@ -180,6 +181,15 @@ class Member extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('wb_passbook_back');
+            },
+        );
+    }
+
+    protected function oneAndSameCert(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('one_and_same_cert');
             },
         );
     }

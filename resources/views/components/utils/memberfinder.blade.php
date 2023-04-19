@@ -45,7 +45,7 @@
             <span class="label-text">Registration No.:</span>
         </label>
         <div>
-            <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input="noMemberMsg = false; getMembersList();" />
+            <input x-model="search" type="text" placeholder="Type here" class="input input-bordered flex-grow max-w-xs" @input.prevent.stop="noMemberMsg = false; getMembersList();" />
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>
     </div>

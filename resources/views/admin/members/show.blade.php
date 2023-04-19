@@ -95,6 +95,39 @@
                             <span>{{isset($member->trade_union) ? $member->trade_union->name : '--'}}</span>
                         </div>
                     </div>
+                    <div class="flex flex-col items-center p-3 pt-8">
+                        <div><span class="text-warning underline font-bold">Nominees</span></div>
+                        @if (count($member->nominees) > 0)
+                        <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                            <table class="table table-compact w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Relation</th>
+                                        <th>Percentage</th>
+                                        <th>Date of birth</th>
+                                        <th>Guardian Name</th>
+                                        <th>Guardian Relation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($member->nominees as $n)
+                                        <tr>
+                                            <td>{{$n->name}}</td>
+                                            <td>{{$n->relation}}</td>
+                                            <td>{{$n->percentage}}</td>
+                                            <td>{{$n->dob}}</td>
+                                            <td>{{$n->guardian_name}}</td>
+                                            <td>{{$n->guardian_relation}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <span class="text-error text-opacity-80">No nominees added.</span>
+                        @endif
+                    </div>
                 </div>
                 <div x-show="activeTab == 1" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="text-center pt-8"><span class="text-warning underline font-bold">Bank Details</span></div>
@@ -116,7 +149,7 @@
                                 <span>{{$member->bank_acc_no}}</span>
                             </div>
                         </div>
-                        <div class="flex flex-col items-center p-3 pt-8">
+                        {{-- <div class="flex flex-col items-center p-3 pt-8">
                             <div><span class="text-warning underline font-bold">Nominees</span></div>
                             @if (count($member->nominees) > 0)
                             <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
@@ -148,7 +181,7 @@
                             @else
                             <span class="text-error text-opacity-80">No nominees added.</span>
                             @endif
-                        </div>
+                        </div> --}}
                         <div class="text-center mt-8"><span class="text-warning underline font-bold">Documents</span></div>
                         <div class="flex flex-row flex-wrap items-start justify-center p-3">
                             <div class="md:w-1/5 p-1 my-1">
@@ -172,10 +205,10 @@
                                 </div>
                             </div>
                             <div class="md:w-1/5 p-1 my-1">
-                                <span class="text-warning">Election Card:</span>
+                                <span class="text-warning">Ration Card:</span>
                                 <div class="block m-2 w-32 h-24">
                                     @if ($member->election_card != null)
-                                    <img @click="$dispatch('showimg', {src: '{{$member->election_card['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->election_card['path']}}" />
+                                    <img @click="$dispatch('showimg', {src: '{{$member->ration_card['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->ration_card['path']}}" />
                                     @else
                                     <span class="text-error text-opacity-80">Not submitted</span>
                                     @endif

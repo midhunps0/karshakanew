@@ -15,6 +15,8 @@
             'Unmarried',
             'Married',
             'Divorced',
+            'Widow',
+            'Widower'
         ],
         'fee_types_with_tenure' => [
             1

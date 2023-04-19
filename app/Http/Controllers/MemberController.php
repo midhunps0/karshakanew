@@ -168,6 +168,20 @@ class MemberController extends SmartController
         }
     }
 
+    public function storeBulkFees(Request $request)
+    {
+        try {
+            $result = $this->connectorService->storeBulkFees($request->all());
+            return response()->json($result);
+        } catch (AuthorizationException $e) {
+            info($e);
+            return $this->buildResponse($this->unauthorisedView);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+    }
+
     public function storeOldFeesCollection($id, OldFeesCollectionStoreRequest $request)
     {
         try {

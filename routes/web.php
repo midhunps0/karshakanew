@@ -55,6 +55,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.annual_fees.fromto');
     Route::post('/members/{id}/fees-collection', [MemberController::class, 'storeFeesCollection'])
         ->name('members.fees.store');
+    Route::post('/members/fees-collection-bulk', [MemberController::class, 'storeBulkFees'])
+        ->name('members.fees.store_bulk');
     Route::post(
         '/members/{id}/old-fees-collection',
         [MemberController::class, 'storeOldFeesCollection']

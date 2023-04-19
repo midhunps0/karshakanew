@@ -36,9 +36,10 @@ class MemberService implements ModelViewConnector {
     protected $mediaFields = [
         'aadhaar_card',
         'bank_passbook',
-        'election_card',
+        'ration_card',
         'wb_passbook_front',
-        'wb_passbook_back'
+        'wb_passbook_back',
+        'one_and_same_cert'
     ];
 
 
@@ -48,7 +49,8 @@ class MemberService implements ModelViewConnector {
         $this->indexTable = new IndexTable();
         $this->searchesMap = [
             'taluk' => 'taluk_id',
-            'district' => 'district_id'
+            'district' => 'district_id',
+            'village' => 'village_id'
         ];
     }
     protected function getPageTitle(): string
@@ -319,7 +321,7 @@ class MemberService implements ModelViewConnector {
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
-            'election_card' => (new EAInputMediaValidator())
+            'ration_card' => (new EAInputMediaValidator())
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
@@ -328,6 +330,10 @@ class MemberService implements ModelViewConnector {
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
             'wb_passbook_back' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'one_and_same_cert' => (new EAInputMediaValidator())
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
                 ->getRules(),
@@ -394,9 +400,9 @@ class MemberService implements ModelViewConnector {
                 key: 'aadhaar_no',
                 properties: ['required' => true,],
             ),
-            'election_card_no' => FormHelper::makeInput(
+            'ration_card_no' => FormHelper::makeInput(
                 inputType: 'text',
-                key: 'election_card_no',
+                key: 'ration_card_no',
                 label: 'Voters Id Card No.',
                 properties: ['required' => true],
             ),
@@ -582,9 +588,9 @@ class MemberService implements ModelViewConnector {
                     'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
                     ]
             ),
-            'election_card' => FormHelper::makeImageUploader(
-                key: 'election_card',
-                label: 'Election Card',
+            'ration_card' => FormHelper::makeImageUploader(
+                key: 'ration_card',
+                label: 'Ration Card',
                 properties: ['multiple' => false],
                 theme: 'regular',
                 allowGallery: false,
@@ -607,6 +613,17 @@ class MemberService implements ModelViewConnector {
             'wb_passbook_back' => FormHelper::makeImageUploader(
                 key: 'wb_passbook_back',
                 label: 'Member Passbook Back',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
+            'one_and_same_cert' => FormHelper::makeImageUploader(
+                key: 'one_and_same_cert',
+                label: 'One And Same Certificate',
                 properties: ['multiple' => false],
                 theme: 'regular',
                 allowGallery: false,
@@ -831,7 +848,7 @@ class MemberService implements ModelViewConnector {
                             ))->addInputSlot('bank_passbook'),
                             (new ColumnLayout(
                                 width: '1/3'
-                            ))->addInputSlot('election_card'),
+                            ))->addInputSlot('ration_card'),
                         ]
                     ),
                     (new RowLayout())->addElements(
@@ -842,6 +859,9 @@ class MemberService implements ModelViewConnector {
                             (new ColumnLayout(
                                 width: '1/3'
                             ))->addInputSlot('wb_passbook_back'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('one_and_same_cert'),
                         ]
                     ),
                 ]
@@ -892,7 +912,7 @@ class MemberService implements ModelViewConnector {
     //                         ))->addInputSlot('aadhaar_no'),
     //                         (new ColumnLayout(
     //                             width: '1/4'
-    //                         ))->addInputSlot('election_card_no'),
+    //                         ))->addInputSlot('ration_card_no'),
     //                         (new ColumnLayout(
     //                             width: '1/4'
     //                         ))->addInputSlot('eshram_card_no')
@@ -1202,9 +1222,88 @@ class MemberService implements ModelViewConnector {
             info("couldn't create the receipt. error:");
             info($e->__toString());
             DB::rollback();
-            return false;
+            return [
+                'success' => false
+            ];
         }
 
+    }
+
+    public function storeBulkFees($data)
+    {
+        $sum = 0;
+        $fiData = [];
+        foreach ($data['fee_item'] as $item) {
+            $sum += $item['amount'];
+            $fiData = [
+                'fee_collection_id' => '',
+                'fee_type_id' => $item['fee_type_id'],
+                'amount' => $item['amount'],
+            ];
+            if (isset($item['period_from'])) {
+                $fiData['period_from'] = AppHelper::formatDateForSave($item['period_from']);
+            }
+            if (isset($item['period_to'])) {
+                $fiData['period_to'] = AppHelper::formatDateForSave($item['period_to']);
+            }
+            if (isset($item['period_from']) && isset($item['period_to'])) {
+                $fiData['tenure'] = $item['period_from'] . ' to ' . $item['period_to'];
+            }
+            // FeeItem::create($fiData);
+        }
+        $mids = explode(',', $data['members']);
+        $successList = [];
+        $fcIds = [];
+        $success = true;
+        foreach ($mids as $id) {
+            $member = Member::find($id);
+            // info('__mid: '.$id);
+            // info('__member: '.$member);
+            try {
+                DB::beginTransaction();
+                $bookNo = AppHelper::getBookNumber($member->district_id);
+                $receiptNo = AppHelper::getReceiptNumber($member->district_id);
+                $fc = FeeCollection::create([
+                    'member_id' => $id,
+                    'district_id' => $member->district_id,
+                    'book_number' => $bookNo,
+                    'receipt_number' => $receiptNo,
+                    'total_amount' => $sum,
+                    'receipt_date' => AppHelper::formatDateForSave($data['date']),
+                    'payment_mode_id' => config('generalSettings.default_payment_mode_id'),
+                    'collected_by' => auth()->user()->id,
+                    'notes' => $data['notes'] ?? '',
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]);
+                $fiData['fee_collection_id'] = $fc->id;
+                FeeItem::create($fiData);
+                DB::commit();
+                $successList[] = $id;
+                $fcIds[] = $fc->id;
+
+
+            } catch (\Throwable $e) {
+                info("couldn't create bulk receipts. Failed at id: ".$id);
+                info($e->__toString());
+                DB::rollback();
+                $success = false;
+            }
+        }
+
+        if ($success) {
+            return [
+                'success' => true,
+                'fc_ids' => implode(",", $fcIds),
+                'receipts' => FeeCollection::whereIn('id', $fcIds)
+                    ->with('feeItems')->get(),
+                'success_list' => implode(",", $successList)
+            ];
+        } else {
+            return [
+                'success' => false,
+                'success_list' => implode(",", $successList)
+            ];
+        }
     }
 
     public function verifyAadhaar($aadhaarNo)

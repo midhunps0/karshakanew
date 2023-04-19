@@ -7,7 +7,10 @@
     @endphp
     <div class="w-full"
         x-data="{
-            member: null,
+            {{-- member: null, --}}
+            members: [],
+            receipts: [],
+            showReceipts: false,
             date: null,
             fees: [
                 {
@@ -27,9 +30,7 @@
             receipt: {
                 fee_items: []
             },
-            showform: true,
-            showreceipt: false,
-            disableForm: true,
+            duplicateMember: false,
             total() {
                 return this.fees.reduce((r, f) => {
                     return parseInt(r) + (f.amount != null ? parseInt(f.amount) : 0);
@@ -64,18 +65,28 @@
                     }
                 ];
             },
-            fetchMember(id = null) {
-                console.log('id: '+id);
-                if(id == null) { id = this.member.id; }
+            fetchMember(id) {
+                console.log('id: '+id)
                 axios.get(
                     '{{route('members.fetch', '_X_')}}'.replace('_X_', id)
                 ).then((r) => {
-                    this.member = r.data.member;
-                    this.notes = '';
-                    this.date = null;
-                    this.disableForm = false;
-                    $dispatch('easetdate', {date: null, key: 'date'});
-                    console.log(this.member);
+                    let member = r.data.member;
+                    console.log(member);
+                    let x = this.members.filter((m) => {
+                        return m.id == member.id
+                    });
+                    if (x.length == 0) {
+                        this.members.push(
+                            {
+                                id: member.id,
+                                membership_no: member.membership_no,
+                                name: member.name,
+                            }
+                        );
+                    } else {
+                        this.duplicateMember = true;
+                    }
+                    console.log(this.members);
                 }).catch((e) => {
                     console.log(e);
                 })
@@ -88,8 +99,6 @@
                     '{{route('receipt.fetch', '_X_')}}'.replace('_X_', id)
                 ).then((r) => {
                     this.receipt = r.data.receipt;
-                    this.showform = false;
-                    this.showreceipt = true;
                 }).catch((e) => {
                     console.log(e);
                 });
@@ -105,7 +114,7 @@
                     }
                 );
             },
-            getFromToMonths(index) {
+            {{-- getFromToMonths(index) {
                 let f = this.fees.filter((f, i) => {
                     if (i == index) {
                         return f;
@@ -136,7 +145,7 @@
                 }).catch(
                     (e) => { console.log(e); }
                 );
-            },
+            }, --}}
             formatDate(yyyyMMdd) {
                 if (typeof yyyyMMdd == 'undefined' || yyyyMMdd == null) {
                     return '';
@@ -223,8 +232,6 @@
             },
             newReceipt() {
                 this.member = null;
-                this.showreceipt = false;
-                this.disableForm = true;
                 {{-- this.fees = [
                     {
                         particulars: '',
@@ -235,7 +242,6 @@
                         history: true,
                     }
                 ]; --}}
-                this.showform = true;
             },
             close() {
                 $dispatch('linkaction', {link: '{{route('feecollections.create')}}', route: 'feecollections.create'});
@@ -244,6 +250,9 @@
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
                 let date = Date.parse(this.date);
+                fd.append('members', this.members.map((m) => {
+                    return m.id
+                }).join(','));
                 fd.append('date', date.toString('dd-MM-yyyy'));
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
@@ -254,53 +263,25 @@
                     fd.append('fee_item['+i+'][amount]', f.amount);
                 });
                 if (this.notes != '') {fd.append('notes', this.notes);}
+                this.showReceipts = true;
                 {{-- fd.append('x_fr', 'form_user_create'); --}}
                 {{-- fd.append('member_id', this.member.id); --}}
-                $dispatch('formsubmit', { url: this.postUrl.replace('_X_', this.member.id), formData: fd, target: '{{$form['id']}}', fragment: 'create_form' });
+                $dispatch('formsubmit', { url: this.postUrl, formData: fd, target: '{{$form['id']}}', fragment: 'create_form' });
             }
         }"
-        x-init="
-        @if (isset($memberId))
-            fetchMember({{$memberId}});
-        @endif
-        "
+        x-init=""
         >
-        {{-- <div>
-            <x-utils.memberfinder />
-        </div> --}}
-        {{-- <div x-show="member != null">
-            <h3 class="text-sm font-bold pb-3 text-warning">Create Receipt For:</h3>
-            <div class="flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
-                <div class="p-0 min-w-72">
-                    <span class="font-bold">Name</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.name : ''"></span>
-                </div>
-                <div class="p-0 min-w-72">
-                    <span class="font-bold">Reg. No.</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.membership_no : ''"></span>
-                </div>
-                <div class="p-0 min-w-72">
-                    <span class="font-bold">Reg. Date</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.approved_at : ''"></span>
-                </div>
-                <div class="flex-grow text-right">
-                    <a href="" @click.prevent.stop="editAction(member.id);"
-                        class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
-                </div>
-            </div>
-        </div> --}}
-        <form x-show="showform"
-            @submit.prevent.stop="doSubmit();"
+        <form
                 @formresponse.window="console.log($event.detail);
                 console.log('fr captured');
                 if ($event.detail.target == $el.id) {
                     if ($event.detail.content.success) {
-                        receipt = $event.detail.content.receipt;
-                        console.log(receipt);
-                        showform = false;
-                        showreceipt = true;
-                        fetchMember();
+                        $event.detail.content.receipts.forEach((r) => {
+                            receipts.push(r);
+                        });
                         {{-- $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', }); --}}
+                        console.log('receipts');
+                        console.log(receipts);
                         $dispatch('formerrors', {errors: []});
                     } else if (typeof $event.detail.content.errors != undefined) {
                         $dispatch('formerrors', {errors: $event.detail.content.errors});
@@ -310,32 +291,24 @@
                 }
             "
             @datepicker.window="console.log($event);date = $event.detail.value;"
-            @selectmember.window="fetchMember($event.detail.id); showform = true; showreceipt = false;"
+            @selectmember.window="fetchMember($event.detail.id);"
             class="p-1" action=""
             id="{{$form['id']}}"
             x-init="
-            postUrl='{{route('members.fees.store', '_X_')}}'
+            postUrl='{{route('members.fees.store_bulk')}}'
             @foreach ($typesWithTenure as $t)
                 typesWithTenure.push(parseInt({{$t}}));
             @endforeach
             console.log(typesWithTenure);
             "
             >
-            {{-- <div x-show="member != null && showform" class=""> --}}
+
             <div class="">
                 <div class="my-4">
                     <div class="p-4 border border-base-content border-opacity-20 rounded-md bg-base-200">
                         <div>
                             <h3 class="text-md font-bold my-3 text-center underline text-warning"><span>Receipt Details</span>&nbsp;</h3>
                             <div class="flex flex-row justify-between mt-3 mb-6">
-                                <div>
-                                    <x-utils.memberfinder />
-                                </div>
-                                <div>
-                                    <span>Name: </span> <span class="font-bold" x-text="member != null ? member.name : ''"></span><br>
-                                    <span>Membership No.: </span> <span class="font-bold" x-text="member != null ? member.membership_no : ''"></span><br>
-                                    <span>Reg. Date: </span class="font-bold"> <span x-text="member != null ? member.approved_at : ''"></span>
-                                </div>
                                 <div>
                                     @php
                                         $now = Carbon\Carbon::now();
@@ -362,7 +335,6 @@
                                 </div> --}}
                             </div>
                             <div class="w-full overflow-x-scroll relative">
-                                <div class="absolute w-full h-full top-0 left-0 z-20 bg-base-200 bg-opacity-40" x-show="disableForm"></div>
                                 <table class="table text-sm table-compact mx-auto w-full table-auto ">
                                     <tr>
                                         <td class="text-center">Particulars</td>
@@ -423,8 +395,35 @@
                             </div>
                             <div class="divider"></div>
                             <div class="flex flex-wrap space-x-0 md:space-x-4 items-end">
-                                <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full md:w-3/4" placeholder="Notes"></textarea>
-                                <button class="my-2 md:my-0 btn btn-md btn-warning flex-grow"> Create Receipt </button>
+                                <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full" placeholder="Notes"></textarea>
+                            </div>
+                            <div class="divider"></div>
+                            <span class="font-bold text-warning">Add Members:</span>
+                            <div>
+                                <x-utils.memberfinder />
+                            </div>
+                            <div x-show="members.length > 0" class="flex flex-row justify-center my-8">
+                                <div class="border border-base-content border-opacity-20 w-full md:w-1/2">
+                                    <table class="table table-compact m-auto w-full">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Membership No.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-for="m in members">
+                                            <tr>
+                                                <td><span x-text="m.name"></span></td>
+                                                <td><span x-text="m.membership_no"></span></td>
+                                            </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button @click.prevent.stop="doSubmit()" class="my-2 md:my-0 btn btn-md btn-warning flex-grow"> Create Receipts </button>
                             </div>
                         </div>
                     </div>
@@ -432,97 +431,26 @@
             </div>
 
         </form>
-        <div id="receipt" x-show="showreceipt" class="w-full md:w-10/12 m-auto p-3 border            border-base-content border-opacity-50 rounded-md my-8 min-w-48 overflow-x-scroll">
-            <div>
-                <div class="text-center my-4 font-bold underline text-warning">Receipt</div>
-                <div class="flex flex-row flex-wrap justify-between items-center w-full p-2">
-                    <div>
-                        <span class="text-warning">Receipt No.:</span>
-                        <span x-text="receipt.receipt_number"></span>
-                    </div>
-                    <div>
-                        <span class="text-warning">Date.:</span>
-                        <span x-text="receipt.receipt_date"></span>
-                    </div>
+        <div x-show="showReceipts" class="fixed top-0 left-0 z-50 h-full w-full overflow-x-scroll md:py-4 bg-base-100 bg-opacity-30">
+            <div class="w-80 ml-auto mr-auto bg-base-200 p-4">
+                <div class="text-right">
+                    <button @click.prevent.stop="showReceipts = false;" class="btn btn-sm btn-error bg-opacity-60 m-2 p-0 px-2">
+                        <x-easyadmin::display.icon icon="easyadmin::icons.close" height="h-6" width="w-6"/>
+                    </button>
                 </div>
-                <div>
-                    <table class="w-full table table-compact">
-                        <tbody>
-                            <tr class="border-b border-base-content border-opacity-50">
-                                <td class="bg-base-200">Particulars</td>
-                                <td class="bg-base-200">From</td>
-                                <td class="bg-base-200">To</td>
-                                <td class="bg-base-200 text-center">Amount</td>
-                            </tr>
-                            <template x-for="item in receipt.fee_items">
-                                <tr>
-                                    <td x-text="item.fee_type.name"></td>
-                                    <td x-text="item.period_from || '--'"></td>
-                                    <td x-text="item.period_to || '--'"></td>
-                                    <td class="text-right" x-text="item.amount"></td>
-                                </tr>
-                            </template>
-                        </tbody>
-                        <tr class="border-t border-base-content border-opacity-50">
-                            <td colspan="3" class="text-right text-warning">Total: </td>
-                            <td colspan="1" class="text-right" x-text="receipt.total_amount"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="bg-base-200"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
-                <button @click.prevent.stop="printReceipt()" class="btn btn-sm btn-warning">Print</button>
-                <button @click.prevent.stop="newReceipt()" class="btn btn-sm btn-accent">New Receipt</button>
-                <button @click.prevent.stop="close()" class="btn btn-sm btn-error">Close</button>
+                <template x-for="r in receipts">
+                    <div class="border border-x-base-content border-opacity-20 rounded-md shadow-md p-2">
+                        <h3 class="text-lg text-center">
+                            Kerala Karshakathozhilali Welfare Board
+                        </h3>
+                        <h3 class="text-lg text-center underline my-4">
+                            Receipt
+                        </h3>
+                        <div>No.: <span x-text="r.receipt_number"></span></div>
+                        <div>Date: <span x-text="r.receipt_date"></span></div>
+                    </div>
+                </template>
             </div>
         </div>
-        <template x-if="member != null">
-        <div class="my-4">
-            <h3 class="text-md font-bold mt-3 mb-1 text-center underline text-warning"><span>Transaction History</span>&nbsp;</h3>
-            <template x-if="member.fee_payments.length == 0">
-                <div class="text-center text-error">There is no transaction made by this member.</div>
-            </template>
-
-            <div x-show="member.fee_payments.length != 0" class="text-xs text-warning text-center mb-4">(Total <span x-text="member.fee_payments.length"></span> Receipts)</div>
-
-            <template x-if="member.fee_payments.length > 0">
-            <div class="w-full max-h-64 overflow-x-scroll">
-                <table class="table table-compact table-zebra w-full mx-auto">
-                    <thead>
-                        <tr class="sticky top-0">
-                            <td class="sticky top-0">Date</td>
-                            <td class="sticky top-0">Receipt No.</td>
-                            <td class="sticky top-0">Particulars</td>
-                            <td class="sticky top-0">Amount</td>
-                            <td class="sticky top-0">From</td>
-                            <td class="sticky top-0">To</td>
-                            <td class="sticky top-0">Tenure</td>
-                            <td class="sticky top-0">Notes</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="fp in member.fee_payments">
-                            <template x-for="item in fp.fee_items">
-                                <tr>
-                                    <td><span x-text="fp.receipt_date"></span></td>
-                                    <td><span @click.stop.prevent="fetchReceipt(fp.id)" x-text="fp.receipt_number" class="cursor-pointer text-warning"></span></td>
-                                    <td><span x-text="item.fee_type.name"></span></td>
-                                    <td><span x-text="item.amount"></span></td>
-                                    <td><span x-text="typeof item.period_from != 'undefined' ? formatDate(item.period_from) : ''"></span></td>
-                                    <td><span x-text="typeof item.period_to != 'undefined' ? formatDate(item.period_to) : ''"></span></td>
-                                    <td><span x-text="item.tenure"></span></td>
-                                    <td><span x-text="fp.notes"></span></td>
-                                </tr>
-                            </template>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-            </template>
-        </div>
-        </template>
     </div>
 </x-easyadmin::partials.adminpanel>

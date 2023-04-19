@@ -21,6 +21,7 @@ class AppHelper
 
     public static function getBookNumber($district)
     {
+        info('___district: '.$district);
         $code = is_int($district) ? District::find($district)->short_code
             : $district->short_code;
         return 'FY23-24-'.$code;
