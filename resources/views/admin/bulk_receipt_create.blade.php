@@ -89,7 +89,8 @@
                     console.log(this.members);
                 }).catch((e) => {
                     console.log(e);
-                })
+                });
+                this.receipts = [];
             },
             fetchReceipt(id = null) {
                 if (id == null) {
@@ -114,38 +115,15 @@
                     }
                 );
             },
-            {{-- getFromToMonths(index) {
+            getFromToMonths(index) {
                 let f = this.fees.filter((f, i) => {
                     if (i == index) {
                         return f;
                     }
                 })[0];
-                axios.get(
-                    '{{route('members.annual_fees.fromto', '_X_')}}'.replace('_X_', this.member.id),
-                    {
-                        params: {
-                            tenure: f.tenure
-                        }
-                    }
-                ).then((r) => {
-                    if (r.data.from != null) {
-                        this.fees = this.fees.map((f, i) => {
-                            if (i == index) {
-                                f.from = r.data.from;
-                                f.to = r.data.to;
-                            }
-                            return f;
-                        });
-                    } else {
-                        f.history = false;
-                        if (f.from != null && f.from != '') {
-                            f.to = this.getToDate(f.tenure, f.from);
-                        }
-                    }
-                }).catch(
-                    (e) => { console.log(e); }
-                );
-            }, --}}
+
+                f.history = false;
+            },
             formatDate(yyyyMMdd) {
                 if (typeof yyyyMMdd == 'undefined' || yyyyMMdd == null) {
                     return '';
@@ -279,6 +257,7 @@
                         $event.detail.content.receipts.forEach((r) => {
                             receipts.push(r);
                         });
+                        members = [];
                         {{-- $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', }); --}}
                         console.log('receipts');
                         console.log(receipts);
@@ -400,7 +379,7 @@
                             <div class="divider"></div>
                             <span class="font-bold text-warning">Add Members:</span>
                             <div>
-                                <x-utils.memberfinder />
+                                <x-utils.member-selector />
                             </div>
                             <div x-show="members.length > 0" class="flex flex-row justify-center my-8">
                                 <div class="border border-base-content border-opacity-20 w-full md:w-1/2">
@@ -433,11 +412,6 @@
         </form>
         <div x-show="showReceipts" class="fixed top-0 left-0 z-50 h-full w-full overflow-x-scroll md:py-4 bg-base-100 bg-opacity-30">
             <div class="w-80 ml-auto mr-auto bg-base-200 p-4">
-                <div class="text-right">
-                    <button @click.prevent.stop="showReceipts = false;" class="btn btn-sm btn-error bg-opacity-60 m-2 p-0 px-2">
-                        <x-easyadmin::display.icon icon="easyadmin::icons.close" height="h-6" width="w-6"/>
-                    </button>
-                </div>
                 <template x-for="r in receipts">
                     <div class="border border-x-base-content border-opacity-20 rounded-md shadow-md p-2">
                         <h3 class="text-lg text-center">
@@ -450,6 +424,14 @@
                         <div>Date: <span x-text="r.receipt_date"></span></div>
                     </div>
                 </template>
+                <div class="flex flex-row justify-evenly my-4 print:hidden">
+                    <button @click.prevent.stop="showReceipts = false;" class="btn btn-sm btn-error bg-opacity-60 m-2 p-0 px-2">
+                        Close&nbsp;<x-easyadmin::display.icon icon="easyadmin::icons.close" height="h-6" width="w-6"/>
+                    </button>
+                    <button @click.prevent.stop="window.print()" class="btn btn-sm btn-success bg-opacity-60 m-2 p-0 px-2">
+                        Print
+                    </button>
+                </div>
             </div>
         </div>
     </div>

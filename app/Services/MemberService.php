@@ -1112,6 +1112,7 @@ class MemberService implements ModelViewConnector {
         $members = Member::userAccessControlled()
             ->with('taluk')
             ->where('membership_no', 'like', $data['membership_no'].'%')
+            ->limit(20)
             ->get();
         return $members;
     }

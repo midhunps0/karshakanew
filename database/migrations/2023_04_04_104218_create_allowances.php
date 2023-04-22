@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('application_no');
             $table->date('application_date');
             $table->double('applied_amount');
-            $table->date('decided_date');
             $table->double('sanctioned_amount');
+            $table->date('sanctioned_date');
             $table->date('payment_date');
-            // $table->foreignId('district_id')->constrained(
-            //     'districts', 'id'
-            // );
+            $table->foreignId('welfare_scheme_id')->constrained(
+                'welfare_schemes', 'id'
+            );
             $table->timestamps();
         });
     }

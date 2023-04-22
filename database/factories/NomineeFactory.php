@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Member;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,12 +22,14 @@ class NomineeFactory extends Factory
         $n = rand(0, 5);
         $g = rand(0, 1);
         $n = rand(0, 1);
+        $d = Carbon::now()->subYears(rand(20, 50))->format('d-m-Y');
+        // $x = $d->format('Y-m-d');
         return [
             'member_id' => Member::all()->random()->id,
             'name' => $this->faker->name(),
             'relation' => $relations[$n],
             'percentage' => rand(1, 99),
-            'dob' => $this->faker->date(),
+            'dob' => $d,
             'guardian_name' => $g == 1 ? $this->faker->name() : null,
             'guardian_relation' => $g == 1 ? $relations[$n] : null
         ];

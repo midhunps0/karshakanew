@@ -41,7 +41,8 @@ class MemberFactory extends Factory
         $mno = $d->display_code . '/'
                 . $t->display_code . '/'
                 . $v->display_code . '/' .rand(1, 9999);
-        $dob = $this->faker->dateTimeBetween('-70 years', '-30 years');
+        $y = rand(30, 50);
+        $dob = Carbon::now()->subYear($y)->format('Y-m-d');
         $r = Religion::all()->random();
         $c = $r->castes->random();
         return [
