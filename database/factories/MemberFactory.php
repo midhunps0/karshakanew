@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Allowance;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\District;
@@ -98,6 +99,12 @@ class MemberFactory extends Factory
                     $sum = $sum - $p;
                     $remaining = $n - 1;
                 }
+                $y = rand(1, 2);
+                Allowance::factory($y)->create(
+                    [
+                        'member_id' => $m->id
+                    ]
+                );
             }
         );
     }

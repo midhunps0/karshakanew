@@ -289,8 +289,39 @@
                     </div>
                 </div>
                 <div x-show="activeTab == 3" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
-                    <div class="flex flex-row flex-wrap items-start">
-                        Allowances
+                    <div class="flex flex-row flex-wrap justify-center items-start p-2">
+                        @if (count($member->allowances) > 0)
+                        <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                            <table class="table table-compact w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Application Date</th>
+                                        <th>Application No.</th>
+                                        <th>Scheme Applied For</th>
+                                        <th>Applied Amount</th>
+                                        <th>Sanctioned Amount</th>
+                                        <th>Sanctioned Date</th>
+                                        <th>Payment Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($member->allowances as $a)
+                                        <tr>
+                                            <td>{{$a->application_date}}</td>
+                                            <td>{{$a->application_no}}</td>
+                                            <td>{{$a->welfareScheme->name}}</td>
+                                            <td>{{$a->applied_amount}}</td>
+                                            <td>{{$a->sanctioned_amount}}</td>
+                                            <td>{{$a->sanctioned_date}}</td>
+                                            <td>{{$a->payment_date}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <span class="text-error text-opacity-80">No nominees added.</span>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
     suggestions: [],
     search: '',
     noMemberMsg: false,
+    showlist: false,
     getMembersList() {
         this.noMemberMsg = false;
         console.log('gml');
@@ -40,18 +41,25 @@
             return s.id != id;
         });
     }
-}" class="relative w-full">
+}"
+x-init="
+    $watch('suggestions', (val) => {
+        if (val.length > 0) {
+            showlist = true;
+        }
+    });
+" class="relative w-full">
     {{-- <h3 class="text-sm font-bold pb-3 text-warning">Find Member</h3> --}}
     <div class="form-control w-full flex flex-row flex-wrap space-x-4 justify-start items-start">
         <label class="label w-32">
             <span class="label-text">Registration No.:</span>
         </label>
         <div>
-            <input x-model="search" type="text" placeholder="Search" class="input input-bordered flex-grow max-w-xs" @input.prevent.stop="noMemberMsg = false; getMembersList();" />
+            <input x-model="search" type="text" placeholder="Search" class="input input-bordered flex-grow max-w-xs" @input.prevent.stop="noMemberMsg = false; getMembersList();"  @keyup="if ($event.key == 'Escape') {showlist = false;}" />
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>
     </div>
-    <div x-show="suggestions.length > 0" x-transition
+    <div x-show="showlist" @click.outside="showlist = false;" @keyup="if ($event.key == 'Escape') {showlist = false;}" x-transition
         class="absolute left-0 top-16 z-50 bg-base-200 p-2 text-sm border border-base-content border-opacity-20 rounded-md shadow-md text-base-content !text-opacity-30 max-h-192 overflow-y-scroll"
         tabindex="0">
         <table>
@@ -70,7 +78,7 @@
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.aadhaar_no"></span></td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.taluk"></span></td>
                     <td class="p-2 text-base-content !text-opacity-70">
-                        <button class="btn btn-xs btn-warning" @click.prevent.stop="selectMember(m.id);">
+                        <button class="btn btn-xs btn-warning" @click.prevent.stop="selectMember(m.id);"  @keyup="if ($event.key == 'Escape') {showlist = false;}">
                             <x-easyadmin::display.icon icon="easyadmin::icons.plus" height="h-4" width="w-4"/>
                         </button>
                     </td>

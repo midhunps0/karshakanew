@@ -31,6 +31,15 @@
                 fee_items: []
             },
             duplicateMember: false,
+            formok() {
+                let ok = true;
+                this.fees.forEach((f) => {
+                    if (f.particulars == '' || f.amount == null || f.amount == 0) {
+                        ok = false;
+                    }
+                });
+                return ok;
+            },
             total() {
                 return this.fees.reduce((r, f) => {
                     return parseInt(r) + (f.amount != null ? parseInt(f.amount) : 0);
@@ -402,7 +411,8 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button @click.prevent.stop="doSubmit()" class="my-2 md:my-0 btn btn-md btn-warning flex-grow"> Create Receipts </button>
+                                <button :disabled="!formok()" @click.prevent.stop="doSubmit()" class="my-2 md:my-0 btn btn-md btn-warning flex-grow"> Create Receipts </button><br>
+                                <span x-show="!formok()" class="text-error text-xs text-opacity-70">Incomplete Form</span>
                             </div>
                         </div>
                     </div>
@@ -417,11 +427,41 @@
                         <h3 class="text-lg text-center">
                             Kerala Karshakathozhilali Welfare Board
                         </h3>
-                        <h3 class="text-lg text-center underline my-4">
+                        <h3 class="text-lg text-center underline my-4 !bg-transparent">
                             Receipt
                         </h3>
                         <div>No.: <span x-text="r.receipt_number"></span></div>
                         <div>Date: <span x-text="r.receipt_date"></span></div>
+                        <div>Member: <span x-text="r.member.name != null ? r.member.name : r.member.name_mal"></span></div>
+                        <div>Reg. No.: <span x-text="r.member.membership_no"></span></div>
+                        <div>
+                            <table class="table table-compact w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Particulars</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="item in r.fee_items">
+                                        <tr>
+                                            <td>
+                                                <span x-text="item.fee_type.name"></span><br>
+                                                <span x-text="item.period_from != null ? item.period_from + ' to ' + item.period_to : ''"></span>
+                                            </td>
+                                            <td class="text-right" x-text="item.amount"></td>
+                                        </tr>
+                                    </template>
+                                    <tr>
+                                        <td class="font-bold">Total</td>
+                                        <td class="text-right font-bold">
+                                            <span x-text="r.total_amount"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div><span class="font-bold">Notes:</span>&nbsp;<span x-text="r.notes || ''"></span></div>
+                        </div>
                     </div>
                 </template>
                 <div class="flex flex-row justify-evenly my-4 print:hidden">

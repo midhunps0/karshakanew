@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('allowances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('membership_no')->constrained(
+            $table->foreignId('member_id')->constrained(
                 'members', 'id'
             );
             $table->string('application_no');

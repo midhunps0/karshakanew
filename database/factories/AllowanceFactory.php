@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Member;
+use App\Models\WelfareScheme;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,14 +21,18 @@ class AllowanceFactory extends Factory
     {
         $amt = rand(1000, 20000);
         $samt = $amt * rand(80, 100) / 100;
-        $y = rand(10);
+        $y = rand(1, 10);
+        $sdays = rand(7, 14);
+        $xdays = $sdays + rand(2, 5);
         return [
-            'membership_no' => Member::all()->random()->id,
+            'member_id' => Member::all()->random()->id,
             'application_no' => $this->faker->word().'/'.rand(101, 999),
             'application_date' => Carbon::now()->subYear($y),
             'applied_amount' => $amt,
             'sanctioned_amount' => $samt,
-            'payment_date' => Carbon::now()->subYear($y)->addDay(25)
+            'sanctioned_date' => Carbon::now()->subYear($y)->addDay($sdays),
+            'payment_date' => Carbon::now()->subYear($y)->addDay($xdays),
+            'welfare_scheme_id' => WelfareScheme::all()->random()->id
         ];
     }
 }

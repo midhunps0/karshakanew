@@ -105,6 +105,11 @@ class Member extends Model
         return $this->hasMany(Nominee::class, 'member_id', 'id');
     }
 
+    public function allowances()
+    {
+        return $this->hasMany(Allowance::class, 'member_id', 'id');
+    }
+
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);

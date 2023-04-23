@@ -1236,20 +1236,21 @@ class MemberService implements ModelViewConnector {
         $fiData = [];
         foreach ($data['fee_item'] as $item) {
             $sum += $item['amount'];
-            $fiData = [
+            $fi = [
                 'fee_collection_id' => '',
                 'fee_type_id' => $item['fee_type_id'],
                 'amount' => $item['amount'],
             ];
             if (isset($item['period_from'])) {
-                $fiData['period_from'] = AppHelper::formatDateForSave($item['period_from']);
+                $fi['period_from'] = AppHelper::formatDateForSave($item['period_from']);
             }
             if (isset($item['period_to'])) {
-                $fiData['period_to'] = AppHelper::formatDateForSave($item['period_to']);
+                $fi['period_to'] = AppHelper::formatDateForSave($item['period_to']);
             }
             if (isset($item['period_from']) && isset($item['period_to'])) {
-                $fiData['tenure'] = $item['period_from'] . ' to ' . $item['period_to'];
+                $fi['tenure'] = $item['period_from'] . ' to ' . $item['period_to'];
             }
+            $fiData[] = $fi;
             // FeeItem::create($fiData);
         }
         $mids = explode(',', $data['members']);
@@ -1276,8 +1277,12 @@ class MemberService implements ModelViewConnector {
                     'notes' => $data['notes'] ?? '',
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ]);
-                $fiData['fee_collection_id'] = $fc->id;
-                FeeItem::create($fiData);
+
+                foreach ($fiData as $fid) {
+                    $fid['fee_collection_id'] = $fc->id;
+                    FeeItem::create($fid);
+                }
+
                 DB::commit();
                 $successList[] = $id;
                 $fcIds[] = $fc->id;
@@ -1296,7 +1301,7 @@ class MemberService implements ModelViewConnector {
                 'success' => true,
                 'fc_ids' => implode(",", $fcIds),
                 'receipts' => FeeCollection::whereIn('id', $fcIds)
-                    ->with('feeItems')->get(),
+                    ->with(['member', 'feeItems'])->get(),
                 'success_list' => implode(",", $successList)
             ];
         } else {
