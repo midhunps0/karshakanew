@@ -17,67 +17,81 @@
             <!--Tab Contents-->
             <div>
                 <div x-show="activeTab == 0" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
-                    <div class="flex flex-row flex-wrap items-start p-3">
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Name:</span>&nbsp;
-                            <span>{{$member->name}}</span>
+                            <span>{{$member->name ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Name in Malayalam:</span>&nbsp;
                             <span>{{$member->name_mal ?? '--'}}</span>
                         </div>
+                    </div>
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
+                        <div class="md:w-1/3 p-1 my-1">
+                            <span class="text-warning font-bold">Membership No.:</span>&nbsp;
+                            <span>{{$member->membership_no ?? '--'}}</span>
+                        </div>
+                        <div class="md:w-1/3 p-1 my-1">
+                            <span class="text-warning font-bold">Aadhaar No.:</span>&nbsp;
+                            <span>{{$member->aadhaar_no ?? '--'}}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Date of birth:</span>&nbsp;
-                            <span>{{$member->dob}}</span>
+                            <span>{{$member->dob ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Gender:</span>&nbsp;
-                            <span>{{$member->gender}}</span>
+                            <span>{{$member->gender ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Marital Status:</span>&nbsp;
-                            <span>{{$member->marital_status}}</span>
+                            <span>{{$member->marital_status ?? '--'}}</span>
                         </div>
+                    </div>
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Parent/Guardian:</span>&nbsp;
-                            <span>{{$member->parent_guardian}}</span>
+                            <span>{{$member->parent_guardian ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
-                            <span class="text-warning font-bold">Relationship with:</span>&nbsp;
-                            <span>{{$member->guardian_relationship}}</span>
+                            <span class="text-warning font-bold">Relationship:</span>&nbsp;
+                            <span>{{$member->guardian_relationship ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Mobile No.:</span>&nbsp;
                             <span>{{$member->mobile_no}}</span>
                         </div>
                     </div>
-                    <div class="flex flex-row flex-wrap items-start p-3">
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Permanent Address:</span><br>
-                            <span>{{$member->permanent_address}}</span>
+                            <span>{{$member->permanent_address ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Permanent Address (In Malayalam):</span><br>
-                            <span>{{$member->permanent_address_mal}}</span>
+                            <span>{{$member->permanent_address_mal ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
-                            <span class="text-warning font-bold">Permanent Address PIN:</span>&nbsp;
-                            <span>{{$member->pa_pincode}}</span>
+                            <span class="text-warning font-bold">Permanent Address PIN Code:</span><br>
+                            <span>{{$member->pa_pincode ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Current Address:</span><br>
-                            <span>{{$member->current_address}}</span>
+                            <span>{{$member->current_address ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Current Address (In Malayalam):</span><br>
-                            <span>{{$member->current_address_mal}}</span>
+                            <span>{{$member->current_address_mal ?? '--'}}</span>
                         </div>
                         <div class="md:w-1/3 p-1 my-1">
-                            <span class="text-warning font-bold">Current Address PIN:</span>&nbsp;
-                            <span>{{$member->ca_pincode}}</span>
+                            <span class="text-warning font-bold">Current Address PIN Code:</span><br>
+                            <span>{{$member->ca_pincode ?? '--'}}</span>
                         </div>
                     </div>
-                    <div class="flex flex-row flex-wrap items-start p-3">
+                    <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/4 p-1 my-1">
                             <span class="text-warning">District:</span>
                             <span>{{$member->district->name}}</span>
@@ -98,7 +112,7 @@
                     <div class="flex flex-col items-center p-3 pt-8">
                         <div><span class="text-warning underline font-bold">Nominees</span></div>
                         @if (count($member->nominees) > 0)
-                        <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                        <div class="w-full md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
                             <table class="table table-compact w-full">
                                 <thead>
                                     <tr>
@@ -131,7 +145,7 @@
                 </div>
                 <div x-show="activeTab == 1" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="text-center pt-8"><span class="text-warning underline font-bold">Bank Details</span></div>
-                        <div class="flex flex-row flex-wrap items-start p-3">
+                        <div class="flex flex-row flex-wrap items-start py-1 px-3">
                             <div class="md:w-1/4 p-1 my-1">
                                 <span class="text-warning">Bank:</span><br>
                                 <span>{{$member->bank_name}}</span>
@@ -152,7 +166,7 @@
                         {{-- <div class="flex flex-col items-center p-3 pt-8">
                             <div><span class="text-warning underline font-bold">Nominees</span></div>
                             @if (count($member->nominees) > 0)
-                            <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                            <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2 overflow-x-scroll">
                                 <table class="table table-compact w-full">
                                     <thead>
                                         <tr>
@@ -237,8 +251,8 @@
                         </div>
 
                 </div>
-                <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 py-4 rounded-b-lg">
-                    <div class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg">
+                <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 py-4 px-2 rounded-b-lg">
+                    <div class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
                         <table class="table table-compact w-full">
                             <thead>
                                 <tr>
@@ -291,29 +305,29 @@
                 <div x-show="activeTab == 3" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="flex flex-row flex-wrap justify-center items-start p-2">
                         @if (count($member->allowances) > 0)
-                        <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2">
+                        <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2 overflow-x-scroll">
                             <table class="table table-compact w-full">
                                 <thead>
                                     <tr>
-                                        <th>Application Date</th>
-                                        <th>Application No.</th>
-                                        <th>Scheme Applied For</th>
-                                        <th>Applied Amount</th>
-                                        <th>Sanctioned Amount</th>
-                                        <th>Sanctioned Date</th>
-                                        <th>Payment Date</th>
+                                        <th class="px-2">Appln. Date</th>
+                                        <th class="px-2">Appln. No.</th>
+                                        <th class="px-2">Scheme Applied For</th>
+                                        <th class="px-2">Applied Amount</th>
+                                        <th class="px-2">Sanctioned Amount</th>
+                                        <th class="px-2">Sanctioned Date</th>
+                                        <th class="px-2">Payment Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($member->allowances as $a)
                                         <tr>
-                                            <td>{{$a->application_date}}</td>
-                                            <td>{{$a->application_no}}</td>
-                                            <td>{{$a->welfareScheme->name}}</td>
-                                            <td>{{$a->applied_amount}}</td>
-                                            <td>{{$a->sanctioned_amount}}</td>
-                                            <td>{{$a->sanctioned_date}}</td>
-                                            <td>{{$a->payment_date}}</td>
+                                            <td class="px-2">{{$a->application_date}}</td>
+                                            <td class="px-2">{{$a->application_no}}</td>
+                                            <td class="px-2">{{$a->welfareScheme->name}}</td>
+                                            <td class="text-right px-2">{{$a->applied_amount}}</td>
+                                            <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
+                                            <td class="px-2">{{$a->sanctioned_date}}</td>
+                                            <td class="px-2">{{$a->payment_date}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
