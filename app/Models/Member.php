@@ -107,7 +107,7 @@ class Member extends Model
 
     public function allowances()
     {
-        return $this->hasMany(Allowance::class, 'member_id', 'id');
+        return $this->hasMany(Allowance::class, 'member_id', 'id'); 
     }
 
     public function scopeUserAccessControlled(Builder $query)
