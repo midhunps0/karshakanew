@@ -4,8 +4,13 @@
         <div x-data="{
                 activeTab: 0,
             }">
-            <div class="text-right p-4">
-                <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
+            <div class="flex flex-row justify-between items-center">
+                <div class="text-right p-4">
+                    <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
+                </div>
+                <div class="text-right p-4">
+                    <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
+                </div>
             </div>
             <!--Tab Headings-->
             <div class="flex flex-row">
