@@ -11,6 +11,7 @@
             </div>
                 <div x-data
                 @contentupdate.window="
+                console.log('content update in dashboard-base');
                 if ($event.detail.target == 'renderedpanel') {
                     $el.innerHTML = $event.detail.content;
                 }

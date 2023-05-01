@@ -81,6 +81,8 @@ export default () => ({
         }
         let link = detail.link;
         let params = detail.params;
+        console.log('params');
+        console.log(params);
         let thelink = link;
         if (detail.params != null) {
             if (typeof detail.params.items_count != 'undefined') {
@@ -115,6 +117,7 @@ export default () => ({
             }
             history.pushState({href: thelink, route: theRoute, target: targetPanelId, fragment: fr}, '', thelink);
         } else {
+            console.log('fetching data..');
             this.$store.app.pageloading = true;
             // if (params != null) {
             //     params['x_mode'] = 'ajax';
@@ -134,6 +137,7 @@ export default () => ({
                 }
               ).then(
                 (r) => {
+                    console.log('data fetched! panel: '+targetPanelId);
                     this.showPage = false;
                     this.ajax = true;
                     setTimeout(

@@ -1,12 +1,13 @@
 <?php
 namespace App\Services;
 
-use App\Models\FeeCollection;
 use App\Models\Religion;
+use App\Helpers\AppHelper;
+use App\Models\FeeCollection;
 use Ynotz\EasyAdmin\Services\FormHelper;
+use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
-use Ynotz\EasyAdmin\Services\IndexTable;
 
 class FeeCollectionService implements ModelViewConnector {
     use IsModelViewConnector;
@@ -97,6 +98,18 @@ class FeeCollectionService implements ModelViewConnector {
         return FeeCollection::with(
             'feeItems', 'member', 'collectedBy', 'paymentMode'
         )->where('id', $id)->get()->first();
+    }
+
+    public function report($data)
+    {
+        return FeeCollection::with(
+            'feeItems', 'member', 'collectedBy', 'paymentMode'
+        )->where('receipt_date', '>=', AppHelper::formatDateForSave($data['start']))
+            ->where('receipt_date', '<=', AppHelper::formatDateForSave($data['end']))
+            ->paginate(
+                perPage: 20,
+                page: $data['page']
+            );
     }
 }
 

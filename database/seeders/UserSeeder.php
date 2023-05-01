@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -53,6 +54,7 @@ class UserSeeder extends Seeder
     {
         foreach ($this->users as $user) {
             $r = array_pop($user);
+            $user['username'] = Str::lower(str_replace(' ', '', $user['name']));
             $user['password'] = Hash::make('abcd1234');
 
             $u = User::create($user);

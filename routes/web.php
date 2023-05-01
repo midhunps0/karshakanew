@@ -75,6 +75,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     )->name('feecollections.bulk.create');
     Route::get('feecollection/get/{id}', [FeeCollectionController::class, 'fetch'])
         ->name('receipt.fetch');
+    Route::get('feecollection/report', [FeeCollectionController::class, 'reportForm'])
+        ->name('feecollections.report');
+    // Route::post('feecollection/report', [FeeCollectionController::class, 'reportData'])
+    //     ->name('feecollections.report.data');
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");
 });
 

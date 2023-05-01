@@ -5,6 +5,8 @@
         </div>
         <div x-data
             @contentupdate.window="
+            console.log('target: '+ $event.detail.target);
+            console.log('id: '+ $el.id);
                     if ($event.detail.target == $el.id) {
                         $el.innerHTML = $event.detail.content;
                     }

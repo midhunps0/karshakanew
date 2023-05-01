@@ -1,10 +1,16 @@
 <?php
 namespace App\Services;
 
+use App\Models\User;
 use Ynotz\EasyAdmin\Services\SidebarServiceInterface;
 
 class SidebarService implements SidebarServiceInterface
 {
+    private $user;
+    public function __construct()
+    {
+        $this->user = User::find(auth()->user()->id);
+    }
     public function getSidebarData(): array
     {
         return [
@@ -78,56 +84,80 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showRoles()
                     ],
-                    [
-                        'type' => 'menu_item',
-                        'title' => 'Roles',
-                        'route' => 'roles.index',
-                        'route_params' => [],
-                        'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showRoles()
-                    ],
-                    [
-                        'type' => 'menu_item',
-                        'title' => 'Permissions',
-                        'route' => 'permissions.index',
-                        'route_params' => [],
-                        'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showPermissions()
-                    ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'Roles',
+                    //     'route' => 'roles.index',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => $this->showRoles()
+                    // ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'Permissions',
+                    //     'route' => 'permissions.index',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => $this->showPermissions()
+                    // ],
                 ]
             ],
             [
                 'type' => 'menu_group',
-                'title' => 'App Settings',
+                'title' => 'Reports',
                 'icon' => 'easyadmin::icons.gear',
                 'show' => $this->showRoles(),
                 'menu_items' => [
                     [
                         'type' => 'menu_item',
-                        'title' => 'Districts',
-                        'route' => 'districts.index',
+                        'title' => 'Collections',
+                        'route' => 'feecollections.report',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showRoles()
+                        'show' => $this->showCollections()
                     ],
-                    [
-                        'type' => 'menu_item',
-                        'title' => 'All Trade Unions',
-                        'route' => 'tradeunions.index',
-                        'route_params' => [],
-                        'icon' => 'easyadmin::icons.users',
-                        'show' => (new TradeUnionService())->authoriseIndex()
-                    ],
-                    [
-                        'type' => 'menu_item',
-                        'title' => 'Add Trade Union',
-                        'route' => 'tradeunions.create',
-                        'route_params' => [],
-                        'icon' => 'easyadmin::icons.users',
-                        'show' => (new TradeUnionService())->authoriseCreate()
-                    ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'All Trade Unions',
+                    //     'route' => 'tradeunions.index',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => (new TradeUnionService())->authoriseIndex()
+                    // ],
                 ]
             ],
+            // [
+            //     'type' => 'menu_group',
+            //     'title' => 'App Settings',
+            //     'icon' => 'easyadmin::icons.gear',
+            //     'show' => $this->showRoles(),
+            //     'menu_items' => [
+            //         [
+            //             'type' => 'menu_item',
+            //             'title' => 'Districts',
+            //             'route' => 'districts.index',
+            //             'route_params' => [],
+            //             'icon' => 'easyadmin::icons.users',
+            //             'show' => $this->showRoles()
+            //         ],
+            //         [
+            //             'type' => 'menu_item',
+            //             'title' => 'All Trade Unions',
+            //             'route' => 'tradeunions.index',
+            //             'route_params' => [],
+            //             'icon' => 'easyadmin::icons.users',
+            //             'show' => (new TradeUnionService())->authoriseIndex()
+            //         ],
+            //         [
+            //             'type' => 'menu_item',
+            //             'title' => 'Add Trade Union',
+            //             'route' => 'tradeunions.create',
+            //             'route_params' => [],
+            //             'icon' => 'easyadmin::icons.users',
+            //             'show' => (new TradeUnionService())->authoriseCreate()
+            //         ],
+            //     ]
+            // ],
 
             // [
             //     'type' => 'menu_section',
@@ -158,7 +188,10 @@ class SidebarService implements SidebarServiceInterface
 
     private function showRoles()
     {
-
+        return auth()->check();
+    }
+    private function showCollections()
+    {
         return auth()->check();
     }
     private function showPermissions()

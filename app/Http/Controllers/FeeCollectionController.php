@@ -47,7 +47,6 @@ class FeeCollectionController extends SmartController
 
     public function fetch($id)
     {
-        $result = $this->connectorService->fetch($id);
         try {
             $result = $this->connectorService->fetch($id);
             return response()->json([
@@ -58,5 +57,33 @@ class FeeCollectionController extends SmartController
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         }
     }
+
+    public function reportForm(Request $request)
+    {
+        info($request);
+        $start = $request->input('start', null);
+        $end = $request->input('end', null);
+        $page = $request->input('page', 1);
+        try {
+            if ($start == null && $end == null) {
+                $result = [];
+            } else {
+                $result = $this->connectorService->report([
+                    'start' => $start,
+                    'end' => $end,
+                    'page' => $page
+                ]);
+            }
+            return $this->buildResponse('admin.feecollections.report', ['receipts' => $result]);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+    }
+
+    // public function reportData(Request $request)
+    // {
+    //     # code...
+    // }
 
 }
