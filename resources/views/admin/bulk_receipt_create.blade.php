@@ -89,7 +89,11 @@
                             {
                                 id: member.id,
                                 membership_no: member.membership_no,
+                                aadhaar_no: member.aadhaar_no,
                                 name: member.name,
+                                name_mal: member.name_mal,
+                                taluk: member.taluk.name,
+                                village: member.village.name
                             }
                         );
                     } else {
@@ -390,20 +394,30 @@
                             <div>
                                 <x-utils.member-selector />
                             </div>
-                            <div x-show="members.length > 0" class="flex flex-row justify-center my-8">
-                                <div class="border border-base-content border-opacity-20 w-full md:w-1/2">
+                            <div class="flex flex-row justify-center my-8">
+                                <div x-show="members.length > 0" class="border border-base-content border-opacity-20 w-full">
                                     <table class="table table-compact m-auto w-full">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
                                                 <th>Membership No.</th>
+                                                <th>Name</th>
+                                                <th>Aadhaar No.</th>
+                                                <th>Taluk</th>
+                                                <th>Village</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <template x-for="m in members">
                                             <tr>
-                                                <td><span x-text="m.name"></span></td>
                                                 <td><span x-text="m.membership_no"></span></td>
+                                                <td>
+                                                    <span x-text="m.name"></span>
+                                                    <span x-show="m.name.length > 0">/</span>
+                                                    <span x-text="m.name_mal"></span>
+                                                </td>
+                                                <td><span x-text="m.aadhaar_no"></span></td>
+                                                <td><span x-text="m.taluk"></span></td>
+                                                <td><span x-text="m.village"></span></td>
                                             </tr>
                                             </template>
                                         </tbody>

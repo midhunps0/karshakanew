@@ -1110,7 +1110,7 @@ class MemberService implements ModelViewConnector {
     public function suggestionslist($data)
     {
         $members = Member::userAccessControlled()
-            ->with('taluk')
+            ->with(['taluk', 'village'])
             ->where('membership_no', 'like', $data['membership_no'].'%')
             ->limit(20)
             ->get();
@@ -1120,7 +1120,7 @@ class MemberService implements ModelViewConnector {
     public function fetch($id)
     {
         return Member::userAccessControlled()
-            ->with('feePayments')
+            ->with(['taluk', 'village', 'feePayments'])
             ->where('id', $id)
             ->get()->first();
     }

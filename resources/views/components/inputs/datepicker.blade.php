@@ -386,13 +386,12 @@
                     <div class="relative">
                         <input type="text" style="height: 0px; position: absolute; z-index: -1; background-color: transparent;" name="{{ $name }}" x-ref="date" :value="datepickerValue" @if (isset($properties['required']) && $properties['required']) required @endif/>
                         <input type="text" id="di-{{$ulid}}"
-
                             @if ($label_position == 'float')
                             placeholder=" "
                             @else
                             placeholder="{{$placeholder ?? ''}}"
                             @endif
-                            x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;" x-model="datepickerValue"
+                            x-on:click="calendarFromDate(); setPosition(); showDatepicker = true;" x-model="datepickerValue"
                             x-on:keydown.escape="showDatepicker = false;"
                             class="peer w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm bg-base-100 text-base-content font-medium input input-bordered"
                             readonly />
@@ -407,7 +406,7 @@
                         {{-- <button x-show="datepickerValue != ''" x-on:click.prevent.stop="reset();" class="absolute top-0 right-6 z-20 text-error text-opacity-50  px-3 py-2">
                             <x-easyadmin::display.icon icon="easyadmin::icons.delete" height="h-6" width="w-6" />
                         </button> --}}
-                        <button x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;" class="absolute top-0 right-0 px-3 py-2">
+                        <button type="button" x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;" class="absolute top-0 right-0 px-3 py-2">
                             <svg class="h-6 w-6 text-base-content text-opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

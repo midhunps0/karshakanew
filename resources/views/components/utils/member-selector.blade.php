@@ -1,17 +1,35 @@
 <div x-data="{
     suggestions: [],
-    search: '',
+    district: '',
+    taluk: '',
+    village: '',
+    memNo: '',
     noMemberMsg: false,
     showlist: false,
+    searchStr() {
+        let s = [
+            this.district,
+            this.village,
+            this.taluk,
+            this.memNo
+        ].join('/');
+        console.log('s: '+s);
+        return s;
+    },
+    disableSearch() {
+        return this.district == ''
+            || this.taluk == ''
+            || this.village == ''
+            || this.memNo == '';
+    },
     getMembersList() {
         this.noMemberMsg = false;
-        console.log('gml');
-        let temp = this.search.split('/');
-        if (temp.length >= 4 && temp[3].length != 0) {
+
+        if (!this.disableSearch()) {
             axios.get(
                 '{{ route('members.suggestionslist') }}', {
                     params: {
-                        membership_no: this.search
+                        membership_no: this.searchStr()
                     }
                 }
             ).then((r) => {
@@ -20,9 +38,11 @@
                         return {
                             id: m.id,
                             name: m.name,
+                            name_mal: m.name_mal,
                             membership_no: m.membership_no,
                             aadhaar_no: m.aadhaar_no,
-                            taluk: m.taluk.name
+                            taluk: m.taluk.name,
+                            village: m.village.name
                         }
                     });
                 } else {
@@ -40,6 +60,9 @@
         this.suggestions = this.suggestions.filter((s) => {
             return s.id != id;
         });
+        if (this.suggestions.length == 0) {
+            this.showlist = false;
+        }
     }
 }"
 x-init="
@@ -55,7 +78,16 @@ x-init="
             <span class="label-text">Registration No.:</span>
         </label>
         <div>
-            <input x-model="search" type="text" placeholder="Search" class="input input-bordered flex-grow max-w-xs" @input.prevent.stop="noMemberMsg = false; getMembersList();"  @keyup="if ($event.key == 'Escape') {showlist = false;}" />
+            <div class="flex flex-row space-x-2" @keyup="if ($event.key == 'Escape') {showlist = false;}">
+                <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" />
+                <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" />
+                <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" />
+                <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" />
+                <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch();">
+                    Search
+                </button>
+            </div>
+            {{-- <input x-model="search" type="text" placeholder="Search" class="input input-bordered flex-grow max-w-xs" @input.prevent.stop="noMemberMsg = false; getMembersList();"  @keyup="if ($event.key == 'Escape') {showlist = false;}" /> --}}
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>
     </div>
@@ -64,19 +96,26 @@ x-init="
         tabindex="0">
         <table>
             <tr class="w-full">
-                <th class="text-base-content !text-opacity-70">Name</th>
                 <th class="text-base-content !text-opacity-70">Registration No.</th>
+                <th class="text-base-content !text-opacity-70">Name</th>
                 <th class="text-base-content !text-opacity-70">Aadhaar No.</th>
                 <th class="text-base-content !text-opacity-70">Taluk</th>
+                <th class="text-base-content !text-opacity-70">Village</th>
             </tr>
             <template x-for="m in suggestions">
                 <tr
                     @keypress.prevent.stop="console.log($event);  if ($event.code == 'Enter') { selectMember(m.id);}"
                     class="focus:text-warning focus:cursor-pointer hover:text-warning hover:cursor-pointer">
-                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.name"></span></td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.membership_no"></span></td>
+                    {{-- <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.name"></span></td> --}}
+                    <td class="p-2 text-base-content !text-opacity-70">
+                        <span x-text="m.name"></span>
+                        <span x-show="m.name.length > 0">/</span>
+                        <span x-text="m.name_mal"></span>
+                    </td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.aadhaar_no"></span></td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.taluk"></span></td>
+                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.village"></span></td>
                     <td class="p-2 text-base-content !text-opacity-70">
                         <button class="btn btn-xs btn-warning" @click.prevent.stop="selectMember(m.id);"  @keyup="if ($event.key == 'Escape') {showlist = false;}">
                             <x-easyadmin::display.icon icon="easyadmin::icons.plus" height="h-4" width="w-4"/>
