@@ -105,6 +105,11 @@
                 });
                 this.receipts = [];
             },
+            removeMember(id) {
+                this.members = this.members.filter((m) => {
+                    return m.id != id;
+                });
+            },
             fetchReceipt(id = null) {
                 if (id == null) {
                     id = this.receipt.id
@@ -404,6 +409,7 @@
                                                 <th>Aadhaar No.</th>
                                                 <th>Taluk</th>
                                                 <th>Village</th>
+                                                <td></td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -418,6 +424,11 @@
                                                 <td><span x-text="m.aadhaar_no"></span></td>
                                                 <td><span x-text="m.taluk"></span></td>
                                                 <td><span x-text="m.village"></span></td>
+                                                <td>
+                                                    <button type="button" class="text-error" @click.prevent.stop="removeMember(m.id);">
+                                                        <x-easyadmin::display.icon icon="easyadmin::icons.close" width="w-4" height="h-4" />
+                                                    </button>
+                                                </td>
                                             </tr>
                                             </template>
                                         </tbody>
