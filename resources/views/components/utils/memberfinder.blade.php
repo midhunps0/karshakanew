@@ -5,6 +5,7 @@
     village: '',
     memNo: '',
     noMemberMsg: false,
+    searchOn: false,
     searchStr() {
         let s = [
             this.district,
@@ -23,6 +24,7 @@
     },
     getMembersList() {
         this.noMemberMsg = false;
+        this.searchOn = true;
         if (!this.disableSearch()) {
             axios.get(
                 '{{ route('members.suggestionslist') }}', {
@@ -47,6 +49,8 @@
                 }
             }).catch((e) => {
                 console.log(e);
+            }).finally(() => {
+                this.searchOn = false;
             });
         }
     },
@@ -65,21 +69,29 @@
             <span class="label-text">Registration No.:</span>
         </label>
         <div>
-            <div class="flex flex-row space-x-2">
-                <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" />
-                <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" />
-                <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" />
-                <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" />
-                <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch();">
+            <div class="flex flex-row space-x-2" :class="!searchOn || 'opacity-50'">
+                <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
+                <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
+                <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
+                <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" :disabled="searchOn"/>
+                <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch() || searchOn">
                     Search
                 </button>
             </div>
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>
     </div>
+    <div x-show="searchOn" x-transition class="absolute left-0 top-16 z-50 text-center animate-pulse text-warning w-full">
+Searching .....
+    </div>
     <div x-show="suggestions.length > 0" x-transition
         class="absolute left-0 top-16 z-50 bg-base-200 p-2 text-sm border border-base-content border-opacity-20 rounded-md shadow-md text-base-content !text-opacity-30 max-h-192 overflow-y-scroll"
-        tabindex="0">
+        tabindex="0" @keyup="if ($event.key == 'Escape') {suggestions = [];}">
+        <div class="text-right">
+            <button type="button" class="btn-xs btn-error py-1 bg-opacity-50 focus:bg-opacity-100" @click.prevent.stop="suggestions = [];">
+                <x-easyadmin::display.icon icon="easyadmin::icons.close" height="h-4" width="w-4"/>
+            </button>
+        </div>
         <table>
             <tr class="w-full">
                 <th class="text-base-content !text-opacity-70">Name</th>

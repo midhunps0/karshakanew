@@ -309,7 +309,7 @@
         <div class="flex flex-row flex-wrap justify-end items-center space-x-4">
             <x-easyadmin::utils.panelresize />
             @if ($exportsEnabled)
-                <x-easyadmin::utils.export />
+                <x-easyadmin::utils.export :selectionEnabled="$selectionEnabled"/>
             @endif
         </div>
     </div>

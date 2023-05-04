@@ -8,9 +8,13 @@
                 district_id: null,
                 taluk_id: null,
                 village_id: null,
+                memNumDistrict: null,
+                memNumTaluk: null,
+                memNumVillage: null,
+                memNumStr: null,
                 search_by: 'Search Phrase',
                 search_phrase: '',
-                search_condition: 'st',
+                search_condition: 'is',
                 taluks: [],
                 villages: [],
                 fetchTaluks() {
@@ -79,16 +83,25 @@
                     } else if (this.district_id != null && this.district_id != '') {
                         querystr = '?adv_search[]=district::eq::' + this.district_id;
                     }
-                    if (this.search_phrase != '') {
+
+                    if (this.search_by != 'Search Phrase') {
                         if (querystr != '') {
                             querystr += '&';
                         } else {
                             querystr = '?';
                         }
-                        querystr += 'adv_search[]='+this.getSearchBy()+'::'+this.search_condition+'::' + this.search_phrase;
+                        let searchStr = null;
+                        if (this.getSearchBy() == 'aadhaar_no') {
+                            searchStr = this.aadhaar_no;
+                        } else if (this.getSearchBy() == 'membership_no') {
+                            searchStr = this.memNumDistrict + '/'
+                                + this.memNumTaluk + '/'
+                                + this.memNumVillage + '/'
+                                + this.memNumStr;
+                        }
+                        querystr += 'adv_search[]='+this.getSearchBy()+'::'+this.search_condition+'::' + searchStr;
                     }
-                    console.log('querystr');
-                    console.log(querystr);
+
                     if (querystr != '') {
                         $dispatch('linkaction', {link: url+querystr, route: 'members.index'});
                     }
@@ -161,14 +174,21 @@
                     <label class="label">
                       <span class="label-text" x-text="search_by"></span>
                     </label>
-                    <input x-model="search_phrase" :disabled="search_by == 'Search Phrase'" type="text" placeholder="Type here" class="input input-md input-bordered" />
+                    <input x-show="search_by != 'Membership No.'" x-model="aadhaar_no" :disabled="search_by == 'Search Phrase'" type="text" placeholder="Type here" class="input input-md input-bordered" />
+                    <div x-show="search_by == 'Membership No.'" class="w-full flex flex-row justify-between">
+                        <input x-model="memNumDistrict" type="text" class="input input-md input-bordered w-16">
+                        <input x-model="memNumTaluk" type="text" class="input input-md input-bordered w-16">
+                        <input x-model="memNumVillage" type="text" class="input input-md input-bordered w-16">
+                        <input x-model="memNumStr" type="text" class="input input-md input-bordered w-16">
+                    </div>
                 </div>
                 <div class="form-control w-full sm:w-1/3 sm:max-w-xs">
                     <label class="label">
                         <span class="label-text">Search Condition</span>
                     </label>
                     <select x-model="search_condition" :disabled="search_by == 'Search Phrase'" class="select select-md select-bordered">
-                        <option selected value="st">Starts With</option>
+                        <option selected value="is">Exact</option>
+                        <option value="st">Starts With</option>
                         <option value="ct">Contains</option>
                         <option value="en">Ends With</option>
                     </select>

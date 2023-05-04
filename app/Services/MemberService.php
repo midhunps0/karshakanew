@@ -52,6 +52,7 @@ class MemberService implements ModelViewConnector {
             'district' => 'district_id',
             'village' => 'village_id'
         ];
+        $this->selectionEnabled = false;
     }
     protected function getPageTitle(): string
     {
@@ -67,7 +68,7 @@ class MemberService implements ModelViewConnector {
             //     'condition' => 'ct',
             //     'label' => 'Search Members'
             // ],
-            sort: ['key' => 'name'],
+            // sort: ['key' => 'name'],
         )->addHeaderColumn(
             title: 'Membership No.',
             // search: [
@@ -75,6 +76,7 @@ class MemberService implements ModelViewConnector {
             //     'condition' => 'st',
             //     'label' => 'Search Members'
             // ],
+            // sort: ['key' => 'membership_no']
         )->addHeaderColumn(
             title: 'Aadhaar No.',
             // search: [
@@ -116,7 +118,7 @@ class MemberService implements ModelViewConnector {
     protected function getIndexColumns(): array
     {
         $columns = $this->indexTable->addColumn(
-            fields: ['name']
+            fields: ['name', 'name_mal']
         )->addColumn(
             fields: ['membership_no']
         )->addColumn(
