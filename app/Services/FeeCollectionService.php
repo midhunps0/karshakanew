@@ -102,14 +102,24 @@ class FeeCollectionService implements ModelViewConnector {
 
     public function report($data)
     {
-        return FeeCollection::with(
+        $query = FeeCollection::with(
             'feeItems', 'member', 'collectedBy', 'paymentMode'
-        )->where('receipt_date', '>=', AppHelper::formatDateForSave($data['start']))
-            ->where('receipt_date', '<=', AppHelper::formatDateForSave($data['end']))
-            ->paginate(
+        );
+        if (isset($data['start'])) {
+            $query->where('receipt_date', '>=', AppHelper::formatDateForSave($data['start']));
+        }
+        if (isset($data['end'])) {
+            $query->where('receipt_date', '<=', AppHelper::formatDateForSave($data['end']));
+        }
+
+        if (isset($data['fullreport']) && $data['fullreport']) {
+            return $query->get();
+        } else {
+            return $query->paginate(
                 perPage: 20,
                 page: $data['page']
             );
+        }
     }
 }
 

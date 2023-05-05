@@ -60,7 +60,6 @@ class FeeCollectionController extends SmartController
 
     public function reportForm(Request $request)
     {
-        info($request);
         $start = $request->input('start', null);
         $end = $request->input('end', null);
         $page = $request->input('page', 1);
@@ -81,9 +80,22 @@ class FeeCollectionController extends SmartController
         }
     }
 
-    // public function reportData(Request $request)
-    // {
-    //     # code...
-    // }
+    public function fullReport(Request $request)
+    {
+        $start = $request->input('start', null);
+        $end = $request->input('end', null);
+        $page = $request->input('page', 1);
+            $result = [];
+        if ($start != null || $end != null) {
+            $result = $this->connectorService->report([
+                'start' => $start,
+                'end' => $end,
+                'fullreport' => true
+            ]);
+        }
+        return response()->json([
+            'receipts' => $result
+        ]);
+    }
 
 }

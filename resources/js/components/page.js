@@ -74,6 +74,7 @@ export default () => ({
         let theRoute = detail.route;
         let fr = (typeof detail.fragment != 'undefined' && detail.fragment != null) ? detail.fragment : 'main-panel';
         let forceFresh = typeof detail.fresh != 'undefined' && detail.fresh === true;
+        let trackHistory = typeof detail.history == 'undefined' ? true : detail.history;
         if (typeof detail.target == 'undefined' || detail.target == null) {
             targetPanelId = this.panelId;
         } else {
@@ -115,7 +116,9 @@ export default () => ({
                     100
                 );
             }
-            history.pushState({href: thelink, route: theRoute, target: targetPanelId, fragment: fr}, '', thelink);
+            if (trackHistory) {
+                history.pushState({href: thelink, route: theRoute, target: targetPanelId, fragment: fr}, '', thelink);
+            }
         } else {
             console.log('fetching data..');
             this.$store.app.pageloading = true;
@@ -154,12 +157,11 @@ export default () => ({
                     if (this.$store.app.xpages == undefined || this.$store.app.xpages == null) {
                         this.$store.app.xpages = [];
                     }
-                // if (targetPanelId == this.panelId) {
-                        this.$store.app.xpages[thelink] = r.data;
-                        // history.pushState({href: thelink, route: theRoute}, '', thelink);
+                    this.$store.app.xpages[thelink] = r.data;
+                    if (trackHistory) {
                         history.pushState({href: thelink, route: theRoute, target: targetPanelId, fragment: fr}, '', thelink);
-                        this.$dispatch('pagechanged', {currentpath: link, currentroute: detail.route});
-                // }
+                    }
+                    this.$dispatch('pagechanged', {currentpath: link, currentroute: detail.route});
                     this.$store.app.pageloading = false;
                 }
             ).catch(

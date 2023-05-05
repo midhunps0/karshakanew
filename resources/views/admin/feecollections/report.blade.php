@@ -18,6 +18,17 @@
         },
         fetchReport() {
             $dispatch('linkaction', {link: '{{route('feecollections.report')}}', route: 'feecollections.report', params: this.getParams(), fresh: true})
+        },
+        fetchPrintReport() {
+            $dispatch('linkaction', {link: '{{route('feecollections.fullreport')}}', route: 'feecollections.report', params: this.getParams(), fresh: true, target: 'feecollection_report', history: false})
+        },
+        initPrint(data) {
+            console.log(data);
+            $dispatch('showreceiptsprint', {
+                receipts: data.receipts,
+                from: this.start,
+                to: this.end
+            });
         }
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
@@ -28,6 +39,11 @@
             page = {{request()->get('page')}};
         @endif
     "
+    @contentupdate.window="
+            if($event.detail.target == 'feecollection_report') {
+                initPrint($event.detail.content);
+            }
+        "
     >
         <h3 class="text-xl font-bold pb-3">Fee Collections Report</h3>
         <div>
@@ -48,6 +64,11 @@
                     <div class="form-control w-full max-w-xs">
                         <button type="submit" class="btn btn-md btn-success">Get Report</button>
                     </div>
+                    @if(count($receipts) > 0)
+                    <div class="form-control w-full max-w-xs">
+                        <button @click.prevent.stop="fetchPrintReport();" type="button" class="btn btn-md btn-warning">Print View</button>
+                    </div>
+                    @endif
                 </div>
             </form>
             @if(count($receipts) > 0)
@@ -99,6 +120,95 @@
                 {{$receipts->appends(\Request::except('x_mode'))->links()}}
             </div>
             @endif
+        </div>
+    </div>
+    <div x-show="showPrint" x-data="{
+            showPrint: false,
+            receipts: [],
+            fromdate: '',
+            todate: '',
+            reset() {
+                this.showPrint = false;
+                this.receipts = [];
+                this.fromdate = '';
+                this.todate = '';
+            },
+            doPrint() {
+                let content = document.getElementById('receiptsprintdiv').innerHTML;
+                let head = document.getElementsByTagName('head')[0].innerHTML;
+                let w = window.open();
+                w.document.write('<head>');
+                w.document.write(head);
+                w.document.write('</head>');
+                w.document.write(content);
+                setTimeout(() => {w.print(); w.close();}, 100);
+
+            }
+        }"
+        @showreceiptsprint.window="
+            receipts = $event.detail.receipts;
+            fromdate = $event.detail.from;
+            todate = $event.detail.to;
+            console.log('receipts');
+            console.log(receipts);
+            showPrint = true;
+            "
+        class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 overflow-visible"
+        >
+        <div class="max-w-full max-h-full md:w-11/12 relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4 pt-20 overflow-y-scroll overflow-visible">
+            <div class="w-full text-right fixed top-10 right-20 z-50 flex flex-row justify-end space-x-4 print:hidden">
+                <button @click="reset();" class="btn btn-error btn-sm">
+                    Close <x-easyadmin::display.icon icon="easyadmin::icons.close"/>
+                </button>
+                <button @click="doPrint();" class="btn btn-warning btn-sm">
+                    Print
+                </button>
+            </div>
+            <div id="receiptsprintdiv">
+                <h3 class="font-bold text-xl mb-4 mt-8 text-warning underline text-center">Fee Collections from <span x-text="fromdate"></span> to <span x-text="todate"></span></h3>
+                <div>
+                    <div class="mx-auto border border-base-content border-opacity-10 rounded-lg  my-4">
+                        <table class="table table-compact w-full">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Receipt No.</th>
+                                    <th>particulars</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Tenure</th>
+                                    <th>Amount</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <template x-for="r in receipts">
+                            <tbody class="border-b border-base-content border-opacity-30">
+                                <template x-for="(fi, index) in r.fee_items">
+                                <tr>
+                                    <td>
+                                        <span x-show="index == 0" x-text="r.receipt_date"></span>
+                                    </td>
+                                    <td>
+                                        <span x-show="index == 0" x-text="r.receipt_number"></span>
+                                    </td>
+                                    <td><span x-text="fi.fee_type.name"></span></td>
+                                    <td>
+                                        <span x-text="fi.period_from != null ? fi.period_from : '--'"></span>
+                                    </td>
+                                    <td>
+                                        <span x-text="fi.period_to != null ? fi.period_to : '--'"></span>
+                                    <td>
+                                        <span x-text="fi.tenure != null ? fi.tenure : '--'"></span></td>
+                                    <td><span x-text="fi.amount"></td>
+                                    <td><span x-show="index == 0" x-text="r.total_amount"></span></td>
+                                </tr>
+                                </template>
+                            </tbody>
+                            </template>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </x-easyadmin::partials.adminpanel>

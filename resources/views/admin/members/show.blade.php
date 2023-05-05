@@ -1,14 +1,23 @@
 <x-easyadmin::partials.adminpanel>
-    <div>
-        <h3 class="text-xl font-bold pb-3"><span>Member's Profile</span>&nbsp;</h3>
+    <div class="relative">
+        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Member's Profile</span>&nbsp;</h3>
         <div x-data="{
                 activeTab: 0,
-            }">
+                doShowPrint() {
+                    $dispatch('showprint', {
+                        personal: document.getElementById('personaltab').innerHTML,
+                        bankndocs: document.getElementById('bankndocstab').innerHTML,
+                        transactions: document.getElementById('transactionstab').innerHTML,
+                        allowances: document.getElementById('allowancestab').innerHTML,
+                    });
+                }
+            }" class="print:hidden">
             <div class="flex flex-row justify-between items-center">
                 <div class="text-right p-4">
                     <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
                 </div>
-                <div class="text-right p-4">
+                <div class="text-right p-4 flex flex-row space-x-4">
+                    <a href="" class="btn btn-sm" @click.prevent.stop="doShowPrint();" >Print View</a>
                     <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
                 </div>
             </div>
@@ -21,7 +30,7 @@
             </div>
             <!--Tab Contents-->
             <div>
-                <div x-show="activeTab == 0" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
+                <div x-show="activeTab == 0" id="personaltab" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">
                             <span class="text-warning font-bold">Name:</span>&nbsp;
@@ -148,7 +157,7 @@
                         @endif
                     </div>
                 </div>
-                <div x-show="activeTab == 1" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
+                <div x-show="activeTab == 1" id="bankndocstab" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="text-center pt-8"><span class="text-warning underline font-bold">Bank Details</span></div>
                         <div class="flex flex-row flex-wrap items-start py-1 px-3">
                             <div class="md:w-1/4 p-1 my-1">
@@ -257,7 +266,7 @@
 
                 </div>
                 <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 py-4 px-2 rounded-b-lg">
-                    <div class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
+                    <div id="transactionstab" class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
                         <table class="table table-compact w-full">
                             <thead>
                                 <tr>
@@ -301,13 +310,13 @@
                             @endforelse
                         </table>
                     </div>
-                    <div class="text-center mt-8">
+                    <div class="text-center mt-8 print:hidden">
                         <button class="btn btn-sm" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('feecollections.create').'?m='.$member->id}}', route: 'feecollections.create'})">
                             New Receipt
                         </button>
                     </div>
                 </div>
-                <div x-show="activeTab == 3" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
+                <div x-show="activeTab == 3" id="allowancestab" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="flex flex-row flex-wrap justify-center items-start p-2">
                         @if (count($member->allowances) > 0)
                         <div class="border border-base-content border-opacity-20 rounded-md min-w-1/2 mt-2 overflow-x-scroll">
@@ -350,13 +359,68 @@
                 showImg: false
             }"
             @showimg.window="imgSrc = $event.detail.src; showImg = true;"
-            class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50"
+            class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 print:hidden"
             >
             <div class="max-w-full max-h-full relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4">
                 <button @click="showImg = false; imgSrc = '';" class="btn btn-error btn-sm absolute -top-14 -right-14">
                     <x-easyadmin::display.icon icon="easyadmin::icons.close"/>
                 </button>
                 <img :src="imgSrc" class="max-w-full max-h-full">
+            </div>
+        </div>
+        <div x-show="showPrint" x-data="{
+                showPrint: false,
+                personal: '',
+                bankndocs: '',
+                transactions: '',
+                allowances: '',
+                reset() {
+                    this.showPrint = false;
+                    this.personal = '';
+                    this.bankndocs = '';
+                    this.transactions = '';
+                    this.allowances = '';
+                },
+                doPrint() {
+                    let content = document.getElementById('printdiv').innerHTML;
+                    let head = document.getElementsByTagName('head')[0].innerHTML;
+                    let w = window.open();
+                    w.document.write('<head>');
+                    w.document.write(head);
+                    w.document.write('</head>');
+                    w.document.write(content);
+                    setTimeout(() => {w.print(); w.close();}, 100);
+
+                }
+            }"
+            @showprint.window="
+                personal = $event.detail.personal;
+                bankndocs = $event.detail.bankndocs;
+                transactions = $event.detail.transactions;
+                allowances = $event.detail.allowances;
+                showPrint = true;
+                "
+            class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 overflow-visible"
+            >
+            <div class="max-w-full max-h-full md:w-11/12 relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4 pt-20 overflow-y-scroll overflow-visible">
+                <div class="w-full text-right fixed top-10 right-20 flex flex-row justify-end space-x-4 print:hidden">
+                    <button @click="reset();" class="btn btn-error btn-sm">
+                        Close <x-easyadmin::display.icon icon="easyadmin::icons.close"/>
+                    </button>
+                    <button @click="doPrint();" class="btn btn-warning btn-sm">
+                        Print
+                    </button>
+                </div>
+                <div id="printdiv">
+                    <h3 class="font-bold text-xl mb-4 mt-8 text-warning underline text-center">Personal</h3>
+                    <div x-html="personal"></div>
+                    <h3 class="font-bold text-xl mt-8 text-warning underline text-center">Bank & Docs</h3>
+                    <div x-html="bankndocs"></div>
+                    <h3 class="font-bold text-xl mb-4 text-warning underline text-center">Transactions</h3>
+                    <div x-html="transactions"></div>
+                    <h3 class="font-bold text-xl mb-4 mt-8 text-warning underline text-center">Allowances</h3>
+                    <div x-html="allowances"></div>
+                </div>
             </div>
         </div>
     </div>
