@@ -105,7 +105,7 @@ Searching .....
                     class="focus:text-warning focus:cursor-pointer hover:text-warning hover:cursor-pointer" tabindex="0">
                     <td class="p-2 text-base-content !text-opacity-70">
                         <span x-text="m.name"></span>
-                        <span x-show="m.name.length > 0">/</span>
+                        <span x-show="m.name != null && m.name.length > 0">/</span>
                         <span x-text="m.name_mal"></span>
                     </td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.membership_no"></span></td>

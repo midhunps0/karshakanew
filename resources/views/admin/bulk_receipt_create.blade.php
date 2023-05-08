@@ -418,7 +418,7 @@
                                                 <td><span x-text="m.membership_no"></span></td>
                                                 <td>
                                                     <span x-text="m.name"></span>
-                                                    <span x-show="m.name.length > 0">/</span>
+                                                    <span x-show="m.name != null && m.name.length > 0">/</span>
                                                     <span x-text="m.name_mal"></span>
                                                 </td>
                                                 <td><span x-text="m.aadhaar_no"></span></td>

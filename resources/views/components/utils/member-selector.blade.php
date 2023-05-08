@@ -120,7 +120,7 @@ x-init="
                     {{-- <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.name"></span></td> --}}
                     <td class="p-2 text-base-content !text-opacity-70">
                         <span x-text="m.name"></span>
-                        <span x-show="m.name.length > 0">/</span>
+                        <span x-show="m.name != null && m.name.length > 0">/</span>
                         <span x-text="m.name_mal"></span>
                     </td>
                     <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.aadhaar_no"></span></td>
