@@ -1175,6 +1175,7 @@ class MemberService implements ModelViewConnector {
             DB::beginTransaction();
             $bookNo = $data['book_no'] ?? AppHelper::getBookNumber($distict);
             $receiptNo = $data['receipt_no'] ?? AppHelper::getReceiptNumber($distict);
+            info('got receitp & book no.');
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,
@@ -1190,6 +1191,7 @@ class MemberService implements ModelViewConnector {
                 // 'tenure' => $data['period_from'] . ' to ' . $data['period_to'],
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]);
+            info('created fee_collection. starting to create fee_items');
             $sum = 0;
             foreach ($data['fee_item'] as $item) {
                 $sum += $item['amount'];
@@ -1209,6 +1211,7 @@ class MemberService implements ModelViewConnector {
                 }
                 FeeItem::create($fiData);
             }
+            info('created fee_items');
             $fc->refresh();
             $fc->total_amount = $sum;
             $fc->save();
