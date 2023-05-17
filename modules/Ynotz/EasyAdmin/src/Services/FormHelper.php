@@ -108,6 +108,7 @@ class FormHelper
      * @param array|null $updateOnEvents Eg: ['sourcename' => [ServiceClass::class, 'method'], ...]. An associative array. Keys: Name of source elements to be listened for input events. Values: An indexed array with the name of the service class and the method which will provide the required values to be updated. If this array is empty, the value will be reset to empty string. The 'value' property of the listened event is passed to the defined service class method as an argument. The response of the method (should be a string), will be set as the value of this element.
      * @param array|null $resetOnEvents An indexed array of html input element names, for whose value change this field should reset. Eg: ['title', 'another_input', ..]
      * @param array|null $toggleOnEvents Toggle the visibility of the element in response to events. Format: ['sourcename' => [['condition', 'value', show(true/false)]], ...] Eg: ['gender' => [['==', 'Male', true], ['==', 'Any', true]]]
+     * @param array $formTypes In which all forms the element shall be displayed. eg: ['create', 'edit']
      * @param bool $show Whether to show the element
      * @param bool $authorised Whether the user is authorised to access this element. If false, the element will not be rendered.
      * @param string $width the width of the input element. (accepted values: 'full', '1/2', '1/3', '2/3', '1/4', '3/4')
@@ -122,6 +123,7 @@ class FormHelper
         array $updateOnEvents = null,
         array $resetOnEvents = null,
         array $toggleOnEvents = null,
+        array $formTypes = null,
         bool $show = true,
         bool $authorised = true,
         string $width = 'full'
@@ -141,6 +143,9 @@ class FormHelper
         ];
         if (isset($properties)) {
             $data['properties'] = $properties;
+        }
+        if (isset($formTypes)) {
+            $data['form_types'] = $formTypes;
         }
         return $data;
     }

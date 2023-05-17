@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Religion;
 use App\Helpers\AppHelper;
 use App\Models\FeeCollection;
+use App\Models\FeeItem;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -93,6 +94,55 @@ class FeeCollectionService implements ModelViewConnector {
         ];
     }
 
+    public function getEditPageData($id): array
+    {
+        return [
+            // 'title' => 'Create Fee Collection',
+            'receipt' => FeeCollection::with(['member', 'feeItems'])->where('id', $id)->get()->first(),
+            'form' => [
+                'id' => 'form_fee_collections_edit',
+
+                'items' => []
+            ]
+        ];
+    }
+
+    public function update($data, $id)
+    {
+        info($data);
+        $fc = FeeCollection::where('id', $id)->with(['feeItems', 'member'])->get()->first();
+        $sum = 0;
+        if ($fc != null) {
+            $fc->receipt_date = AppHelper::formatDateForSave($data['date']);
+            $fc->notes = $data['notes'];
+            FeeItem::where('fee_collection_id', $id)->delete();
+            foreach ($data['fee_item'] as $fi) {
+                $fidata = [];
+                $fidata['fee_collection_id'] = $id;
+                $fidata['fee_type_id'] = $fi['fee_type_id'];
+                if (isset($fi['period_from'])) {
+                    $fidata['period_from'] = AppHelper::formatDateForSave($fi['period_from']);
+                }
+                if (isset($fi['period_to'])) {
+                    $fidata['period_to'] = AppHelper::formatDateForSave($fi['period_to']);
+                }
+                if (isset($fi['period_to']) && isset($fi['period_to'])) {
+                    $fidata['tenure'] = $fi['period_from']. ' to '. $fi['period_to'];
+                }
+                $fidata['amount'] = $fi['amount'];
+                $sum += floatval($fi['amount']);
+                FeeItem::create($fidata);
+            }
+            $fc->save();
+            $fc->refresh();
+            return [
+                'success' => true,
+                'receipt' => $fc
+            ];
+        } else {
+            return false;
+        }
+    }
     public function fetch($id)
     {
         return FeeCollection::with(

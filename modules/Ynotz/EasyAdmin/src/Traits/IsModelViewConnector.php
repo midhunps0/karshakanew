@@ -13,6 +13,7 @@ use Ynotz\EasyAdmin\InputUpdateResponse;
 
 trait IsModelViewConnector{
     protected $modelClass;
+    protected $query = null;
     protected $idKey = 'id'; // id column in the db table to identify the items
     protected $selects = '*'; // query select keys/calcs
     protected $selIdsKey = 'id'; // selected items id key
@@ -126,7 +127,7 @@ trait IsModelViewConnector{
 
     private function getQuery()
     {
-        return $this->modelClass::query();
+        return $this->query ?? $this->modelClass::query();
     }
 
     private function getItemIds($results) {
@@ -215,10 +216,7 @@ trait IsModelViewConnector{
 
     public function store(array $data)
     {
-        info('inside store');
-        info($data);
         $data = $this->processBeforeStore($data);
-        info($data);
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseStore()) {
             throw new AuthorizationException('Unable to create the '.$name.'. The user is not authorised for this action.');
@@ -240,13 +238,11 @@ trait IsModelViewConnector{
 
         DB::beginTransaction();
         try {
-            info($ownFields);
             $instance = $this->modelClass::create($ownFields);
 
             //attach relationship instances as per the relation
             foreach ($relations as $rel => $val) {
                 $type = $this->getRelationType($rel);
-                info('rel model class:');
                 switch ($type) {
                     case 'BelongsTo':
                         // $relInstance = ($this->getRelatedModelClass($rel))::find($val);
@@ -287,6 +283,8 @@ trait IsModelViewConnector{
     public function update($id, array $data)
     {
         $data = $this->processBeforeUpdate($data);
+        info('data');
+        info($data);
         $instance = $this->modelClass::find($id);
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseUpdate($instance)) {
@@ -304,7 +302,8 @@ trait IsModelViewConnector{
                 $ownFields[$key] = $value;
             }
         }
-
+        info('ownFields');
+        info($ownFields);
         DB::beginTransaction();
         try {
             $instance->update($ownFields);
@@ -337,12 +336,12 @@ trait IsModelViewConnector{
                         break;
                 }
             }
-info('syncing existing media..');
+
 
             foreach ($mediaFields as $fieldName => $val) {
                 $instance->syncMedia($fieldName, $val);
             }
-info('syncing media complete.');
+
 //             foreach ($mediaFields as $fieldName => $val) {
 //                 $instance->addMediaFromEAInput($fieldName, $val);
 //             }
@@ -513,14 +512,8 @@ info('syncing media complete.');
 
     private function getRelatedModelClass(string $relation): string
     {
-        info('relation');
-        info($relation);
-        info($this->modelClass);
         $obj = new ($this->modelClass);
         $r = $obj->$relation();
-        info('related');
-        info($obj->$relation()->getRelated());
-        info($r->getRelated());
         return $r->getRelated();
     }
 
@@ -710,7 +703,7 @@ info('syncing media complete.');
     {
         $t = [];
         foreach ($this->formElements() as $key => $el) {
-            if (!isset($t['form_types']) || in_array('create', $t['form_types'])) {
+            if (!isset($el['form_types']) || in_array('create', $el['form_types'])) {
                 $t[$key] = $el;
             }
         }
@@ -721,7 +714,7 @@ info('syncing media complete.');
     {
         $t = [];
         foreach ($this->formElements($model) as $key => $el) {
-            if (!isset($t['form_types']) || in_array('edit', $t['form_types'])) {
+            if (!isset($el['form_types']) || in_array('edit', $el['form_types'])) {
                 $t[$key] = $el;
             }
         }

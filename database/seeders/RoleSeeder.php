@@ -131,6 +131,7 @@ class RoleSeeder extends Seeder
             'Member: View In Own District',
             'Member: Edit In Own District',
             'Member: Delete In Own District',
+            'Member: Approve In Own District',
         ],
         'State Executive' => [
             'Religion: Create',

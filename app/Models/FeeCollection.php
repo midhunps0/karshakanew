@@ -16,11 +16,6 @@ class FeeCollection extends Model
         'feeItems'
     ];
 
-    protected $casts = [
-        'period_from' => 'datetime:d-m-Y',
-        'period_to' => 'datetime:d-m-Y',
-    ];
-
     public function feeItems()
     {
         return $this->hasMany(FeeItem::class, 'fee_collection_id', 'id');

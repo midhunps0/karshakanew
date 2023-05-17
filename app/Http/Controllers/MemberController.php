@@ -195,4 +195,10 @@ class MemberController extends SmartController
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         }
     }
+
+    public function unapprovedMembers(MemberService $memberService)
+    {
+        $result = $memberService->unapprovedMembers($this->request->all());
+        return $this->buildResponse('admin.members.unapproved', ['members' => $result]);
+    }
 }

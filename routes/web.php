@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TalukController;
 use Ynotz\EasyAdmin\Services\RouteHelper;
@@ -23,11 +24,10 @@ Route::get('/', function () {
     return view('auth.login');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -47,6 +47,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.verify_aadhaar');
     Route::get('/members/search', [MemberController::class, 'search'])
         ->name('members.search');
+    Route::get('/members/unapproved', [MemberController::class, 'unapprovedMembers'])
+        ->name('members.unapproved');
     Route::get('/members/suggestionslist', [MemberController::class, 'suggestionslist'])
         ->name('members.suggestionslist');
     Route::get('/members/fetch/{id}', [MemberController::class, 'fetch'])

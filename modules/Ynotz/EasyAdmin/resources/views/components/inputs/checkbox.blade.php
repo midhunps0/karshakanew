@@ -113,11 +113,12 @@
             }
         }
     }"
+
     x-init="
         @if (isset($_current_values[$name]))
             elvalue = {{ $_current_values[$name] }}
-        @elseif (isset($_old[$name]))
-            elvalue = {{ $_old[$name] }}
+        @elseif (isset($_old[$name]) && (in_array($_old[$name], [0, false, 'false', 'no', 'False', 'No'])))
+            elvalue = true;
         @endif
         @if (!$show)
             showelement =  false;
@@ -202,6 +203,15 @@
             'flex-grow' => $label_position == 'side',
             'w-full' => $label_position == 'top',
         ]) >
+
+        <label for="{{$name}}" @class([
+            'label py-0 my-0 justify-start' => true,
+            'w-36' => $label_position == 'side',
+            'mr-2' => $label_position == 'float',
+        ])>
+        <span class="label-text">{{$label}}</span>@if (isset($properties['required']) && $properties['required'])
+        &nbsp;<span class="text-warning">*</span>@endif
+        </label>
         <input
             id="{{$name}}" x-model="elvalue" type="checkbox"
             @if ($label_position == 'float')
@@ -213,6 +223,7 @@
                 toggle
             @endif"
             :class="errors.length == 0 || 'border-error  border-opacity-50'"
+            :checked="elvalue == true"
             @foreach ($properties as $prop => $val)
                 @if (!is_bool($val))
                     {{$prop}}="{{$val}}"
@@ -223,16 +234,7 @@
             @change="processChange($el.checked);"
             />&nbsp;&nbsp;&nbsp;
             <span x-show="displayText" x-text="elvalue ? onText : offText"></span>
-            <input type="hidden" name="{{$name}}" x-model="elvalue"
-        >
-        <label for="{{$name}}" @class([
-                'label py-0 my-0 justify-start' => true,
-                'w-36' => $label_position == 'side',
-                'mr-2' => $label_position == 'float',
-            ])>
-            <span class="label-text">{{$label}}</span>@if (isset($properties['required']) && $properties['required'])
-            &nbsp;<span class="text-warning">*</span>@endif
-        </label>
+            <input type="hidden" name="{{$name}}" x-model="elvalue">
 
         {{-- @if ($label_position == 'float')
         <label for="{{$name}}" class="absolute text-warning peer-checked:text-base-content duration-300 transform -translate-y-4 scale-90 top-2 left-2 z-10 origin-[0] bg-base-100 px-2 peer-focus:px-2 peer-focus:text-warning [&:not(peer-checked)]:scale-100 [&:not(peer-checked)]:-translate-y-1/2 [&:not(peer-checked)]:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-4 transition-all">

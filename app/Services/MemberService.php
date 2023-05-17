@@ -110,6 +110,8 @@ class MemberService implements ModelViewConnector {
             //     'options' => Taluk::all()->pluck('name', 'id')
             // ],
         )->addHeaderColumn(
+            title: 'Village'
+        )->addHeaderColumn(
             title: 'Actions'
         );
         return $columns->getHeaderRow();
@@ -142,7 +144,7 @@ class MemberService implements ModelViewConnector {
         )->addActionColumn(
             viewRoute: 'members.show',
             deleteRoute: $this->getDestroyRoute(),
-            deletePermission: $deletePermission
+            deletePermission: $deletePermission,
         );
 
         return $columns->getRow();
@@ -280,7 +282,7 @@ class MemberService implements ModelViewConnector {
                 action_route_params: ['id' => $id],
                 success_redirect_route: 'members.index',
                 items: $this->getEditFormElements($member),
-                layout: $this->buildCreateFormLayout(),
+                layout: $this->buildEditFormLayout(),
                 label_position: 'top',
                 width: 'full',
                 type: 'easyadmin::partials.simpleform'
@@ -346,6 +348,7 @@ class MemberService implements ModelViewConnector {
     public function getUpdateValidationRules($id): array
     {
         $rules = $this->getStoreValidationRules();
+        $rules['is_approved'] = ['sometimes'];
         return $rules;
     }
 
@@ -353,6 +356,7 @@ class MemberService implements ModelViewConnector {
     {
         $talukoptions = isset($member) ? Taluk::inDistrict($member->district_office_id)->get() : [];
         $villageoptions = isset($member) ? Village::inTaluk($member->taluk_id)->get() : [];
+        $user = User::find(auth()->user()->id);
         return [
             'name' => FormHelper::makeInput(
                 inputType: 'text',
@@ -391,11 +395,19 @@ class MemberService implements ModelViewConnector {
                 label: 'Mobile No.',
                 properties: ['required' => true],
             ),
-            'aadhaar_no_display' => FormHelper::makeInput(
+            'aadhaar_no_display_create' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'aadhaar_no',
                 label: 'Verified Aadhaar No.',
                 properties: ['required' => true, 'disabled' => true],
+                formTypes: ['create']
+            ),
+            'aadhaar_no_display_edit' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'aadhaar_no',
+                label: 'Verified Aadhaar No.',
+                properties: ['required' => true],
+                formTypes: ['edit']
             ),
             'aadhaar_no' => FormHelper::makeInput(
                 inputType: 'hidden',
@@ -638,6 +650,13 @@ class MemberService implements ModelViewConnector {
                 key: 'nominees',
                 label: 'Nominees',
                 component: 'inputs.member-nominees'
+            ),
+            'is_approved' => FormHelper::makeCheckbox(
+                key: 'is_approved',
+                label: 'Is Approved',
+                // toggle: true,
+                displayText: ['Yes', 'No'],
+                show: $user->hasPermissionTo('Member: Approve In Own District')
             )
         ];
     }
@@ -716,7 +735,7 @@ class MemberService implements ModelViewConnector {
                         [
                             (new ColumnLayout(
                                 width: '1/4'
-                            ))->addInputSlot('aadhaar_no_display'),
+                            ))->addInputSlot('aadhaar_no_display_create'),
                             (new ColumnLayout(
                                 width: '1/4'
                             ))->addInputSlot('aadhaar_no'),
@@ -870,6 +889,179 @@ class MemberService implements ModelViewConnector {
             );
 
         return $layout->getLayout();
+    }
+
+    public function buildEditFormLayout(): array
+    {
+        $layout = (new ColumnLayout())
+            ->addElements(
+                [
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('aadhaar_no_display_edit'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('aadhaar_no'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Personal Info')),
+                    (new RowLayout(
+                        width: 'full'
+                    ))->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/2'
+                            ))->addInputSlot('name'),
+                            (new ColumnLayout(
+                                width: '1/2'
+                            ))->addInputSlot('name_mal'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('dob'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('gender'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('marital_status')
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('mobile_no'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('parent_guardian'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('guardian_relationship')
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Permanent Address')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('permanent_address'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('permanent_address_mal'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('pa_pincode'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Current Address')),
+                    (new RowLayout(width: 'full'))->addInputSlot('copy_address'),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('current_address'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('current_address_mal'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('ca_pincode'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Office Info')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('districtOffice'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('taluk'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('village'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('tradeUnion'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Bank Account Info')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('bank_acc_no'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('bank_name'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('bank_branch'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('bank_ifsc')
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Nominees')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: 'full'
+                            ))->addInputSlot('nominees'),
+                        ]
+                    ),
+                    (new RowLayout(width: 'full'))
+                        ->addElement(new SectionDivider('Image Uploads')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('aadhaar_card'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('bank_passbook'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('ration_card'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('wb_passbook_front'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('wb_passbook_back'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('one_and_same_cert'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('is_approved'),
+                        ]
+                    )
+                ]
+            );
+
+        return $layout->getLayout();
+
     }
 
     // public function buildCreateFormLayout(): array
@@ -1076,7 +1268,6 @@ class MemberService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        info($data);
         $data['membership_no'] = AppHelper::getMembershipNumber(
             $data['districtOffice'],
             $data['taluk'],
@@ -1088,7 +1279,16 @@ class MemberService implements ModelViewConnector {
             $data['permanent_address_mal'] = $data['current_address_mal'];
             $data['pa_pincode'] = $data['ca_pincode'];
         }
+        /**
+         * @var User
+         * */
+        $user = User::find(auth()->user()->id);
+        if ($user->hasPermissionTo('Member: Approve In Own District') ) {
+            $data['aproved_by'] = $user->id;
+            $data['approved_at'] = time();
+        }
         unset($data['copy_address']);
+        unset($data['is_approved']);
 
         $data['created_by'] = auth()->user()->id;
         $data['dob'] = AppHelper::formatDateForSave($data['dob']);
@@ -1102,7 +1302,24 @@ class MemberService implements ModelViewConnector {
             $data['permanent_address_mal'] = $data['current_address_mal'];
             $data['pa_pincode'] = $data['ca_pincode'];
         }
+
+        /**
+         * @var User
+         * */
+        $user = User::find(auth()->user()->id);
+
+        if ($user->hasPermissionTo('Member: Approve In Own District')  && !in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+            $data['approved_by'] = $user->id;
+            $data['approved_at'] = Carbon::createFromTimestamp(time())->format('Y-m-d H:i:s');
+        } elseif ($user->hasPermissionTo('Member: Approve In Own District')  && in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+            $data['approved_by'] = null;
+            $data['approved_at'] = null;
+        } else {
+            info('unknown approval status!');
+        }
+
         unset($data['copy_address']);
+        unset($data['is_approved']);
 
         $data['created_by'] = auth()->user()->id;
         $data['dob'] = AppHelper::formatDateForSave($data['dob']);
@@ -1175,7 +1392,6 @@ class MemberService implements ModelViewConnector {
             DB::beginTransaction();
             $bookNo = $data['book_no'] ?? AppHelper::getBookNumber($distict);
             $receiptNo = $data['receipt_no'] ?? AppHelper::getReceiptNumber($distict);
-            info('got receitp & book no.');
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,
@@ -1191,7 +1407,7 @@ class MemberService implements ModelViewConnector {
                 // 'tenure' => $data['period_from'] . ' to ' . $data['period_to'],
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]);
-            info('created fee_collection. starting to create fee_items');
+
             $sum = 0;
             foreach ($data['fee_item'] as $item) {
                 $sum += $item['amount'];
@@ -1211,12 +1427,12 @@ class MemberService implements ModelViewConnector {
                 }
                 FeeItem::create($fiData);
             }
-            info('created fee_items');
+
             $fc->refresh();
             $fc->total_amount = $sum;
             $fc->save();
             DB::commit();
-            info('Receipt Created.');
+
             $receipt = FeeCollection::with(
                 'feeItems', 'collectedBy', 'member', 'paymentMode'
             )->where('id', $fc->id)->get()->first();
@@ -1320,7 +1536,7 @@ class MemberService implements ModelViewConnector {
     public function verifyAadhaar($aadhaarNo)
     {
         $aadhaarNo = str_replace(' ', '', $aadhaarNo);
-        info(strlen($aadhaarNo));
+
         if (strlen($aadhaarNo) < 12) {
             return [
                 'status' => 'Error',
@@ -1349,7 +1565,7 @@ class MemberService implements ModelViewConnector {
             // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
             $val = curl_exec($ch);
-            info($val);
+
             $result = json_decode($val);
             // info($result);
 
@@ -1358,6 +1574,15 @@ class MemberService implements ModelViewConnector {
                 'message' => $result->Message
             ];
         }
+    }
+
+    public function unapprovedMembers($data)
+    {
+        return Member::userAccessControlled()->unapproved()
+            ->paginate(
+                perPage: 10,
+                page: $data['page'] ?? 1
+            );
     }
 }
 

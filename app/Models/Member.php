@@ -35,7 +35,8 @@ class Member extends Model
         'ration_card',
         'wb_passbook_front',
         'wb_passbook_back',
-        'one_and_same_cert'
+        'one_and_same_cert',
+        'is_approved'
     ];
 
     public function district()
@@ -107,7 +108,7 @@ class Member extends Model
 
     public function allowances()
     {
-        return $this->hasMany(Allowance::class, 'member_id', 'id'); 
+        return $this->hasMany(Allowance::class, 'member_id', 'id');
     }
 
     public function scopeUserAccessControlled(Builder $query)
@@ -117,6 +118,16 @@ class Member extends Model
             $query->where('district_id', $authUser->district_id);
         }
         return $query;
+    }
+
+    public function scopeApproved(Builder $query)
+    {
+        return $query->where('approved_at', '<>', null);
+    }
+
+    public function scopeUnapproved(Builder $query)
+    {
+        return $query->where('approved_at', '=', null);
     }
 
     public function getMediaStorage(): array
@@ -143,6 +154,14 @@ class Member extends Model
                 'folder' => 'public/images/one_and_same_cert'
             ],
         ];
+    }
+    protected function isApproved(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->approved_at != null;
+            },
+        );
     }
 
     protected function aadhaarCard(): Attribute
