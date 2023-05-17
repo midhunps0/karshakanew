@@ -15,9 +15,10 @@ class DashboardController extends SmartController
         $data = [];
         /** @var User */
         $user = User::find(auth()->user()->id);
-
+        $data['show_unapproved'] = false;
         if ($user->hasPermissionTo('Member: Approve In Own District') ) {
             $data['unapproved_members'] = Member::userAccessControlled()->unapproved()->count();
+            $data['show_unapproved'] = true;
         }
 
         return $this->buildResponse('dashboard', $data);

@@ -6,6 +6,7 @@
     memNo: '',
     noMemberMsg: false,
     searchOn: false,
+    exact: true,
     searchStr() {
         let s = [
             this.district,
@@ -29,7 +30,8 @@
             axios.get(
                 '{{ route('members.suggestionslist') }}', {
                     params: {
-                        membership_no: this.searchStr()
+                        membership_no: this.searchStr(),
+                        exact: this.exact
                     }
                 }
             ).then((r) => {
@@ -69,14 +71,15 @@
             <span class="label-text">Registration No.:</span>
         </label>
         <div>
-            <div class="flex flex-row space-x-2" :class="!searchOn || 'opacity-50'">
+            <div class="flex flex-row items-baseline space-x-2" :class="!searchOn || 'opacity-50'">
                 <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
                 <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
                 <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
                 <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" :disabled="searchOn"/>
                 <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch() || searchOn">
-                    Search
+                    Search Member
                 </button>
+                <input type="checkbox" class="checkbox checkbox-xs" id="exact" x-model="exact"><label for="exact">Exact Search</label>
             </div>
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>

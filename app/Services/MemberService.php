@@ -1328,11 +1328,20 @@ class MemberService implements ModelViewConnector {
 
     public function suggestionslist($data)
     {
-        $members = Member::userAccessControlled()
-            ->with(['taluk', 'village'])
-            ->where('membership_no', 'like', $data['membership_no'].'%')
-            ->limit(20)
-            ->get();
+        if ($data['exact'] == 'true') {
+            info('exact true');
+            $members = Member::userAccessControlled()
+                ->with(['taluk', 'village'])
+                ->where('membership_no', '=', $data['membership_no'])
+                ->limit(20)
+                ->get();
+        } else {
+            $members = Member::userAccessControlled()
+                ->with(['taluk', 'village'])
+                ->where('membership_no', 'like', $data['membership_no'].'%')
+                ->limit(20)
+                ->get();
+        }
         return $members;
     }
 
