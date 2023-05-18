@@ -17,6 +17,10 @@
                     </div>
                 @endfragment
             </div>
-        <div class="h-full w-full absolute top-0 left-0 z-50 bg-base-200 opacity-30" x-show="ajaxLoading"></div>
+        <div class="h-full w-full absolute top-0 left-0 z-50 bg-base-200 opacity-30 flex flex-row justify-center items-center" x-show="ajaxLoading">
+            <div>
+                <img src="/images/loading.gif" class="h-24 w-24" alt="">
+            </div>
+        </div>
     </div>
 </x-easyadmin::app-layout>
