@@ -76,7 +76,8 @@ class FeeCollectionController extends SmartController
                 $result = $this->connectorService->report([
                     'start' => $start,
                     'end' => $end,
-                    'page' => $page
+                    'page' => $page,
+                    'datetype' => $request->input('datetype', 'receipt_date')
                 ]);
             }
             return $this->buildResponse('admin.feecollections.report', ['receipts' => $result]);
@@ -92,16 +93,43 @@ class FeeCollectionController extends SmartController
         $end = $request->input('end', null);
         $page = $request->input('page', 1);
             $result = [];
+
         if ($start != null || $end != null) {
             $result = $this->connectorService->report([
                 'start' => $start,
                 'end' => $end,
-                'fullreport' => true
+                'fullreport' => true,
+                'datetype' => $request->input('datetype', 'receipt_date')
             ]);
         }
         return response()->json([
             'receipts' => $result
         ]);
+    }
+
+    public function search()
+    {
+        $start = $this->request->input('start', null);
+        $end = $this->request->input('end', null);
+        $page = $this->request->input('page', 1);
+        $receiptNo = $this->request->input('receipt_no', null);
+        try {
+            if ($start == null && $end == null && $receiptNo == null) {
+                $result = [];
+            } else {
+                $result = $this->connectorService->search([
+                    'start' => $start,
+                    'end' => $end,
+                    'page' => $page,
+                    'searchBy' => $this->request->input('searchBy', 'receipt_no'),
+                    'receipt_no' => $receiptNo
+                ]);
+            }
+            return $this->buildResponse('admin.feecollections.search', ['receipts' => $result]);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
     }
 
 }

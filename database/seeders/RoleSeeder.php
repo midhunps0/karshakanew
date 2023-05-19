@@ -132,6 +132,10 @@ class RoleSeeder extends Seeder
             'Member: Edit In Own District',
             'Member: Delete In Own District',
             'Member: Approve In Own District',
+            'Fee Collection: Create In Own District',
+            'Fee Collection: View In Own District',
+            'Fee Collection: Edit In Own District Any Time',
+            'Fee Collection: Delete In Own District',
         ],
         'State Executive' => [
             'Religion: Create',
@@ -141,6 +145,9 @@ class RoleSeeder extends Seeder
         'District Executive' => [
             'Member: Create In Own District',
             'Member: View In Own District',
+            'Fee Collection: Create In Own District',
+            'Fee Collection: View In Own District',
+            'Fee Collection: Edit In Own District Limited Time',
         ],
         'Union Representative' => [
             'Member: Create In Own District',

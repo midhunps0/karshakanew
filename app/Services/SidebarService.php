@@ -48,6 +48,14 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
+                'title' => 'Search Receipts',
+                'route' => 'feecollections.search',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.search',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
                 'title' => 'New Receipt',
                 'route' => 'feecollections.create',
                 'route_params' => [],

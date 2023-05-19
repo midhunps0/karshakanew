@@ -1,10 +1,13 @@
 <x-easyadmin::partials.adminpanel>
     <div x-data="{
+        dateType: 'receipt_date',
         start: '',
         end: '',
         page: 1,
         getParams() {
-            let p = {};
+            let p = {
+                datetype: this.dateType
+            };
             if (this.start != '') {
                 p['start'] = this.start;
             }
@@ -33,6 +36,9 @@
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
     x-init="
+        @if (request()->get('datetype') != null)
+            dateType = '{{request()->get('datetype')}}';
+        @endif
         start = '{{request()->get('start') ?? ''}}';
         end = '{{request()->get('end') ?? ''}}';
         @if (request()->get('page') != null)
@@ -51,15 +57,24 @@
                 <div class="flex flex-row space-x-4 items-end">
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
-                          <span class="label-text">From Date</span>
+                          <span class="label-text">Date Type</span>
                         </label>
-                        <input x-model="start" type="text" name="start" class="input input-bordered w-full max-w-xs" required/>
+                        <select class="select select-bordered flex-grow" x-model="dateType" name="" id="">
+                            <option value="created_at">Creation Date</option>
+                            <option value="receipt_date">Receipt Date</option>
+                        </select>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
-                          <span class="label-text">To Date</span>
+                          <span class="label-text">From</span>
                         </label>
-                        <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" required/>
+                        <input x-model="start" type="text" name="start" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+                    </div>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                          <span class="label-text">To</span>
+                        </label>
+                        <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <button type="submit" class="btn btn-md btn-success">Get Report</button>
@@ -93,7 +108,7 @@
                             <tr>
                                 <td>
                                     @if ($loop->first)
-                                        {{$fp->receipt_date}}
+                                        {{$fp->formatted_receipt_date}}
                                     @endif
                                 </td>
                                 <td>@if ($loop->first){{$fp->receipt_number}}@endif</td>
@@ -186,7 +201,7 @@
                                 <template x-for="(fi, index) in r.fee_items">
                                 <tr>
                                     <td>
-                                        <span x-show="index == 0" x-text="r.receipt_date"></span>
+                                        <span x-show="index == 0" x-text="r.formatted_receipt_date"></span>
                                     </td>
                                     <td>
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>

@@ -155,11 +155,40 @@ class FeeCollectionService implements ModelViewConnector {
         $query = FeeCollection::with(
             'feeItems', 'member', 'collectedBy', 'paymentMode'
         );
+        $datetype = $data['datetype'];
         if (isset($data['start'])) {
-            $query->where('receipt_date', '>=', AppHelper::formatDateForSave($data['start']));
+            $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
         }
         if (isset($data['end'])) {
-            $query->where('receipt_date', '<=', AppHelper::formatDateForSave($data['end']));
+            $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
+        }
+
+        if (isset($data['fullreport']) && $data['fullreport']) {
+            return $query->get();
+        } else {
+            return $query->paginate(
+                perPage: 20,
+                page: $data['page']
+            );
+        }
+    }
+
+    public function search($data)
+    {
+        $query = FeeCollection::with(
+            'feeItems', 'member', 'collectedBy', 'paymentMode'
+        );
+
+        if ($data['searchBy'] == 'receipt_no' && isset($data['receipt_no'])) {
+            $query->where('receipt_number', $data['receipt_no']);
+        } else {
+            $datetype = $data['searchBy'];
+            if (isset($data['start'])) {
+                $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
+            }
+            if (isset($data['end'])) {
+                $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
+            }
         }
 
         if (isset($data['fullreport']) && $data['fullreport']) {

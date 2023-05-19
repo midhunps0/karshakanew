@@ -68,6 +68,14 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     RouteHelper::getEasyRoutes(modelName: "Role");
     RouteHelper::getEasyRoutes(modelName: "Permission");
     Route::get(
+        '/fees-collections/search',
+        [FeeCollectionController::class, 'search']
+    )->name('feecollections.search');
+    // Route::get(
+    //     '/fees-collections/fetchitems',
+    //     [FeeCollectionController::class, 'search']
+    // )->name('feecollections.fetchitems');
+    Route::get(
         '/fees-collections/create-old',
         [FeeCollectionController::class, 'createOld']
     )->name('feecollections.old.create');
