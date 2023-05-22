@@ -71,10 +71,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         '/fees-collections/search',
         [FeeCollectionController::class, 'search']
     )->name('feecollections.search');
-    // Route::get(
-    //     '/fees-collections/fetchitems',
-    //     [FeeCollectionController::class, 'search']
-    // )->name('feecollections.fetchitems');
     Route::get(
         '/fees-collections/create-old',
         [FeeCollectionController::class, 'createOld']

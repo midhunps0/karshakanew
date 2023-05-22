@@ -155,6 +155,7 @@ class FeeCollectionService implements ModelViewConnector {
         $query = FeeCollection::with(
             'feeItems', 'member', 'collectedBy', 'paymentMode'
         );
+        $query->userDistrictConstrained();
         $datetype = $data['datetype'];
         if (isset($data['start'])) {
             $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
@@ -178,7 +179,7 @@ class FeeCollectionService implements ModelViewConnector {
         $query = FeeCollection::with(
             'feeItems', 'member', 'collectedBy', 'paymentMode'
         );
-
+        $query->userDistrictConstrained();
         if ($data['searchBy'] == 'receipt_no' && isset($data['receipt_no'])) {
             $query->where('receipt_number', $data['receipt_no']);
         } else {

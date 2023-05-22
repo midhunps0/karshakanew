@@ -244,10 +244,10 @@
                 fd.append('date', date.toString('dd-MM-yyyy'));
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
-                    if (f.tenure != null && f.tenure != '') {
+                    {{-- if (f.tenure != null && f.tenure != '') { --}}
                         fd.append('fee_item['+i+'][period_from]', f.from);
                         fd.append('fee_item['+i+'][period_to]', f.to);
-                    }
+                    {{-- } --}}
                     fd.append('fee_item['+i+'][amount]', f.amount);
                 });
                 if (this.notes != '') {fd.append('notes', this.notes);}
@@ -284,7 +284,6 @@
         <form x-show="showform"
             @submit.prevent.stop="doSubmit();"
                 @formresponse.window="console.log($event.detail);
-                console.log($event.detail.content.response.data.errors.receipt_number);
                 console.log('fr captured');
                 if ($event.detail.target == $el.id) {
                     if ($event.detail.content.success) {
@@ -328,7 +327,7 @@
                                         $now = Carbon\Carbon::now();
                                         $today = $now->format('Y-m-d');
                                     @endphp
-                                    <x-inputs.datepicker :element="[
+                                    {{-- <x-inputs.datepicker :element="[
                                         'key' => 'date',
                                         'start_year' => 1980,
                                         'end_year' => \Illuminate\Support\Carbon::now()->year,
@@ -340,7 +339,8 @@
                                     :_old="['date' => $today]"
                                     :selected_date="$today"
                                     label_position="float"
-                                    />
+                                    /> --}}
+                                    <input type="text" x-model="date" placeholder="Date (dd-mm-yyyy)" class="input input-md">
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}
                                 </div>
 
@@ -375,15 +375,22 @@
                                             </td>
                                             <td class="">
                                                 <div>
-                                                    <input :name="'tenure['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.tenure" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))"
+                                                    <input :name="'tenure['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.tenure" disabled
+                                                    {{-- :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" --}}
                                                     @input="getFromToMonths(i);">
                                                 </div>
                                             </td>
                                             <td class="">
-                                                <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))" :disabled="fee.history" required pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d" @change="onFromChanged(i);" @input="formatFromDate(i);" @focus="formatFromDate(i);">
+                                                <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
+                                                :disabled="!typesWithTenure.includes(parseInt(fee.particulars))"
+                                                required pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d"
+                                                {{-- @change="onFromChanged(i);" --}}
+                                                @input="formatFromDate(i);"
+                                                @focus="formatFromDate(i);"
+                                                >
                                             </td>
                                             <td class="">
-                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" disabled :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d">
+                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d">
                                             </td>
                                             <td class="">
                                                 <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.amount" required>

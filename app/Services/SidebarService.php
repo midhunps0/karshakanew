@@ -82,7 +82,7 @@ class SidebarService implements SidebarServiceInterface
                 'type' => 'menu_group',
                 'title' => 'Access Control',
                 'icon' => 'easyadmin::icons.users',
-                'show' => $this->showRoles(),
+                'show' => $this->showAccessControl(),
                 'menu_items' => [
                     [
                         'type' => 'menu_item',
@@ -90,7 +90,7 @@ class SidebarService implements SidebarServiceInterface
                         'route' => 'users.index',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showRoles()
+                        'show' => $this->showAccessControl()
                     ],
                     // [
                     //     'type' => 'menu_item',
@@ -193,7 +193,10 @@ class SidebarService implements SidebarServiceInterface
             // ],
         ];
     }
-
+    private function showAccessControl()
+    {
+       return $this->user->hasPermissionTo('Create In Any District');
+    }
     private function showRoles()
     {
         return auth()->check();

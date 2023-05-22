@@ -19,6 +19,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('short_code');
             $table->boolean('enabled')->default(true);
+            $table->string('last_book_no')->nullable();
+            $table->integer('last_receipt_no')->nullable();
+            $table->integer('unapproved_members')->nullable();
+            $table->float('this_month_collection')->nullable();
+            $table->float('last_week_collection')->nullable();
+            $table->float('todays_collection')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

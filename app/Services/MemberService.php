@@ -1329,16 +1329,15 @@ class MemberService implements ModelViewConnector {
     public function suggestionslist($data)
     {
         if ($data['exact'] == 'true') {
-            info('exact true');
             $members = Member::userAccessControlled()
                 ->with(['taluk', 'village'])
-                ->where('membership_no', '=', $data['membership_no'])
+                ->where('membership_no', '=', trim($data['membership_no']))
                 ->limit(20)
                 ->get();
         } else {
             $members = Member::userAccessControlled()
                 ->with(['taluk', 'village'])
-                ->where('membership_no', 'like', $data['membership_no'].'%')
+                ->where('membership_no', 'like', trim($data['membership_no']).'%')
                 ->limit(20)
                 ->get();
         }
@@ -1399,8 +1398,8 @@ class MemberService implements ModelViewConnector {
         }
         try {
             DB::beginTransaction();
-            $bookNo = $data['book_no'] ?? AppHelper::getBookNumber($distict);
-            $receiptNo = $data['receipt_no'] ?? AppHelper::getReceiptNumber($distict);
+            $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($distict);
+            $receiptNo = $data['receipt_number'] ?? AppHelper::getReceiptNumber($distict);
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,

@@ -7,7 +7,9 @@
                 from: null,
                 to: null,
                 receipt_no: '',
-                doSubmit() {}
+                doSubmit() {
+                    
+                }
             }"
             action="" class="w-full md:w-3/4 m-auto p-4 border border-base-content border-opacity-20 rounded-md"
             @submit.prevent.stop="doSubmit();">

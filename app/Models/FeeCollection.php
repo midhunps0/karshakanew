@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FeeCollection extends Model
@@ -63,5 +64,14 @@ class FeeCollection extends Model
                 return $today == $cdate;
             },
         );
+    }
+
+    public function scopeUserDistrictConstrained(Builder $query)
+    {
+        $districtId = auth()->user()->district_id;
+        if ($districtId != 15) {
+            $query->where('district_id', $districtId);
+        }
+        return $query;
     }
 }
