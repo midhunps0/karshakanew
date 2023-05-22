@@ -383,14 +383,14 @@
                                             <td class="">
                                                 <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
                                                 :disabled="!typesWithTenure.includes(parseInt(fee.particulars))"
-                                                required pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d"
+                                                required pattern="[0-3][0-9]-[0-1][0-9]-[1-2][0-9][0-9][0-9]\d\d\d"
                                                 {{-- @change="onFromChanged(i);" --}}
                                                 @input="formatFromDate(i);"
                                                 @focus="formatFromDate(i);"
                                                 >
                                             </td>
                                             <td class="">
-                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-2]-[1-2]\d\d\d">
+                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[1-2][0-9][0-9][0-9]\d\d\d">
                                             </td>
                                             <td class="">
                                                 <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.amount" required>
