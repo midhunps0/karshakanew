@@ -273,7 +273,7 @@
                 </div>
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Reg. Date</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.approved_at : ''"></span>
+                    <span class="md:text-xl font-bold" x-text="member != null ? member.reg_date : ''"></span>
                 </div>
                 <div class="flex-grow text-right">
                     <a href="" @click.prevent.stop="editAction(member.id);"
@@ -383,14 +383,14 @@
                                             <td class="">
                                                 <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
                                                 :disabled="!typesWithTenure.includes(parseInt(fee.particulars))"
-                                                required pattern="[0-3][0-9]-[0-1][0-9]-[1-2][0-9][0-9][0-9]\d\d\d"
+                                                required pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"
                                                 {{-- @change="onFromChanged(i);" --}}
                                                 @input="formatFromDate(i);"
                                                 @focus="formatFromDate(i);"
                                                 >
                                             </td>
                                             <td class="">
-                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[1-2][0-9][0-9][0-9]\d\d\d">
+                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]">
                                             </td>
                                             <td class="">
                                                 <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.amount" required>
