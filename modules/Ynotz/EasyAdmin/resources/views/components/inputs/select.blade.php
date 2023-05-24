@@ -303,19 +303,21 @@
         $wclass,
         'my-6 flex flex-row' => $label_position == 'side',
     ])
+
     x-init="
         keyname = '{{$name}}';
         optionsType = '{{$options_type}}'
         @if (!$show)
             showelement =  false;
         @endif
+        let x = null;
         @if(isset($_old[$name]))
             @if(isset($properties['multiple']) && $properties['multiple'])
                 @foreach ($_old[$name] as $val)
                 @if ($options_type == 'value_only')
                     selectedVals.push('{{$_old[$name]}}');
                 @else
-                    let x = JSON.parse('{{$_old[$name]}}');
+                    x = JSON.parse('{{$val}}');
                     selectedVals.push(x['{{$options_id_key}}']);
                 @endif
                 @endforeach
@@ -323,14 +325,12 @@
                 @if ($options_type == 'value_only')
                     selectedVals = ['{{$_old[$name]}}'];
                 @else
-                    let x = JSON.parse('{{$_old[$name]}}');
+                    x = JSON.parse('{{$_old[$name]}}');
                     selectedVals = [x['{{$options_id_key}}']];
                 @endif
             @endif
-            if (keyname == 'gender' || keyname == 'marital_status') {
-                console.log('selectedVals');
+                console.log(`selectedVals {{{$name}}}`);
                 console.log(selectedVals);
-            }
         @endif
         @if (isset($fetch_url))
             fetchUrl = '{{$fetch_url}}';

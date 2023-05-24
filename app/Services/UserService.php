@@ -2,7 +2,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\District;
 use App\Services\RoleService;
+use Illuminate\Support\Facades\Hash;
 use Ynotz\AccessControl\Models\Role;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
@@ -17,6 +19,22 @@ class UserService implements ModelViewConnector {
     {
         $this->modelClass = User::class;
         $this->indexTable = new IndexTable();
+    }
+
+    protected function relations()
+    {
+        return [
+            'roles' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+            'district' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+        ];
     }
     protected function getPageTitle(): string
     {
@@ -122,11 +140,36 @@ class UserService implements ModelViewConnector {
                 inputType: 'text',
                 key: 'name',
                 label: 'Name',
-                properties: ['required' => true],
-                fireInputEvent: true
+                properties: ['required' => true]
+            ),
+            FormHelper::makeInput(
+                inputType: 'text',
+                key: 'username',
+                label: 'Username',
+                properties: ['required' => true]
+            ),
+            FormHelper::makeInput(
+                inputType: 'text',
+                key: 'email',
+                label: 'Email',
+                properties: ['required' => true,]
+            ),
+            FormHelper::makeInput(
+                inputType: 'text',
+                key: 'password',
+                label: 'Password',
+                properties: ['required' => true,],
+                formTypes: ['create']
             ),
             FormHelper::makeSelect(
-                key: 'role',
+                key: 'district',
+                label: 'District',
+                options: District::all()->pluck('name', 'id'),
+                options_type: 'key_value',
+                properties: ['required' => true],
+            ),
+            FormHelper::makeSelect(
+                key: 'roles',
                 label: 'Role',
                 options: Role::all(),
                 options_type: 'collection',
@@ -135,7 +178,7 @@ class UserService implements ModelViewConnector {
                 options_src: [RoleService::class, 'suggestList'],
                 properties: [
                     'required' => true,
-                    'multiple' => false
+                    'multiple' => true
                 ],
             ),
             // FormHelper::makeCheckbox(
@@ -165,6 +208,33 @@ class UserService implements ModelViewConnector {
         return $user->hasAnyPermission(
             ['User: Create In Any District', 'User: Create In Own District']
         );
+    }
+
+    public function getStoreValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string'],
+            'username' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+            'district' => ['required', 'integer'],
+            'roles.*' => ['required'],
+
+        ];
+    }
+
+    public function getUpdateValidationRules($id): array
+    {
+        $arr = $this->getStoreValidationRules();
+        unset($arr['password']);
+        return $arr;
+    }
+
+    public function processBeforeStore(array $data): array
+    {
+        $data['password'] = Hash::make($data['password']);
+
+        return $data;
     }
 }
 
