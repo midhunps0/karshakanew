@@ -11,8 +11,10 @@
         'full' => 'w-full',
         'grow' => 'flex-grow'
     ];
+
     $width = isset($item['width']) && isset($wclasses[$item['width']]) ? $wclasses[$item['width']] : 'flex-grow';
 @endphp
+
 <div class="flex flex-col w-full sm:{{$width}} space-y-2">
 @foreach ($item['items'] as $item)
     @if ($item['item_type'] == 'layout')

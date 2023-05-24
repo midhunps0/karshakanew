@@ -58,7 +58,7 @@
             }
         "
     >
-        <h3 class="text-xl font-bold pb-3">Search Fee Collections</h3>
+        <h3 class="text-xl font-bold pb-3">Search Receipts</h3>
         <div>
             <form action="" @submit.prevent.stop="page=1; fetchReport();">
                 {{-- <div class="form-control w-full max-w-xs">
@@ -100,7 +100,7 @@
                           <input x-model="receiptNo" type="text" name="end" class="input input-bordered w-full max-w-xs" :required="searchBy == 'receipt_no'"/>
                     </div>
                     <div class="form-control w-full max-w-xs">
-                        <button type="submit" class="btn btn-md btn-success">Get Report</button>
+                        <button type="submit" class="btn btn-md btn-success">Show Receipts</button>
                     </div>
                 </div>
             </form>
@@ -163,6 +163,10 @@
                     </table>
                 </div>
                 {{$receipts->appends(\Request::except('x_mode'))->links()}}
+            </div>
+            @else
+            <div class="text-center text-warning p-4">
+                There are no receipts to show.
             </div>
             @endif
         </div>

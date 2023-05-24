@@ -8,7 +8,7 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.js',
         './resources/css/**/*.css',
-        './modules/**/**/resources/views/**/*.blade.php',
+        './modules/**/*.blade.php',
     ],
 
     theme: {

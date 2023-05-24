@@ -77,13 +77,13 @@ x-init="
     {{-- <h3 class="text-sm font-bold pb-3 text-warning">Find Member</h3> --}}
     <div class="form-control w-full flex flex-row flex-wrap space-x-4 justify-start items-start">
         <label class="label w-32">
-            <span class="label-text">Registration No.:</span>
+            <span class="label-text">Membership No.:</span>
         </label>
         <div>
             <div class="flex flex-row space-x-2" @keyup="if ($event.key == 'Escape') {showlist = false;}">
                 <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" />
-                <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" />
-                <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" />
+                <input x-model="village" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" />
+                <input x-model="taluk" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" />
                 <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" />
                 <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch();">
                     Search
@@ -106,7 +106,7 @@ x-init="
         </div>
         <table>
             <tr class="w-full">
-                <th class="text-base-content !text-opacity-70">Registration No.</th>
+                <th class="text-base-content !text-opacity-70">Membership No.</th>
                 <th class="text-base-content !text-opacity-70">Name</th>
                 <th class="text-base-content !text-opacity-70">Aadhaar No.</th>
                 <th class="text-base-content !text-opacity-70">Taluk</th>

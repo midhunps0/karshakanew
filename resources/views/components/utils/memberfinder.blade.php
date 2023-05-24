@@ -73,8 +73,8 @@
         <div>
             <div class="flex flex-row items-baseline space-x-2" :class="!searchOn || 'opacity-50'">
                 <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
-                <input x-model="village" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
-                <input x-model="taluk" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
+                <input x-model="village" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
+                <input x-model="taluk" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
                 <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" :disabled="searchOn"/>
                 <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch() || searchOn">
                     Search Member

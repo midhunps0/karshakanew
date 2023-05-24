@@ -349,6 +349,8 @@ class MemberService implements ModelViewConnector {
     {
         $rules = $this->getStoreValidationRules();
         $rules['is_approved'] = ['sometimes'];
+        $rules['membership_no'] = ['required'];
+        $rules['reg_date'] = ['required', 'date_format:"d-m-Y"'];
         return $rules;
     }
 
@@ -413,6 +415,20 @@ class MemberService implements ModelViewConnector {
                 inputType: 'hidden',
                 key: 'aadhaar_no',
                 properties: ['required' => true,],
+            ),
+            'membership_no' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'membership_no',
+                label: 'Membership No.',
+                properties: ['required' => true,],
+                formTypes: ['edit']
+            ),
+            'reg_date' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'reg_date',
+                label: 'Registration Date',
+                properties: ['required' => true,],
+                formTypes: ['edit']
             ),
             'ration_card_no' => FormHelper::makeInput(
                 inputType: 'text',
@@ -906,6 +922,16 @@ class MemberService implements ModelViewConnector {
                             ))->addInputSlot('aadhaar_no'),
                         ]
                     ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('membership_no'),
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('reg_date'),
+                        ]
+                    ),
                     (new RowLayout(width: 'full'))
                         ->addElement(new SectionDivider('Personal Info')),
                     (new RowLayout(
@@ -1292,6 +1318,7 @@ class MemberService implements ModelViewConnector {
 
         $data['created_by'] = auth()->user()->id;
         $data['dob'] = AppHelper::formatDateForSave($data['dob']);
+        $data['reg_date'] = Carbon::now()->format('Y-m-d');
         return $data;
     }
 
@@ -1323,12 +1350,13 @@ class MemberService implements ModelViewConnector {
 
         $data['created_by'] = auth()->user()->id;
         $data['dob'] = AppHelper::formatDateForSave($data['dob']);
+        $data['reg_date'] = AppHelper::formatDateForSave($data['reg_date']);;
         return $data;
     }
 
     public function suggestionslist($data)
     {
-        if ($data['exact'] == 'true') {
+        if (isset($data['exact']) && $data['exact'] == 'true') {
             $members = Member::userAccessControlled()
                 ->with(['taluk', 'village'])
                 ->where('membership_no', '=', trim($data['membership_no']))

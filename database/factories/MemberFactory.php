@@ -70,6 +70,7 @@ class MemberFactory extends Factory
             'trade_union_id' => TradeUnion::all()->random()->id,
             // 'verified' => true,
             'active' => true,
+            'reg_date' => Carbon::now()->subYear(($y - 20))->format('Y-m-d'),
             'created_by' => User::all()->random()->id,
             'approved_by' => null,
             'approved_at' => null,
