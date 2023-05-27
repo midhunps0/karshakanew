@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Ynotz\AccessControl\Traits\WithRoles;
+use Illuminate\Notifications\Notifiable;
 use Ynotz\MediaManager\Traits\OwnsMedia;
+use Ynotz\AccessControl\Traits\WithRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -43,5 +44,20 @@ class User extends Authenticatable
     public function activityLogs()
     {
         return $this->hasMany(ActivityLog::class, 'user_id', 'id');
+    }
+
+    public function scopeUserAccessControlled(Builder $query)
+    {
+        $authUser = User::find(auth()->user()->id);
+        if (!$authUser->hasPermissionTo('User: View In Any District')) {
+            $query->where('district_id', $authUser->district_id);
+        }
+        return $query;
+    }
+
+    public function scopeExceptSelf(Builder $query)
+    {
+        $query->where('id', '<>', auth()->user()->id);
+        return $query;
     }
 }

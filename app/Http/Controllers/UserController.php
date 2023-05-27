@@ -15,6 +15,7 @@ class UserController extends SmartController
         parent::__construct($request);
         // $this->itemName = 'districts';
         $this->indexView = 'admin.index';
+        $this->showView = 'admin.users.show';
         // $this->createView = 'accesscontrol::roles.create';
         // $this->editView = 'accesscontrol::roles.edit';
     }

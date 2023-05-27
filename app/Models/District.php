@@ -52,7 +52,7 @@ class District extends Model
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);
-        if (!$authUser->hasPermissionTo('District: Create')) {
+        if (!$authUser->hasPermissionTo('District: View')) {
             $query->where('id', $authUser->district_id);
         }
         return $query;

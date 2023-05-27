@@ -58,7 +58,7 @@ class AppHelper
                     $t = explode('/', $n);
                     return intval($t[count($t) - 1]);
                 },
-                $nos
+                array_values($nos)
             );
             $nextno = count($slnos) > 0 ? max($slnos) + 1 : 1;
             return  $mnoSearch . $nextno;

@@ -19,6 +19,7 @@ class UserService implements ModelViewConnector {
     {
         $this->modelClass = User::class;
         $this->indexTable = new IndexTable();
+        $this->selectionEnabled = false;
     }
 
     protected function relations()
@@ -48,7 +49,7 @@ class UserService implements ModelViewConnector {
             sort: ['key' => 'name']
         )->addHeaderColumn(
             title: 'role',
-            sort: ['key' => 'roles']
+            filter: ['key' => 'roles', 'options' => Role::all()->pluck('name', 'id')]
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -69,6 +70,7 @@ class UserService implements ModelViewConnector {
 
     public function getAdvanceSearchFields(): array
     {
+        return [];
         return $this->indexTable->addSearchField(
             key: 'name',
             displayText: 'Name',
@@ -196,7 +198,8 @@ class UserService implements ModelViewConnector {
             'roles' => function ($query) {
                 $query->select('id', 'name');
             }
-        ]);
+        ])->userAccessControlled()
+        ->exceptSelf();
     }
 
     private function getShowAddButton(): bool
