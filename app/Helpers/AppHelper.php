@@ -52,13 +52,13 @@ class AppHelper
             $mnoSearch = $dcode.'/'.$tcode.'/'.$vcode.'/';
             $nos = Member::select('membership_no')
                 ->where('membership_no', 'like', $mnoSearch.'%')
-                ->get()->toArray();
+                ->pluck('membership_no')->toArray();
             $slnos = array_map(
                 function ($n) {
                     $t = explode('/', $n);
                     return intval($t[count($t) - 1]);
                 },
-                array_values($nos)
+                $nos
             );
             $nextno = count($slnos) > 0 ? max($slnos) + 1 : 1;
             return  $mnoSearch . $nextno;
