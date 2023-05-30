@@ -1421,7 +1421,7 @@ class MemberService implements ModelViewConnector {
 
     public function storeFeesCollection($id, $data, $old = false)
     {
-        if isset ($data['receipt_number']) {
+        if (isset($data['receipt_number'])) {
             $qstr = 'SELECT count(id) FROM fee_collections WHERE receipt_number = '
             . $data['book_number'].'/'.$data['receipt_number'];
             $n = DB::select($qstr);
