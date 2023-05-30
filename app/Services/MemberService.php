@@ -1421,7 +1421,7 @@ class MemberService implements ModelViewConnector {
 
     public function storeFeesCollection($id, $data, $old = false)
     {
-        $n = FeeCollection::where('receipt_number', $data['receipt_number'])->get()->count();
+        $n = FeeCollection::where('receipt_number', $data['book_number'].'/'.$data['receipt_number'])->get()->count();
         if ($n > 0) {
             return [
                 'message' => 'The receipt number has already been taken.',
