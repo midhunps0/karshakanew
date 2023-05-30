@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\AuditLog;
 use App\Traits\TrackUserActions;
 use Illuminate\Database\Eloquent\Model;
-use Ynotz\EasyAdmin\Exceptions\ModelIntegrityViolationException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ynotz\EasyAdmin\Exceptions\ModelIntegrityViolationException;
 
 class Village extends Model
 {
@@ -36,5 +37,10 @@ class Village extends Model
     public function scopeInTaluk($query, $id)
     {
         return $query->where('taluk_id', $id);
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

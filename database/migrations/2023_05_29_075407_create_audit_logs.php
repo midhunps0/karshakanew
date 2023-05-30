@@ -8,19 +8,15 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
+        Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users', 'id');
-            $table->string('model_type');
-            $table->integer('model_id');
+            $table->string('auditable_type');
+            $table->string('auditable_id');
             $table->string('old_value')->nullable();
             $table->string('new_value')->nullable();
-            $table->string('action'); // created, modified, deleted
             $table->string('description')->nullable();
             $table->timestamps();
         });
@@ -28,11 +24,9 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('activity_logs');
+        Schema::dropIfExists('audit_logs');
     }
 };

@@ -6,3 +6,21 @@
 [x-cloak] {
     display: none;
 }
+
+.display-table {
+    display: table;
+}
+
+#roles-table tbody {
+    display:block;
+    height:600px;
+    overflow:auto;
+}
+#roles-table thead, #roles-table tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+#roles-table thead {
+    width: calc( 100%)
+}

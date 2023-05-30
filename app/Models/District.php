@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Models\Taluk;
+use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Ynotz\EasyAdmin\Exceptions\ModelIntegrityViolationException;
 
@@ -52,7 +53,7 @@ class District extends Model
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);
-        if (!$authUser->hasPermissionTo('District: View')) {
+        if (!$authUser->hasPermissionTo('Member: View In Any District')) {
             $query->where('id', $authUser->district_id);
         }
         return $query;
@@ -62,5 +63,10 @@ class District extends Model
     {
         $query->where('id', '<>', 15);
         return $query;
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

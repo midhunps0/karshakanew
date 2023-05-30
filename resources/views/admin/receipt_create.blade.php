@@ -264,7 +264,7 @@
         </div>
         <div x-show="member != null">
             <h3 class="text-sm font-bold pb-3 text-warning">Create Receipt For:</h3>
-            <div class="flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
+            <div class="relative flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Name</span>:&nbsp;
                     <span class="md:text-xl font-bold" x-text="member != null ? member.name : ''"></span>
@@ -281,6 +281,9 @@
                     <a href="" @click.prevent.stop="editAction(member.id);"
                         class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
                 </div>
+            </div>
+            <div class="text-center font-bold bg-error bg-opacity-30 text-base-content rounded-md p-2 mt-2">
+                Aadhaar number not verified. Cannot create receipt for unverified members.
             </div>
         </div>
         <form x-show="showform"
@@ -315,7 +318,7 @@
             console.log(typesWithTenure);
             "
             >
-            <div x-show="member != null && showform" class="">
+            <div x-show="member != null && member.aadhaar_no != null && showform" class="">
                 <div class="my-4">
                     <div class="p-4 border border-base-content border-opacity-20 rounded-md bg-base-200">
                         <div>
@@ -408,7 +411,8 @@
                             <div class="divider"></div>
                             <div class="flex flex-wrap space-x-0 md:space-x-4 items-end">
                                 <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full md:w-3/4" placeholder="Notes"></textarea>
-                                <button class="my-2 md:my-0 btn btn-md btn-warning flex-grow"> Create Receipt </button>
+                                <button class="my-2 md:my-0 btn btn-md btn-warning flex-grow"
+                                :disabled="member.aadhaar_no == null"> Create Receipt </button>
                             </div>
                         </div>
                     </div>
@@ -463,7 +467,7 @@
                 <button @click.prevent.stop="close()" class="btn btn-sm btn-error">Close</button>
             </div>
         </div>
-        <template x-if="member != null">
+        <template x-if="member != null && member.aadhaar_no != null">
         <div class="my-4">
             <h3 class="text-md font-bold mt-3 mb-1 text-center underline text-warning"><span>Transaction History</span>&nbsp;</h3>
             <template x-if="member.fee_payments.length == 0">

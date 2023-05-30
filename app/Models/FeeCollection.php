@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -73,5 +74,10 @@ class FeeCollection extends Model
             $query->where('district_id', $districtId);
         }
         return $query;
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

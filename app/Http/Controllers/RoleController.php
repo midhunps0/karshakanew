@@ -14,8 +14,13 @@ class RoleController extends SmartController
     public function __construct(public RoleService $connectorService, Request $request){
         parent::__construct($request);
         // $this->itemName = 'districts';
-        // $this->indexView = 'easyadmin::admin.indexpanel';
+        $this->indexView = 'admin.roles.index';
         // $this->createView = 'accesscontrol::roles.create';
         // $this->editView = 'accesscontrol::roles.edit';
+    }
+
+    public function index()
+    {
+        return $this->buildResponse($this->indexView, $this->connectorService->getIndexData());
     }
 }

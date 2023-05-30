@@ -155,22 +155,25 @@ trait HasMVConnector {
                     // return $this->buildResponse($view, $data);
                 }
                 // return 'success';
-                $this->connectorService->store(
+                $instance = $this->connectorService->store(
                     $validator->validated()
                 );
             } else {
-                return config('easyadmin.enforce_validation') ?
-                response()->json(
-                    [
-                        'success' => false,
-                        'errors' => 'Validation rules not defined'
-                    ],
-                    status: 401
-                ) : $this->connectorService->store($request->all());
+                if (config('easyadmin.enforce_validation')) {
+                    return response()->json(
+                        [
+                            'success' => false,
+                            'errors' => 'Validation rules not defined'
+                        ],
+                        status: 401
+                    );
+                }
+                $instance = $this->connectorService->store($request->all());
             }
 
             return response()->json([
                 'success' => true,
+                'instance' => $instance,
                 'message' => 'New '.$this->getItemName().' added.'
             ]);
         } catch (AuthorizationException $e) {

@@ -24,7 +24,7 @@
         postUrl: '',
         successRedirectUrl: null,
         successRedirectRoute: null,
-        cancelRoute: null,
+        {{-- cancelRoute: null, --}}
         doSubmit() {
             let form = document.getElementById('{{$form['id']}}');
             let fd = new FormData(form);
@@ -35,8 +35,9 @@
     @submit.prevent.stop="doSubmit();"
         @formresponse.window="console.log($event.detail);
         if ($event.detail.target == $el.id) {
+            let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', $event.detail.content.instance.id) : successRedirectUrl;
             if ($event.detail.content.success) {
-                $dispatch('shownotice', {message: $event.detail.content.message, mode: 'success', redirectUrl: successRedirectUrl, redirectRoute: successRedirectRoute});
+                $dispatch('shownotice', {message: $event.detail.content.message, mode: 'success', redirectUrl: theUrl, redirectRoute: successRedirectRoute});
                 $dispatch('formerrors', {errors: []});
             } else if (typeof $event.detail.content.errors != undefined) {
                 $dispatch('formerrors', {errors: $event.detail.content.errors});
@@ -49,14 +50,19 @@
     x-init="
         postUrl = '{{ count($form['action_route_params']) > 0 ? route($form['action_route'], $form['action_route_params']) : route($form['action_route']) }}';
         @if (isset($form['success_redirect_route']))
-            successRedirectUrl = '{{route($form['success_redirect_route'])}}';
+            @if (isset($form['success_redirect_key']))
+            successRedirectUrl = '{{route($form['success_redirect_route'], 1)}}';
+            @else
+            successRedirectUrl = '{{route($form['success_redirect_route'], 1)}}';
+            @endif
             successRedirectRoute = '{{$form['success_redirect_route']}}';
         @endif
-        @if (isset($form['cancel_route']))
+        {{-- @if (isset($form['cancel_route']))
             cancelRoute = '{{route($form['cancel_route'])}}';
-        @endif
+        @endif --}}
     "
     >
+    {{$form['success_redirect_key']}}
     @if ($form['method'] != 'POST')
         @method($form['method'])
     @endif

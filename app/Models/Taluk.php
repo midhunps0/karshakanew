@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -50,5 +51,10 @@ class Taluk extends Model
             $query->where('district_id', $authUser->district_id);
         }
         return $query;
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

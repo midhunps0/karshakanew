@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\AuditLog;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Ynotz\MediaManager\Traits\OwnsMedia;
@@ -59,5 +60,10 @@ class User extends Authenticatable
     {
         $query->where('id', '<>', auth()->user()->id);
         return $query;
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

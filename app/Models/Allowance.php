@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Allowance extends Model
 {
@@ -18,5 +19,10 @@ class Allowance extends Model
     public function welfareScheme()
     {
         return $this->belongsTo(WelfareScheme::class, 'welfare_scheme_id', 'id');
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

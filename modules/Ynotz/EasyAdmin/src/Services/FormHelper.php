@@ -13,7 +13,9 @@ class FormHelper
      * @param string $id Id of the form element in html
      * @param string $action_route Action attribute of the form. The route which handles form submission.
      * @param string $cancel_route The route to redirect to upon clicking cancel button.
+     * @param string $cancel_route_key The route parameter for cancel_route.
      * @param string $success_redirect_route The route to which the page shall be redirected after successful form submission
+     * @param string $success_redirect_key The route parameter for the success route, if any
      * @param array $items Array of form elements obtained by calling getCreateFormElememts() or getEditFormElements() methods of the connector service class.
      * @param string $label_position The position of the labels of form elements. Can be top, side or float
      * @param string $type The form type (blade component) to be used. Default: simpleform
@@ -26,9 +28,11 @@ class FormHelper
         string $action_route,
         string $success_redirect_route,
         array $items,
+        string $success_redirect_key = null,
         array $layout = null,
         array $action_route_params = [],
         string $cancel_route = null,
+        string $cancel_route_key = null,
         string $label_position = 'float',
         string $type = 'easyadmin::partials.simpleform',
         string $width = '1/2',
@@ -42,8 +46,10 @@ class FormHelper
             'id' => $id,
             'action_route' => $action_route,
             'action_route_params' => $action_route_params,
-            'cancel_route' => $cancel_route ?? $success_redirect_route,
+            'cancel_route' => $cancel_route,
+            'cancel_route_key' => $cancel_route_key,
             'success_redirect_route' => $success_redirect_route,
+            'success_redirect_key' => $success_redirect_key,
             'items' => $items,
             'layout' => $layout,
             'label_position' => $label_position,

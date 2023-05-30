@@ -18,6 +18,18 @@ class RoleService implements ModelViewConnector {
         $this->modelClass = Role::class;
         $this->indexTable = new IndexTable();
     }
+
+    public function getIndexdata()
+    {
+        $roles = Role::with('permissions')->get();
+        $permissions = Permission::all();
+
+        return [
+            'roles' => $roles,
+            'permissions' => $permissions
+        ];
+    }
+
     protected function getPageTitle(): string
     {
         return 'Role';

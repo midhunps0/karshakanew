@@ -35,7 +35,7 @@ class OldFeesCollectionStoreRequest extends FormRequest
         return [
             'date' => ['required', 'string'],
             'book_number' => ['required', 'string'],
-            'receipt_number' => ['required', 'string', 'unique:fee_collections'],
+            'receipt_number' => ['required', 'string',],
             'fee_item.*.fee_type_id' => ['required', 'integer'],
             'fee_item.*.tenure' => ['sometimes', 'integer'],
             'fee_item.*.period_from' => ['sometimes', 'string'],

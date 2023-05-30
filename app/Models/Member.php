@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Nominee;
+use App\Models\AuditLog;
 use App\Models\District;
 use App\Traits\TrackUserActions;
 use Illuminate\Database\Eloquent\Model;
@@ -216,5 +217,10 @@ class Member extends Model
                 return $this->getSingleMediaForDisplay('one_and_same_cert');
             },
         );
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable');
     }
 }

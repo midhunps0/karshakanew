@@ -208,7 +208,6 @@ class MemberService implements ModelViewConnector {
         $data = array();
         $data['districts'] = District::UserAccessControlled()->withoutHo()
             ->get()->pluck('name', 'id');
-
         if (count($data['districts']) == 1) {
             $data['taluks'] = Taluk::inDistrict(
                 array_keys($data['districts']->toArray())[0]
@@ -256,7 +255,9 @@ class MemberService implements ModelViewConnector {
                 title: 'Create Member',
                 id: 'form_members_create',
                 action_route: 'members.store',
-                success_redirect_route: 'members.index',
+                success_redirect_route: 'members.show',
+                success_redirect_key: 'id',
+                cancel_route: 'dashboard',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top',
@@ -680,7 +681,8 @@ class MemberService implements ModelViewConnector {
     public function authoriseCreate()
     {
         $u = User::find(auth()->user()->id);
-        return $u->hasRole('System Admin') || $u->hasPermissionTo('Member: Create');
+        return $u->hasPermissionTo('Member: Create In Any District') ||
+            $u->hasPermissionTo('Member: Create In Own District');
     }
 
     private function getQuery()
@@ -1310,8 +1312,8 @@ class MemberService implements ModelViewConnector {
          * */
         $user = User::find(auth()->user()->id);
         if ($user->hasPermissionTo('Member: Approve In Own District') ) {
-            $data['aproved_by'] = $user->id;
-            $data['approved_at'] = time();
+            $data['approved_by'] = $user->id;
+            $data['approved_at'] = Carbon::now()->format('Y-m-d');
         }
         unset($data['copy_address']);
         unset($data['is_approved']);
@@ -1419,6 +1421,15 @@ class MemberService implements ModelViewConnector {
 
     public function storeFeesCollection($id, $data, $old = false)
     {
+        $n = FeeCollection::where('receipt_number', $data['receipt_number'])->get()->count();
+        if ($n > 0) {
+            return [
+                'message' => 'The receipt number has already been taken.',
+                'errors' => array(
+                    'receipt_number' => 'The receipt number has already been taken.'
+                )
+            ];
+        }
         $member = Member::find($id);
         $distict = $member->district;
         if ($member == null) {
