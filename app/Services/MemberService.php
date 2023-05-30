@@ -1421,14 +1421,18 @@ class MemberService implements ModelViewConnector {
 
     public function storeFeesCollection($id, $data, $old = false)
     {
-        $n = FeeCollection::where('receipt_number', $data['book_number'].'/'.$data['receipt_number'])->get()->count();
-        if ($n > 0) {
-            return [
-                'message' => 'The receipt number has already been taken.',
-                'errors' => array(
-                    'receipt_number' => 'The receipt number has already been taken.'
-                )
-            ];
+        if isset ($data['receipt_number']) {
+            $qstr = 'SELECT count(id) FROM fee_collections WHERE receipt_number = '
+            . $data['book_number'].'/'.$data['receipt_number'];
+            $n = DB::select($qstr);
+            if ($n > 0) {
+                return [
+                    'message' => 'The receipt number has already been taken.',
+                    'errors' => array(
+                        'receipt_number' => 'The receipt number has already been taken.'
+                    )
+                ];
+            }
         }
         $member = Member::find($id);
         $distict = $member->district;
@@ -1438,7 +1442,7 @@ class MemberService implements ModelViewConnector {
         try {
             DB::beginTransaction();
             $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($distict);
-            $receiptNo = $data['receipt_number'] ? $bookNo.'/'.AppHelper::getReceiptNumber($distict) : AppHelper::getReceiptNumber($distict);
+            $receiptNo = $data['receipt_number'] ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($distict);
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,
