@@ -1422,10 +1422,10 @@ class MemberService implements ModelViewConnector {
     public function storeFeesCollection($id, $data, $old = false)
     {
         if (isset($data['receipt_number'])) {
-            $qstr = 'SELECT count(id) FROM fee_collections WHERE receipt_number = '
+            $qstr = 'SELECT * FROM fee_collections WHERE receipt_number = '
             . '\''.$data['book_number'].'/'.$data['receipt_number'].'\'';
-            $n = DB::select($qstr);
-            if ($n > 0) {
+            $results = DB::select($qstr);
+            if (count($results) > 0) {
                 return [
                     'message' => 'The receipt number has already been taken.',
                     'errors' => array(
