@@ -59,7 +59,8 @@
                     '{{route('members.fetch', '_X_')}}'.replace('_X_', id)
                 ).then((r) => {
                     this.member = r.data.member;
-                    this.fees = [
+                    this.receiptNo = null;
+                    {{-- this.fees = [
                         {
                             particulars: '',
                             tenure: null,
@@ -68,11 +69,8 @@
                             amount: null,
                             history: true,
                         }
-                    ];
-                    this.notes = '';
-                    this.date = null;
-                    $dispatch('easetdate', {date: null, key: 'date'});
-                    console.log(this.member);
+                    ]; --}}
+                    {{-- $dispatch('easetdate', {date: null, key: 'date'}); --}}
                 }).catch((e) => {
                     console.log(e);
                 })
@@ -233,7 +231,9 @@
                 this.showform = true;
             },
             close() {
-                $dispatch('linkaction', {link: '{{route('feecollections.create')}}', route: 'feecollections.create'});
+                this.showreceipt = false;
+                this.showform = true;
+                {{-- $dispatch('linkaction', {link: '{{route('feecollections.create')}}', route: 'feecollections.create'}); --}}
             },
             doSubmit() {
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
@@ -244,10 +244,10 @@
                 fd.append('date', date.toString('dd-MM-yyyy'));
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
-                    {{-- if (f.tenure != null && f.tenure != '') { --}}
+                    if (f.from != null && f.to != null) {
                         fd.append('fee_item['+i+'][period_from]', f.from);
                         fd.append('fee_item['+i+'][period_to]', f.to);
-                    {{-- } --}}
+                    }
                     fd.append('fee_item['+i+'][amount]', f.amount);
                 });
                 if (this.notes != '') {fd.append('notes', this.notes);}
@@ -265,7 +265,7 @@
             <div class="flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Name</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.name : ''"></span>
+                    <span class="md:text-xl font-bold" x-text="member != null ? member.display_name : ''"></span>
                 </div>
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Reg. No.</span>:&nbsp;
@@ -294,9 +294,11 @@
                         fetchMember();
                         $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', });
                         $dispatch('formerrors', {errors: []});
-                    } else if (typeof $event.detail.content.errors != undefined) {
-                        if (typeof $event.detail.content.response.data.errors.receipt_number != 'undefined') {
-                            $dispatch('shownotice', {message: $event.detail.content.response.data.errors.receipt_number, mode: 'error', redirectUrl: null, redirectRoute: null});
+                    } else if (typeof $event.detail.content.errors != 'undefined') {
+                        console.log('errors');
+                        console.log($event.detail.content.errors);
+                        if (typeof $event.detail.content.errors.receipt_number != 'undefined') {
+                            $dispatch('shownotice', {message: $event.detail.content.errors.receipt_number, mode: 'error', redirectUrl: null, redirectRoute: null});
                         }
                         $dispatch('formerrors', {errors: $event.detail.content.errors});
                     } else{
@@ -340,24 +342,25 @@
                                     :selected_date="$today"
                                     label_position="float"
                                     /> --}}
-                                    <input type="text" x-model="date" placeholder="Date (dd-mm-yyyy)" class="input input-md">
+                                    Date:<span class="text-warning">*</span>
+                                    <input type="text" x-model="date" placeholder="(dd-mm-yyyy)" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" class="input input-md" required>
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}
                                 </div>
 
                                 <div>
                                     Book No.:<span class="text-warning">*</span>
-                                    <input x-model="bookNo" type="text" class="input input-bordered input-md">
+                                    <input x-model="bookNo" type="text" class="input input-bordered input-md" required>
                                 </div>
                                 <div>
                                     Receipt No.:<span class="text-warning">*</span>
-                                    <input x-model="receiptNo" type="text" class="input input-bordered input-md">
+                                    <input x-model="receiptNo" type="text" class="input input-bordered input-md" required>
                                 </div>
                             </div>
                             <div class="w-full overflow-x-scroll">
                                 <table class="table text-sm table-compact mx-auto w-full table-auto ">
                                     <tr>
                                         <td class="text-center">Particulars</td>
-                                        <td class="text-center">Tenure<br>(No. of Months)</td>
+                                        {{-- <td class="text-center">Tenure<br>(No. of Months)</td> --}}
                                         <td class="text-center">From<br>(mm-yyyy)</td>
                                         <td class="text-center">To<br>(mm-yyyy)</td>
                                         <td class="text-center">Amount<br>(Rs.)</td>
@@ -373,27 +376,27 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td class="">
+                                            {{-- <td class="">
                                                 <div>
                                                     <input :name="'tenure['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.tenure" disabled
                                                     {{-- :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" --}}
                                                     @input="getFromToMonths(i);">
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                             <td class="">
-                                                <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
-                                                :disabled="!typesWithTenure.includes(parseInt(fee.particulars))"
-                                                required pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"
+                                                <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
+                                                :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]"
                                                 {{-- @change="onFromChanged(i);" --}}
-                                                @input="formatFromDate(i);"
-                                                @focus="formatFromDate(i);"
+                                                {{-- @input="formatFromDate(i);" --}}
+                                                {{-- @focus="formatFromDate(i);" --}}
+                                                placeholder="dd-mm-yyyy"
                                                 >
                                             </td>
                                             <td class="">
-                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]">
+                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy">
                                             </td>
                                             <td class="">
-                                                <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered" type="text" x-model="fee.amount" required>
+                                                <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.amount" required>
                                             </td>
                                             <td>
                                                 <div class="flex flex-row" :class="i != (fees.length - 1) || 'space-x-2'">
@@ -409,11 +412,11 @@
                                         </tr>
                                     </template>
                                     <tr>
-                                        <td colspan=4 class="text-right">
+                                        <td colspan="3" class="text-right">
                                             <span>Total:&nbsp;</span>
                                         </td>
                                         <td>
-                                            <input :value="total()" class="input input-md input-bordered" type="text" disabled>
+                                            <input :value="total()" class="input input-md input-bordered w-full" type="text" disabled>
                                         </td>
                                         <td></td>
                                     </tr>
@@ -472,13 +475,11 @@
                 </div>
             </div>
             <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
-                <button @click.prevent.stop="printReceipt()" class="btn btn-sm btn-warning">Print</button>
-                <button @click.prevent.stop="newReceipt()" class="btn btn-sm btn-accent">Add Another Receipt</button>
-                <button @click.prevent.stop="close()" class="btn btn-sm btn-error">Close</button>
+                <button @click.prevent.stop="close()" class="btn btn-sm btn-accent">Add Next</button>
             </div>
         </div>
-        <template x-if="member != null">
-        <div class="my-4">
+        {{-- <template x-if="member != null"> --}}
+        {{-- <div class="my-4">
             <h3 class="text-md font-bold mt-3 mb-1 text-center underline text-warning"><span>Transaction History</span>&nbsp;</h3>
             <template x-if="member.fee_payments.length == 0">
                 <div class="text-center text-error">There is no transaction made by this member.</div>
@@ -520,7 +521,7 @@
                 </table>
             </div>
             </template>
-        </div>
-        </template>
+        </div> --}}
+        {{-- </template> --}}
     </div>
 </x-easyadmin::partials.adminpanel>

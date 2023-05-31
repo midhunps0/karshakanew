@@ -1427,6 +1427,7 @@ class MemberService implements ModelViewConnector {
             $results = DB::select($qstr);
             if (count($results) > 0) {
                 return [
+                    'success' => false,
                     'message' => 'The receipt number has already been taken.',
                     'errors' => array(
                         'receipt_number' => 'The receipt number has already been taken.'

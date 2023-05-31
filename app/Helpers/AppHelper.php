@@ -16,6 +16,8 @@ class AppHelper
         } elseif (strpos($date, '-')) {
             $darr = explode('-', $date);
         }
+        info('date');
+        info($date);
         return implode("-", array_reverse($darr));
     }
 

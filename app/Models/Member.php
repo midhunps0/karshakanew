@@ -26,6 +26,7 @@ class Member extends Model
         'created_at' => 'datetime:d-m-Y',
         'updated_at' => 'datetime:d-m-Y',
         'deleted_at' => 'datetime:d-m-Y',
+        'reg_date' => 'datetime:d-m-Y',
     ];
 
     protected $guarded = [];
@@ -37,7 +38,8 @@ class Member extends Model
         'wb_passbook_front',
         'wb_passbook_back',
         'one_and_same_cert',
-        'is_approved'
+        'is_approved',
+        'display_name'
     ];
 
     public function district()
@@ -215,6 +217,21 @@ class Member extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('one_and_same_cert');
+            },
+        );
+    }
+
+    protected function displayName(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->name != null && $this->name != '') {
+                    if ($this->name_mal != null && $this->name_mal != '') {
+                        return $this->name . '(' .$this->name_mal .')';
+                    }
+                    return $this->name;
+                }
+                return $this->name_mal ?? '';
             },
         );
     }
