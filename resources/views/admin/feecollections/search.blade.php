@@ -4,6 +4,7 @@
         receiptNo: '',
         start: '',
         end: '',
+        createdBy: '',
         page: 1,
         getParams() {
             let p = {
@@ -17,6 +18,9 @@
             }
             if (this.searchBy == 'receipt_no') {
                 p['receipt_no'] = this.receiptNo;
+            }
+            if (this.createdBy != '') {
+                p['created_by'] = this.createdBy;
             }
             if (this.page != 1) {
                 p['page'] = this.page;
@@ -45,6 +49,9 @@
         @endif
         @if (request()->get('searchBy') != null)
             searchBy = '{{request()->get('searchBy')}}';
+        @endif
+        @if (request()->get('created_by') != null)
+            createdBy = '{{request()->get('created_by')}}';
         @endif
         start = '{{request()->get('start') ?? ''}}';
         end = '{{request()->get('end') ?? ''}}';

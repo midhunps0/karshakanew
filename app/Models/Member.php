@@ -117,7 +117,7 @@ class Member extends Model
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);
-        if (!$authUser->hasPermissionTo('User: View In Any District')) {
+        if (!$authUser->hasPermissionTo('Member: View In Any District')) {
             $query->where('district_id', $authUser->district_id);
         }
         return $query;
