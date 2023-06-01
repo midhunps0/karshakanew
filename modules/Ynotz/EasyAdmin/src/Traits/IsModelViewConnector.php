@@ -58,9 +58,9 @@ trait IsModelViewConnector{
             || count($filters) > 0
             || count($advParams) > 0
         ) {
-            if (!$this->sqlOnlyFullGroupBy) {
-                DB::statement("SET SQL_MODE=''");
-            }
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE=''");
+            // }
 
             $results = $queryData['query']->orderBy(
                 $this->orderBy[0],
@@ -72,9 +72,9 @@ trait IsModelViewConnector{
                 $page
             );
 
-            if (!$this->sqlOnlyFullGroupBy) {
-                DB::statement("SET SQL_MODE='only_full_group_by'");
-            }
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE='only_full_group_by'");
+            // }
 
             $this->postIndexExtra();
             $data = $results->toArray();
@@ -149,10 +149,9 @@ trait IsModelViewConnector{
             $advParams,
             $selectedIds
         );
-
-        DB::statement("SET SQL_MODE=''");
+            // DB::statement("SET SQL_MODE=''");
         $results = $queryData['query']->select($this->selects)->get();
-        DB::statement("SET SQL_MODE='only_full_group_by'");
+        // DB::statement("SET SQL_MODE='only_full_group_by'");
 
         return $this->formatIndexResults($results->toArray());
     }
