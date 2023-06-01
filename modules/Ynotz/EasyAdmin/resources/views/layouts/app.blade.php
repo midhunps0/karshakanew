@@ -36,6 +36,7 @@ currentroute=$event.detail.currentroute;"
             </main>
         </div>
         <x-easyadmin::display.notice />
+        <x-easyadmin::display.toast />
         @stack('js')
     </body>
 </html>

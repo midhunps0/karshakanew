@@ -23,4 +23,10 @@ class RoleController extends SmartController
     {
         return $this->buildResponse($this->indexView, $this->connectorService->getIndexData());
     }
+
+    public function permissionUpdate(Request $request)
+    {
+        $result = $this->connectorService->permissionUpdate($request->all());
+        return response()->json(['success' => $result]);
+    }
 }

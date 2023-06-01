@@ -5,10 +5,23 @@
                 fixedHeader: false,
                 updatePermissions(rid, pid, granted) {
                     let g = granted ? 1 : 0;
-                    axios.get(
-
+                    params = {
+                        role_id: rid,
+                        permission_id: pid,
+                        granted: g
+                    };
+                    axios.post(
+                        '{{route('roles.permission')}}',
+                        params
                     ).then(
-
+                        (r) => {
+                            console.log(r);
+                            if (!r.data.success) {
+                                $dispatch('shownotice', {message: 'Someething went wrong. Couldn\'t update the permission', mode: 'error', redirectUrl: null, redirectRoute: null});
+                            } else {
+                                $dispatch('showtoast', {message: 'Permission updated!', mode: 'success',});
+                            }
+                        }
                     ).catch();
                 }
             }"

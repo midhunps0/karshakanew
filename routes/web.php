@@ -8,6 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\FeeCollectionController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // Route::post('feecollection/report', [FeeCollectionController::class, 'reportData'])
     //     ->name('feecollections.report.data');
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");
+    Route::post('/admin/roles/permission-update', [RoleController::class, 'permissionUpdate'])->name('roles.permission');
 });
 
 

@@ -54,7 +54,7 @@
         <h3 class="text-xl font-bold pb-3">Fee Collections Report</h3>
         <div>
             <form action="" @submit.prevent.stop="page=1; fetchReport();">
-                <div class="flex flex-row space-x-4 items-end">
+                <div class="flex flex-row space-x-4 items-end justify-start my-4 w-full">
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
                           <span class="label-text">Date Type</span>
@@ -76,6 +76,8 @@
                         </label>
                         <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
                     </div>
+                </div>
+                <div class="flex flex-row w-full space-x-4 justify-start items-end my-4">
                     <div class="form-control w-full max-w-xs">
                         <button type="submit" class="btn btn-md btn-success">Get Report</button>
                     </div>

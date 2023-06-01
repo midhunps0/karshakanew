@@ -126,6 +126,33 @@ class RoleService implements ModelViewConnector {
             // )
         ];
     }
+
+    public function permissionUpdate($data)
+    {
+        try {
+            /**
+             * @var Role
+             */
+            $role = Role::with('permissions')->where('id', $data['role_id'])->get()->first();
+            $existing_permissions = $role->permissions()->pluck('id')->toArray();
+            switch($data['granted']) {
+                case 1:
+                    if (!in_array($data['permission_id'], $existing_permissions)) {
+                        $role->assignPermissions($data['permission_id']);
+                    }
+                    break;
+                case 0:
+                    if (in_array($data['permission_id'], $existing_permissions)) {
+                        $role->reomvePermissions($data['permission_id']);
+                    }
+                    break;
+            }
+            return true;
+        } catch (\Throwable $e) {
+            info($e->__toString());
+            return false;
+        }
+    }
 }
 
 ?>

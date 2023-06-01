@@ -92,14 +92,14 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showAccessControl()
                     ],
-                    // [
-                    //     'type' => 'menu_item',
-                    //     'title' => 'Roles',
-                    //     'route' => 'roles.index',
-                    //     'route_params' => [],
-                    //     'icon' => 'easyadmin::icons.users',
-                    //     'show' => $this->showRoles()
-                    // ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Roles - permissions',
+                        'route' => 'roles.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showRoles()
+                    ],
                     // [
                     //     'type' => 'menu_item',
                     //     'title' => 'Permissions',
