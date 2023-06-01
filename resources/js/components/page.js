@@ -175,14 +175,17 @@ export default () => ({
         this.$store.app.xpages = [];
     },
     postForm(data) {
+        this.ajaxLoading = true;
         axios.post(data.url, data.formData, {
             headers: {
             'Content-Type': 'multipart/form-data',
             'X-FR': data.fragment
             }
         }).then((r) => {
+            this.ajaxLoading = false;
             this.$dispatch('formresponse', {target: data.target, content: r.data});
         }).catch((e) => {
+            this.ajaxLoading = false;
             console.log('error:');
             this.$dispatch('formresponse', {target: data.target, content: e});
         });
