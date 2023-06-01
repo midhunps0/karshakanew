@@ -167,10 +167,10 @@ trait IsModelViewConnector{
             $filters
         );
 
-        DB::statement("SET SQL_MODE=''");
+        // DB::statement("SET SQL_MODE=''");
 
         $results = $queryData['query']->select($this->selects)->get()->pluck($this->idKey)->unique()->toArray();
-        DB::statement("SET SQL_MODE='only_full_group_by'");
+        // DB::statement("SET SQL_MODE='only_full_group_by'");
         return $results;
     }
 
