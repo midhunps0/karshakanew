@@ -291,7 +291,8 @@
                         console.log(receipt);
                         showform = false;
                         showreceipt = true;
-                        fetchMember();
+                        {{-- fetchMember(); --}}
+                        member = null;
                         $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', });
                         $dispatch('formerrors', {errors: []});
                     } else if (typeof $event.detail.content.errors != 'undefined') {
