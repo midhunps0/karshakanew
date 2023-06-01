@@ -3,6 +3,7 @@
         dateType: 'receipt_date',
         start: '',
         end: '',
+        createdBy: null,
         page: 1,
         getParams() {
             let p = {
@@ -16,6 +17,9 @@
             }
             if (this.page != 1) {
                 p['page'] = this.page;
+            }
+            if (this.createdBy != null) {
+                p['created_by'] = this.createdBy;
             }
             return p;
         },
@@ -39,6 +43,9 @@
         @if (request()->get('datetype') != null)
             dateType = '{{request()->get('datetype')}}';
         @endif
+        @if (request()->get('created_by') != null)
+            createdBy = '{{request()->get('created_by')}}';
+        @endif
         start = '{{request()->get('start') ?? ''}}';
         end = '{{request()->get('end') ?? ''}}';
         @if (request()->get('page') != null)
@@ -59,7 +66,7 @@
                         <label class="label">
                           <span class="label-text">Date Type</span>
                         </label>
-                        <select class="select select-bordered flex-grow" x-model="dateType" name="" id="">
+                        <select class="select select-bordered flex-grow" x-model="dateType">
                             <option value="created_at">Creation Date</option>
                             <option value="receipt_date">Receipt Date</option>
                         </select>
@@ -77,6 +84,22 @@
                         <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
                     </div>
                 </div>
+                @if ($user->hasPermissionTo('User: View In Any District') ||
+                    $user->hasPermissionTo('User: View In Own District'))
+                <div class="flex flex-row w-full space-x-4 justify-start items-end my-4">
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                          <span class="label-text">Created By</span>
+                        </label>
+                        <select class="select select-bordered flex-grow" x-model="createdBy">
+                            <option value="">Any</option>
+                            @foreach ($appUsers as $u)
+                            <option value="{{$u->id}}">{{$u->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                @endif
                 <div class="flex flex-row w-full space-x-4 justify-start items-end my-4">
                     <div class="form-control w-full max-w-xs">
                         <button type="submit" class="btn btn-md btn-success">Get Report</button>

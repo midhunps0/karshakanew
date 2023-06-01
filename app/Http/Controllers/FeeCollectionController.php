@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Throwable;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\FeeCollectionService;
 use Ynotz\EasyAdmin\Traits\HasMVConnector;
@@ -77,10 +78,13 @@ class FeeCollectionController extends SmartController
                     'start' => $start,
                     'end' => $end,
                     'page' => $page,
-                    'datetype' => $request->input('datetype', 'receipt_date')
+                    'datetype' => $request->input('datetype', 'receipt_date'),
+                    'created_by' => $request->input('created_by', null)
                 ]);
             }
-            return $this->buildResponse('admin.feecollections.report', ['receipts' => $result]);
+            $user = User::find(auth()->user()->id);
+            $appUsers = User::userAccessControlled()->get();
+            return $this->buildResponse('admin.feecollections.report', ['receipts' => $result, 'appUsers' => $appUsers, 'user' => $user]);
         } catch (Throwable $e) {
             info($e);
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);

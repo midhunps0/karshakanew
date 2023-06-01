@@ -157,6 +157,9 @@ class FeeCollectionService implements ModelViewConnector {
         );
         $query->userDistrictConstrained();
         $datetype = $data['datetype'];
+        if (isset($data['created_by'])) {
+            $query->where('collected_by', $data['created_by']);
+        }
         if (isset($data['start'])) {
             $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
         }
