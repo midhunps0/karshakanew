@@ -1424,6 +1424,7 @@ class MemberService implements ModelViewConnector {
         if (isset($data['receipt_number'])) {
             $qstr = 'SELECT * FROM fee_collections WHERE receipt_number = '
             . '\''.$data['book_number'].'/'.$data['receipt_number'].'\'';
+            info($qstr);
             $results = DB::select($qstr);
             if (count($results) > 0) {
                 return [
@@ -1441,6 +1442,9 @@ class MemberService implements ModelViewConnector {
             return false;
         }
         try {
+            if(isset($data['receipt_number'])) {
+                info($data['receipt_number']);
+            }
             DB::beginTransaction();
             $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($distict);
             $receiptNo = $data['receipt_number'] ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($distict);
