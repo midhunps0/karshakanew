@@ -174,7 +174,7 @@ class FeeCollectionService implements ModelViewConnector {
                 $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
             } else {
                 $d = Carbon::createFromFormat('d-m-Y', $data['end'])->timestamp;
-                $query->where($datetype, '>=', $d);
+                $query->where($datetype, '<=', $d);
             }
         }
 
