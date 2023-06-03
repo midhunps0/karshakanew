@@ -162,20 +162,10 @@ class FeeCollectionService implements ModelViewConnector {
             $query->where('collected_by', $data['created_by']);
         }
         if (isset($data['start'])) {
-            if ($datetype == 'receipt_date') {
-                $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
-            } else {
-                $d = Carbon::createFromFormat('d-m-Y', $data['start'])->timestamp;
-                $query->where($datetype, '>=', $d);
-            }
+            $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
         }
         if (isset($data['end'])) {
-            if ($datetype == 'receipt_date') {
-                $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
-            } else {
-                $d = Carbon::createFromFormat('d-m-Y', $data['end'])->timestamp;
-                $query->where($datetype, '<=', $d);
-            }
+            $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
         }
 
         if (isset($data['fullreport']) && $data['fullreport']) {
