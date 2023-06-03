@@ -30,6 +30,7 @@
             },
             showform: true,
             showreceipt: false,
+            showFinder: true,
             total() {
                 return this.fees.reduce((r, f) => {
                     return parseInt(r) + (f.amount != null ? parseInt(f.amount) : 0);
@@ -60,6 +61,7 @@
                 ).then((r) => {
                     this.member = r.data.member;
                     this.receiptNo = null;
+                    this.showFinder = false;
                     {{-- this.fees = [
                         {
                             particulars: '',
@@ -233,6 +235,7 @@
             close() {
                 this.showreceipt = false;
                 this.showform = true;
+                this.showFinder = true;
                 {{-- $dispatch('linkaction', {link: '{{route('feecollections.create')}}', route: 'feecollections.create'}); --}}
             },
             doSubmit() {
@@ -257,7 +260,7 @@
             }
         }"
         >
-        <div>
+        <div x-show="showFinder">
             <x-utils.memberfinder />
         </div>
         <div x-show="member != null">
@@ -278,6 +281,7 @@
                 <div class="flex-grow text-right">
                     <a href="" @click.prevent.stop="editAction(member.id);"
                         class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
+                    <button type="button" class="btn btn-sm btn-error" @click.prevent.stop="showFinder = true;">Cancel</button>
                 </div>
             </div>
         </div>
@@ -293,17 +297,17 @@
                         showreceipt = true;
                         {{-- fetchMember(); --}}
                         member = null;
-                        $dispatch('shownotice', {message: 'Receipt Created', mode: 'success', });
+                        $dispatch('showtoast', {message: 'Receipt Created', mode: 'success', });
                         $dispatch('formerrors', {errors: []});
                     } else if (typeof $event.detail.content.errors != 'undefined') {
                         console.log('errors');
                         console.log($event.detail.content.errors);
                         if (typeof $event.detail.content.errors.receipt_number != 'undefined') {
-                            $dispatch('shownotice', {message: $event.detail.content.errors.receipt_number, mode: 'error', redirectUrl: null, redirectRoute: null});
+                            $dispatch('showtoast', {message: $event.detail.content.errors.receipt_number, mode: 'error'});
                         }
                         $dispatch('formerrors', {errors: $event.detail.content.errors});
                     } else{
-                        $dispatch('shownotice', {message: $event.detail.content.error, mode: 'error', redirectUrl: null, redirectRoute: null});
+                        $dispatch('showtoast', {message: $event.detail.content.error, mode: 'error'});
                     }
                 }
             "

@@ -1439,7 +1439,7 @@ class MemberService implements ModelViewConnector {
         $member = Member::find($id);
         $distict = $member->district;
         if ($member == null) {
-            return false;
+            return [ '' => false ];
         }
         try {
             if(isset($data['receipt_number'])) {

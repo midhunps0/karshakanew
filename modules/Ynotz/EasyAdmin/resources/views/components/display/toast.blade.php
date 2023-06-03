@@ -25,7 +25,7 @@
     @showtoast.window="message = $event.detail.message; mode = $event.detail.mode; showmodal = true; init();"
     x-transition.duration-1000
     >
-    <div class="h-full w-full text-center p-10 bg-opacity-70" :class="getDisplayTheme();">
+    <div class="h-full w-full text-center p-10 bg-opacity-70 rounded-md" :class="getDisplayTheme();">
         <span x-text="message"></span>
     </div>
     <div></div>

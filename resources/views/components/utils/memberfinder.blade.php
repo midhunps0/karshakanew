@@ -72,14 +72,14 @@
         </label>
         <div>
             <div class="flex flex-row items-baseline space-x-2" :class="!searchOn || 'opacity-50'">
-                <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
-                <input x-model="village" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
-                <input x-model="taluk" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn"/>
-                <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" :disabled="searchOn"/>
-                <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch() || searchOn">
+                <input x-model="district" type="text" placeholder="District" class="input input-bordered flex-grow w-20" :disabled="searchOn || suggestions.length > 0"/>
+                <input x-model="village" type="text" placeholder="Taluk" class="input input-bordered flex-grow w-20" :disabled="searchOn || suggestions.length > 0"/>
+                <input x-model="taluk" type="text" placeholder="Village" class="input input-bordered flex-grow w-20" :disabled="searchOn || suggestions.length > 0"/>
+                <input x-model="memNo" type="text" placeholder="Mem. No." class="input input-bordered flex-grow w-20" @keyup.prevent.stop="if($event.code == 'Enter') {noMemberMsg = false; getMembersList();}" :disabled="searchOn || suggestions.length > 0"/>
+                <button @click.prevent.stop="noMemberMsg = false; getMembersList();" class="btn btn-md btn-warning" :disabled="disableSearch() || searchOn || suggestions.length > 0">
                     Search Member
                 </button>
-                <input type="checkbox" class="checkbox checkbox-xs" id="exact" x-model="exact"><label for="exact">Exact Search</label>
+                <input type="checkbox" class="checkbox checkbox-xs" id="exact" x-model="exact" :disabled="disableSearch() || searchOn || suggestions.length > 0"><label for="exact">Exact Search</label>
             </div>
             <div x-show="noMemberMsg" x-transition class="text-error text-opacity-80 flex-grow py-2">No members matching the search term.</div>
         </div>

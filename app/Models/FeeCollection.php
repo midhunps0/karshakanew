@@ -21,6 +21,8 @@ class FeeCollection extends Model
 
     protected $appends = [
         'formatted_receipt_date',
+        'formatted_period_from',
+        'formatted_period_to',
         'is_editable_period'
     ];
 
@@ -49,6 +51,26 @@ class FeeCollection extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 $tdate = new \DateTime($this->receipt_date);
+                return $tdate->format('d-m-Y');
+            },
+        );
+    }
+
+    protected function formattedFromDate(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $tdate = new \DateTime($this->from);
+                return $tdate->format('d-m-Y');
+            },
+        );
+    }
+
+    protected function formattedToDate(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $tdate = new \DateTime($this->to);
                 return $tdate->format('d-m-Y');
             },
         );
