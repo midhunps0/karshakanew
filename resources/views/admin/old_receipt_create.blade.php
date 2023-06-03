@@ -263,7 +263,7 @@
         <div x-show="showFinder">
             <x-utils.memberfinder />
         </div>
-        <div x-show="member != null">
+        <div x-show="member != null && !showFinder">
             <h3 class="text-sm font-bold pb-3 text-warning">Create Receipt For:</h3>
             <div class="flex flex-row flex-wrap space-x-0 space-y-2 md:space-y-0 md:space-x-8 p-4 border border-base-content border-opacity-20  rounded-md bg-base-200">
                 <div class="p-0 min-w-72">
@@ -285,7 +285,7 @@
                 </div>
             </div>
         </div>
-        <form x-show="showform"
+        <form x-show="showform && !showFinder"
             @submit.prevent.stop="doSubmit();"
                 @formresponse.window="console.log($event.detail);
                 console.log('fr captured');
@@ -312,7 +312,7 @@
                 }
             "
             @datepicker.window="console.log($event);date = $event.detail.value;"
-            @selectmember.window="fetchMember($event.detail.id); showform = true; showreceipt = false;"
+            @selectmember.window="console.log('ssss');fetchMember($event.detail.id); showform = true; showreceipt = false;"
             class="p-1" action=""
             id="{{$form['id']}}"
             x-init="
@@ -323,7 +323,7 @@
             console.log(typesWithTenure);
             "
             >
-            <div x-show="member != null && showform" class="">
+            <div x-show="member != null" class="">
                 <div class="my-4">
                     <div class="p-4 border border-base-content border-opacity-20 rounded-md bg-base-200">
                         <div>

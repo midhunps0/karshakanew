@@ -36,6 +36,20 @@
                 from: this.start,
                 to: this.end
             });
+        },
+        formatDate(el, event) {
+            let re = /[0-9,-]/g;
+            let x = (el.value.match(re) || []).join('');
+            let arr = x.split('-');
+            let newarr = [];
+            for(i = 0; i < arr.length; i++) {
+                if (i < 2) {
+                    newarr.push(arr[i].padStart(2, '0'));
+                } else {
+                    newarr.push(arr[i]);
+                }
+            }
+            {{-- el.value = newarr.join('-'); --}}
         }
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
@@ -75,7 +89,7 @@
                         <label class="label">
                           <span class="label-text">From</span>
                         </label>
-                        <input x-model="start" type="text" name="start" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+                        <input x-model="start" @change="formatDate($el, $event);" type="text" name="start" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">

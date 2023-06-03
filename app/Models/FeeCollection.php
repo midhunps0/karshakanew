@@ -56,7 +56,7 @@ class FeeCollection extends Model
         );
     }
 
-    protected function formattedFromDate(): Attribute
+    protected function formattedPeriodFrom(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -66,7 +66,7 @@ class FeeCollection extends Model
         );
     }
 
-    protected function formattedToDate(): Attribute
+    protected function formattedPeriodTo(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {

@@ -1,10 +1,11 @@
 <?php
 namespace App\Services;
 
+use App\Models\FeeItem;
 use App\Models\Religion;
 use App\Helpers\AppHelper;
 use App\Models\FeeCollection;
-use App\Models\FeeItem;
+use Illuminate\Support\Carbon;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -161,10 +162,20 @@ class FeeCollectionService implements ModelViewConnector {
             $query->where('collected_by', $data['created_by']);
         }
         if (isset($data['start'])) {
-            $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
+            if ($datetype == 'receipt_date') {
+                $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
+            } else {
+                $d = Carbon::createFromFormat('d-m-Y', $data['start'])->timestamp;
+                $query->where($datetype, '>=', $d);
+            }
         }
         if (isset($data['end'])) {
-            $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
+            if ($datetype == 'receipt_date') {
+                $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
+            } else {
+                $d = Carbon::createFromFormat('d-m-Y', $data['end'])->timestamp;
+                $query->where($datetype, '>=', $d);
+            }
         }
 
         if (isset($data['fullreport']) && $data['fullreport']) {
