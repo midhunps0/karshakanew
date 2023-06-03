@@ -26,6 +26,11 @@ class FeeCollection extends Model
         'is_editable_period'
     ];
 
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
+    }
+
     public function feeItems()
     {
         return $this->hasMany(FeeItem::class, 'fee_collection_id', 'id');
@@ -33,7 +38,7 @@ class FeeCollection extends Model
 
     public function collectedBy()
     {
-        return $this->belongsTo(User::class, 'collected_by_id', 'id');
+        return $this->belongsTo(User::class, 'collected_by', 'id');
     }
 
     public function member()

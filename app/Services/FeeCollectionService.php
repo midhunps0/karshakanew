@@ -162,17 +162,17 @@ class FeeCollectionService implements ModelViewConnector {
             $query->where('collected_by', $data['created_by']);
         }
         if (isset($data['start'])) {
-            $query->where($datetype, '>=', AppHelper::formatDateForSave($data['start']));
+            $query->where($datetype, '>=', AppHelper::formatDateForSave(thedate: $data['start'], setTimeTo: 'start'));
         }
         if (isset($data['end'])) {
-            $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
+            $query->where($datetype, '<=', AppHelper::formatDateForSave(thedate: $data['end'], setTimeTo: 'end'));
         }
 
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
             return $query->paginate(
-                perPage: 20,
+                perPage: 100,
                 page: $data['page']
             );
         }

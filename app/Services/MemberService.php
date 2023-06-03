@@ -1473,10 +1473,10 @@ class MemberService implements ModelViewConnector {
                     'amount' => $item['amount'],
                 ];
                 if (isset($item['period_from'])) {
-                    $fiData['period_from'] = AppHelper::formatDateForSave($item['period_from']);
+                    $fiData['period_from'] = AppHelper::formatDateForSave(thedate: $item['period_from'], setTimeTo: 'start');
                 }
                 if (isset($item['period_to'])) {
-                    $fiData['period_to'] = AppHelper::formatDateForSave($item['period_to']);
+                    $fiData['period_to'] = AppHelper::formatDateForSave(thedate: $item['period_to'], setTimeTo: 'end');
                 }
                 if (isset($item['period_from']) && isset($item['period_to'])) {
                     $fiData['tenure'] = $item['period_from'] . ' to ' . $item['period_to'];

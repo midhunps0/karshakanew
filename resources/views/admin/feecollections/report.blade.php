@@ -132,13 +132,15 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>District</th>
                                 <th>Receipt No.</th>
                                 <th>particulars</th>
                                 <th>From</th>
                                 <th>To</th>
-                                <th>Tenure</th>
-                                <th>Amount</th>
-                                <th>Total Amount</th>
+                                <th>Remarks</th>
+                                <th>Item Amount</th>
+                                <th>Receipt Amount</th>
+                                <th>Created By</th>
                             </tr>
                         </thead>
                         @forelse ($receipts as $fp)
@@ -150,6 +152,7 @@
                                         {{$fp->formatted_receipt_date}}
                                     @endif
                                 </td>
+                                <td>@if ($loop->first){{$fp->district->name}}@endif</td>
                                 <td>@if ($loop->first){{$fp->receipt_number}}@endif</td>
                                 <td>{{$fi->feeType->name}}</td>
                                 <td>{{$fi->formatted_period_from ?? '--'}}</td>
@@ -157,6 +160,7 @@
                                 <td>{{$fi->tenure ?? '--'}}</td>
                                 <td>{{$fi->amount ?? ''}}</td>
                                 <td>@if ($loop->first){{$fp->total_amount}}@endif</td>
+                                <td>@if ($loop->first){{$fp->collectedBy != null ? $fp->collectedBy->name : '-'}}@endif</td>
                             </tr>
                             @endforeach
                         </tbody>

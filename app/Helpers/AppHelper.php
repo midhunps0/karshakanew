@@ -6,19 +6,49 @@ use App\Models\Member;
 use App\Models\Village;
 use App\Models\District;
 use App\Models\FeeCollection;
+use Illuminate\Support\Carbon;
 
 class AppHelper
 {
-    public static function formatDateForSave(string $date): string
+    /**
+     * Undocumented function
+     *
+     * @param string $date
+     * @param string|null $inputFormat
+     * @param string|null $outputFormat
+     * @param string $settime Expected values: 'start' or 'end'
+     * @return string
+     */
+    public static function formatDateForSave(string $thedate, string $inputFormat = null, string $outputFormat = null, string $setTimeTo = ''): string
     {
-        if (strpos($date, '/')) {
-            $darr = explode('/', $date);
-        } elseif (strpos($date, '-')) {
-            $darr = explode('-', $date);
+        if ($inputFormat == null) {
+            if (strpos($thedate, '/')) {
+                $inputFormat = 'd/m/Y';
+            } elseif (strpos($thedate, '-')) {
+                $inputFormat = 'd-m-Y';
+            }
         }
-        info('date');
-        info($date);
-        return implode("-", array_reverse($darr));
+        $d = Carbon::createFromFormat($inputFormat, $thedate);
+        switch($setTimeTo) {
+            case 'end':
+                $d = $d->endOfDay();
+                break;
+            case 'start':
+                $d = $d->startOfDay();
+                break;
+            default:
+                break;
+        }
+        $outputFormat = $outputFormat ?? 'Y-m-d H:i:s';
+
+        return $d->format($outputFormat);
+    }
+
+    public function getNextDate(string $date, string $inputFormat = 'd-m-Y', string $outputFormat = 'Y-m-d'): string
+    {
+        $d = Carbon::createFromFormat($inputFormat, $date);
+        $d->addDay()->startOfDay();
+        return $d->format($outputFormat);
     }
 
     public static function getBookNumber($district)
