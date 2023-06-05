@@ -154,7 +154,7 @@ class FeeCollectionService implements ModelViewConnector {
     public function report($data)
     {
         $query = FeeCollection::with(
-            'feeItems', 'member', 'collectedBy', 'paymentMode'
+            'district', 'feeItems', 'member', 'collectedBy', 'paymentMode'
         );
         $query->userDistrictConstrained();
         $datetype = $data['datetype'];

@@ -5,6 +5,7 @@
         end: '',
         createdBy: null,
         page: 1,
+        dowloadUrl: '',
         getParams() {
             let p = {
                 datetype: this.dateType
@@ -54,16 +55,22 @@
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
     x-init="
+        downloadUrl = '{{route('feecollections.report.download').'?'}}';
         @if (request()->get('datetype') != null)
             dateType = '{{request()->get('datetype')}}';
+            downloadUrl += 'datetype=' + dateType + '&';
         @endif
         @if (request()->get('created_by') != null)
             createdBy = '{{request()->get('created_by')}}';
+            downloadUrl += 'created_by=' + createdBy + '&';
         @endif
         start = '{{request()->get('start') ?? ''}}';
+        downloadUrl += 'start=' + start + '&';
         end = '{{request()->get('end') ?? ''}}';
+        downloadUrl += 'end=' + end + '&';
         @if (request()->get('page') != null)
             page = {{request()->get('page')}};
+            downloadUrl += 'page=' + page + '&';
         @endif
     "
     @contentupdate.window="
@@ -122,7 +129,15 @@
                     <div class="form-control w-full max-w-xs">
                         <button @click.prevent.stop="fetchPrintReport();" type="button" class="btn btn-md btn-warning">Print View</button>
                     </div>
+                    <div class="form-control w-full max-w-xs">
+                        <a :href="downloadUrl" class="btn btn-md btn-warning" download>Download</a>
+                    </div>
                     @endif
+                    {{-- @if(count($receipts) > 0)
+                    <div class="form-control w-full max-w-xs">
+                        <a href="{{request()->url()}}" class="btn btn-md btn-warning">Download</button>
+                    </div>
+                    @endif --}}
                 </div>
             </form>
             @if(count($receipts) > 0)
@@ -230,6 +245,7 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
+                                    <th>District</th>
                                     <th>Receipt No.</th>
                                     <th>particulars</th>
                                     <th>From</th>
@@ -237,6 +253,7 @@
                                     <th>Tenure</th>
                                     <th>Amount</th>
                                     <th>Total Amount</th>
+                                    <th>Created By</th>
                                 </tr>
                             </thead>
                             <template x-for="r in receipts">
@@ -246,6 +263,7 @@
                                     <td>
                                         <span x-show="index == 0" x-text="r.formatted_receipt_date"></span>
                                     </td>
+                                    <td><span x-show="index == 0" x-text="r.district.name"></span></td>
                                     <td>
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>
                                     </td>
@@ -259,6 +277,7 @@
                                         <span x-text="fi.tenure != null ? fi.tenure : '--'"></span></td>
                                     <td><span x-text="fi.amount"></td>
                                     <td><span x-show="index == 0" x-text="r.total_amount"></span></td>
+                                    <td><span x-show="index == 0" x-text="r.collected_by.name"></span></td>
                                 </tr>
                                 </template>
                             </tbody>

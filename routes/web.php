@@ -86,6 +86,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('feecollections.report');
     Route::get('feecollection/full-report', [FeeCollectionController::class, 'fullReport'])
         ->name('feecollections.fullreport');
+    Route::get('feecollection/report-dowload', [FeeCollectionController::class, 'download'])
+        ->name('feecollections.report.download');
     // Route::post('feecollection/report', [FeeCollectionController::class, 'reportData'])
     //     ->name('feecollections.report.data');
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");

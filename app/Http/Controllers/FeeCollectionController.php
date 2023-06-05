@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Services\FeeCollectionService;
+use App\Exports\FeeCollectionExport;
 use Ynotz\EasyAdmin\Traits\HasMVConnector;
 use Illuminate\Auth\Access\AuthorizationException;
+use LDAP\Result;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class FeeCollectionController extends SmartController
@@ -111,6 +114,25 @@ class FeeCollectionController extends SmartController
         ]);
     }
 
+    public function download(Request $request, Excel $excel)
+    {
+        $start = $request->input('start', null);
+        $end = $request->input('end', null);
+        $page = $request->input('page', 1);
+            $result = [];
+        $result = collect([]);
+        if ($start != null || $end != null) {
+            $result = $this->connectorService->report([
+                'start' => $start,
+                'end' => $end,
+                'fullreport' => true,
+                'datetype' => $request->input('datetype', 'receipt_date')
+            ]);
+        }
+
+        return Excel::download(new FeeCollectionExport($result), 'receipts.csv');
+    }
+
     public function search()
     {
         $start = $this->request->input('start', null);
@@ -135,5 +157,4 @@ class FeeCollectionController extends SmartController
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         }
     }
-
 }
