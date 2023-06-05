@@ -102,7 +102,8 @@
             if (this.selectedIds.length > 0) {
                 allParams['selected_ids'] = this.selectedIds.join('|');
             }
-            $dispatch('linkaction', { link: currentpath, params: allParams, fresh: true, fragment: 'main-panel', target: 'renderedpanel' });
+
+            $dispatch('linkaction', { link: currentpath.split('?')[0], params: allParams, fresh: true, fragment: 'main-panel', target: 'renderedpanel' });
         },
         doSearch(param) {
             ajaxLoading = true;

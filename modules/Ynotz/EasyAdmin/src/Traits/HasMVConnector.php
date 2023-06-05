@@ -34,7 +34,7 @@ trait HasMVConnector {
         // dd($view);
         try {
             $result = $this->connectorService->index(
-                intval($this->request->input('items_count', 100)),
+                intval($this->request->input('items_count', 10)),
                 $this->request->input('page'),
                 $this->request->input('search', []),
                 $this->request->input('sort', []),
