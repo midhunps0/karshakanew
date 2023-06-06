@@ -63,6 +63,22 @@
                         case 'Membership No.':
                             str = 'membership_no';
                             break;
+                        case 'Name':
+                            str = 'name';
+                            break;
+                        case 'Name (Mal)':
+                            str = 'name_mal';
+                            break;
+                        case 'Permanent Address':
+                            str = 'permanent_address';
+                        case 'Permanent Address (Mal)':
+                            str = 'permanent_address_mal';
+                            break;
+                        case 'Current Address':
+                            str = 'current_address';
+                        case 'Current Address (Mal)':
+                            str = 'current_address_mal';
+                            break;
                         default:
                             break;
                     }
@@ -168,6 +184,12 @@
                         <option selected value="Search Phrase">None</option>
                         <option value="Aadhaar No.">Aadhaar No.</option>
                         <option value="Membership No.">Membership No.</option>
+                        <option value="Name">Name</option>
+                        <option value="Name (Mal)">Name (Mal)</option>
+                        <option value="Permanent Address">Permanent Address</option>
+                        <option value="Permanent Address (Mal)">Permanent Address (Mal)</option>
+                        <option value="Current Address">Current Address</option>
+                        <option value="Current Address (Mal)">Current Address (Mal)</option>
                     </select>
                 </div>
                 <div class="form-control w-full sm:w-1/3 sm:max-w-xs">

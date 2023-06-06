@@ -132,7 +132,7 @@ class MemberService implements ModelViewConnector {
         $user = User::find(auth()->user()->id);
         $deletePermission = $user->hasPermissionTo('Member: Delete In Any District') ||
         $user->hasPermissionTo('Member: Delete In Own District');
-        if ($user->hasPermissionTo('Member: View In Any District') || $user->hasPermissionTo('Member: View In Own District')) {
+        if ($user->hasPermissionTo('Member: View In Any District') ) {
             $columns = $columns->addColumn(
                 fields: ['name'],
                 relation: 'district'
@@ -141,7 +141,11 @@ class MemberService implements ModelViewConnector {
         $columns = $columns->addColumn(
             fields: ['name'],
             relation: 'taluk'
-        )->addActionColumn(
+        )->addColumn(
+            fields: ['name'],
+            relation: 'village'
+        );
+        $columns = $columns->addActionColumn(
             viewRoute: 'members.show',
             deleteRoute: $this->getDestroyRoute(),
             deletePermission: $deletePermission,
