@@ -38,11 +38,11 @@ class FeeCollectionExport implements FromArray, WithHeadings
             'Receipt Date',
             'District',
             'Receipt Number',
-            'Particulats',
+            'Particulars',
             'Period From',
             'Period To',
             'Remarksr',
-            'Amount',
+            'Item Amount',
             'Total Amount',
             'Collected By',
         ];
