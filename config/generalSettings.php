@@ -19,7 +19,8 @@
             'Widower'
         ],
         'fee_types_with_tenure' => [
-            2
+            2,
+            4
         ],
         'default_payment_mode_id' => 1,
     ];
