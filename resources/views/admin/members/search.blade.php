@@ -2,7 +2,7 @@
     <div>
         <h3 class="text-xl font-bold pb-3"><span>Search Member</span>&nbsp;</h3>
         <form x-data="{
-                aadhaar_no: '',
+                search_string: '',
                 membership_no: '',
                 name: '',
                 district_id: null,
@@ -71,11 +71,13 @@
                             break;
                         case 'Permanent Address':
                             str = 'permanent_address';
+                            break;
                         case 'Permanent Address (Mal)':
                             str = 'permanent_address_mal';
                             break;
                         case 'Current Address':
                             str = 'current_address';
+                            break;
                         case 'Current Address (Mal)':
                             str = 'current_address_mal';
                             break;
@@ -107,9 +109,10 @@
                             querystr = '?';
                         }
                         let searchStr = null;
+                        /*
                         switch (this.getSearchBy()) {
                             case 'aadhaar_no':
-                                searchStr = this.aadhaar_no;
+                                searchStr = this.search_string;
                                 break;
                             case 'membership_no':
                                 searchStr = this.memNumDistrict + '/'
@@ -117,16 +120,18 @@
                                     + this.memNumVillage + '/'
                                     + this.memNumStr;
                                 break;
-                            case '':
+                            case 'name':
+                                searchStr = this.name;
                                 break;
-                        }
-                        if (this.getSearchBy() == 'aadhaar_no') {
-                            searchStr = this.aadhaar_no;
-                        } else if (this.getSearchBy() == 'membership_no') {
+                        }*/
+
+                        if (this.getSearchBy() == 'membership_no') {
                             searchStr = this.memNumDistrict + '/'
                                 + this.memNumTaluk + '/'
                                 + this.memNumVillage + '/'
                                 + this.memNumStr;
+                        } else {
+                            searchStr = this.search_string;
                         }
                         querystr += 'adv_search[]='+this.getSearchBy()+'::'+this.search_condition+'::' + searchStr;
                     }
@@ -209,7 +214,7 @@
                     <label class="label">
                       <span class="label-text" x-text="search_by"></span>
                     </label>
-                    <input x-show="search_by != 'Membership No.'" x-model="aadhaar_no" :disabled="search_by == 'Search Phrase'" type="text" placeholder="Type here" class="input input-md input-bordered" />
+                    <input x-show="search_by != 'Membership No.'" x-model="search_string" :disabled="search_by == 'Search Phrase'" type="text" placeholder="Type here" class="input input-md input-bordered" />
                     <div x-show="search_by == 'Membership No.'" class="w-full flex flex-row justify-between">
                         <input x-model="memNumDistrict" type="text" class="input input-md input-bordered w-16">
                         <input x-model="memNumTaluk" type="text" class="input input-md input-bordered w-16">
