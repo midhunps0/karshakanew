@@ -102,7 +102,20 @@
             if (this.selectedIds.length > 0) {
                 allParams['selected_ids'] = this.selectedIds.join('|');
             }
-
+            console.log('currentpath');
+            console.log(currentpath);
+            console.log('request url');
+            console.log('{{request()->getRequestUri()}}');
+            let ls = '{{request()->getRequestUri()}}'.split('?');
+            if (ls.length > 1) {
+                let qx = ls[1].split('&');
+                let advs = qx.filter((x) => {
+                    return x.includes('adv_search');
+                });
+                if (advs.length > 0) {
+                    allParams.adv_search = [advs[0].replace('adv_search[]=', '')];
+                }
+            }
             $dispatch('linkaction', { link: currentpath.split('?')[0], params: allParams, fresh: true, fragment: 'main-panel', target: 'renderedpanel' });
         },
         doSearch(param) {

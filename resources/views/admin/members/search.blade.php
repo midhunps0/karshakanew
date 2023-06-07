@@ -107,6 +107,19 @@
                             querystr = '?';
                         }
                         let searchStr = null;
+                        switch (this.getSearchBy()) {
+                            case 'aadhaar_no':
+                                searchStr = this.aadhaar_no;
+                                break;
+                            case 'membership_no':
+                                searchStr = this.memNumDistrict + '/'
+                                    + this.memNumTaluk + '/'
+                                    + this.memNumVillage + '/'
+                                    + this.memNumStr;
+                                break;
+                            case '':
+                                break;
+                        }
                         if (this.getSearchBy() == 'aadhaar_no') {
                             searchStr = this.aadhaar_no;
                         } else if (this.getSearchBy() == 'membership_no') {
