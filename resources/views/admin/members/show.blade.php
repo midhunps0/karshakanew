@@ -40,6 +40,10 @@
                             <span class="text-warning font-bold">Name in Malayalam:</span>&nbsp;
                             <span>{{$member->name_mal ?? '--'}}</span>
                         </div>
+                        <div class="md:w-1/3 p-1 my-1">
+                            <span class="text-warning font-bold">Regn. Date:</span>&nbsp;
+                            <span>{{$member->reg_date ?? '--'}}</span>
+                        </div>
                     </div>
                     <div class="flex flex-row flex-wrap items-start py-1 px-3">
                         <div class="md:w-1/3 p-1 my-1">

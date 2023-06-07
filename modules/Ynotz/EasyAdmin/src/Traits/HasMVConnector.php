@@ -31,7 +31,6 @@ trait HasMVConnector {
             $view = isset($target) && isset($this->indexView[$target]) ? $this->indexView[$target] : $this->indexView['default'];
         }
 
-        // dd($view);
         try {
             $result = $this->connectorService->index(
                 intval($this->request->input('items_count', 100)),

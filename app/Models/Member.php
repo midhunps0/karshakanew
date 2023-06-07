@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 class Member extends Model
 {
@@ -239,5 +240,40 @@ class Member extends Model
     public function auditLogs()
     {
         return $this->morphMany(AuditLog::class, 'auditable');
+    }
+
+    protected function dob(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y'),
+        );
+    }
+
+    protected function regDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y'),
+        );
+    }
+
+    protected function approvedAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::createFromTimestamp($value)->format('d-m-Y'),
+        );
+    }
+
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::createFromTimestamp($value)->format('d-m-Y'),
+        );
+    }
+
+    protected function updatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::createFromTimestamp($value)->format('d-m-Y'),
+        );
     }
 }
