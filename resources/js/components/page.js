@@ -73,7 +73,7 @@ export default () => ({
         let targetPanelId;
         let theRoute = detail.route;
         let fr = (typeof detail.fragment != 'undefined' && detail.fragment != null) ? detail.fragment : 'main-panel';
-        let forceFresh = typeof detail.fresh != 'undefined' && detail.fresh === true;
+        let forceFresh = typeof detail.fresh == 'undefined' || detail.fresh === true;
         let trackHistory = typeof detail.history == 'undefined' ? true : detail.history;
         if (typeof detail.target == 'undefined' || detail.target == null) {
             targetPanelId = this.panelId;

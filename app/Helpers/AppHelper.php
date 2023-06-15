@@ -6,7 +6,9 @@ use App\Models\Member;
 use App\Models\Village;
 use App\Models\District;
 use App\Models\FeeCollection;
+use App\Models\WelfareScheme;
 use Illuminate\Support\Carbon;
+use Ynotz\MediaManager\Contracts\MediaOwner;
 
 class AppHelper
 {
@@ -51,11 +53,48 @@ class AppHelper
         return $d->format($outputFormat);
     }
 
+    public static function getFinancialYearCode(): string
+    {
+        $t = Carbon::today();
+        $cyear = $t->year;
+        $y = $cyear % 100;
+        $y = $y == 0 ? $cyear : $y;
+        $fystr = '';
+        if ($t->month > 2) {
+            $yx = $y + 1;
+            if ($yx % 100 == 0) {
+                $y = $cyear;
+                $yx = $cyear + 1;
+            }
+            $fystr = str_pad($y, 2, '0', STR_PAD_LEFT)
+                . '-' . str_pad($yx, 2, '0', STR_PAD_LEFT) . '-';
+        } else {
+            $yx = $y - 1;
+            if ($yx % 100 == 0) {
+                $y = $cyear;
+                $yx = $cyear - 1;
+            }
+            $fystr = str_pad($yx, 2, '0', STR_PAD_LEFT)
+                . '-' . str_pad($y, 2, '0', STR_PAD_LEFT);
+        }
+        return $fystr;
+    }
+
     public static function getBookNumber($district)
     {
         $code = is_int($district) ? District::find($district)->short_code
             : $district->short_code;
-        return 'FY23-24-'.$code;
+
+        // return 'FY23-24-'.$code;
+        return Self::getFinancialYearCode().'-'.$code;
+    }
+
+    public static function getWelfareApplicationNumber($member, $schemeCode): string
+    {
+        $district = District::find($member->district_id);
+        $slno = $district->last_application_no + 1;
+        return $schemeCode.'/'.Self::getFinancialYearCode().'/'
+            .$district->short_code.'/'.$slno;
     }
 
     public static function getReceiptNumber(int|District $district)
@@ -94,6 +133,14 @@ class AppHelper
             );
             $nextno = count($slnos) > 0 ? max($slnos) + 1 : 1;
             return  $mnoSearch . $nextno;
+    }
+
+    public static function syncImageFromRequestData(MediaOwner $instance, string $property, array $data): void
+    {
+        if (isset($data[$property])) {
+            $instance->deleteAllMedia($property);
+            $instance->addOneMediaFromEAInput($property, $data[$property]);
+        }
     }
 }
 ?>

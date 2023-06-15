@@ -341,6 +341,7 @@
                                         <th class="px-2">Appln. Date</th>
                                         <th class="px-2">Appln. No.</th>
                                         <th class="px-2">Scheme Applied For</th>
+                                        <th class="px-2">Status</th>
                                         <th class="px-2">Applied Amount</th>
                                         <th class="px-2">Sanctioned Amount</th>
                                         <th class="px-2">Sanctioned Date</th>
@@ -351,8 +352,20 @@
                                     @foreach ($member->allowances as $a)
                                         <tr>
                                             <td class="px-2">{{$a->application_date}}</td>
-                                            <td class="px-2">{{$a->application_no}}</td>
+                                            <td class="px-2">
+                                                {{$a->application_no}}
+                                                @if($a->allowanceable != null)
+                                                <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.show', $a->id)}}', route: 'allowances.show'})">
+                                                    <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-4" width="w-4"/>
+                                                </a>
+                                                @endif
+                                            </td>
                                             <td class="px-2">{{$a->welfareScheme->name}}</td>
+                                            <td class="px-2
+                                            @if ($a->status == 'Pending') text-warning @endif
+                                            @if ($a->status == 'Approved') text-success @endif
+                                            @if ($a->status == 'Rejected') text-error @endif
+                                            ">{{$a->status}}</td>
                                             <td class="text-right px-2">{{$a->applied_amount}}</td>
                                             <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
                                             <td class="px-2">{{$a->sanctioned_date}}</td>
@@ -363,8 +376,20 @@
                             </table>
                         </div>
                         @else
-                        <span class="text-error text-opacity-80">No nominees added.</span>
+                        <span class="text-error text-opacity-80">No allowances till date.</span>
                         @endif
+                    </div>
+                    <div class="text-center my-4 print:hidden w-full">
+                        <div x-data="{show: false}" class="relative overflow-visible w-full flex flex-row justify-center">
+                            <button class="btn btn-sm" @click.prevent.stop="show=true;">
+                                New Application
+                            </button>
+                            <div x-show="show" @click.outside="show=false;" class="absolute top-10 left-auto flex flex-row items-start bg-base-200 border border-opacity-20 border-base-content rounded-md md:max-w-2/3 flex-wrap">
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Education Allowance</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create'})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Post Death Allowance</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create'})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -424,7 +424,7 @@
                 });
             @endif
         @endif
-        @if ($xerrors->has($name))
+        @if (!is_array($xerrors) && $xerrors->has($name))
             ers = {{json_encode($xerrors->get($name))}};
             console.log(ers);
             errors = ers.reduce((r, e) => {

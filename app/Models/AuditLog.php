@@ -12,7 +12,7 @@ class AuditLog extends Model
 
     protected $guarded = [];
 
-    public function commenauditabletable(): MorphTo
+    public function auditable(): MorphTo
     {
         return $this->morphTo();
     }

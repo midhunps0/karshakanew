@@ -16,15 +16,18 @@ return new class extends Migration
             $table->foreignId('member_id')->constrained(
                 'members', 'id'
             );
-            $table->string('application_no');
+            $table->string('allowanceable_type')->nullable();
+            $table->integer('allowanceable_id')->nullable();
+            $table->string('application_no')->nullable();
             $table->date('application_date');
-            $table->double('applied_amount');
-            $table->double('sanctioned_amount');
-            $table->date('sanctioned_date');
-            $table->date('payment_date');
+            $table->double('applied_amount')->nullable();
+            $table->double('sanctioned_amount')->nullable();
+            $table->date('sanctioned_date')->nullable();
+            $table->date('payment_date')->nullable();
             $table->foreignId('welfare_scheme_id')->constrained(
                 'welfare_schemes', 'id'
             );
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

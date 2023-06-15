@@ -78,6 +78,22 @@ class SidebarService implements SidebarServiceInterface
                 'icon' => 'easyadmin::icons.users',
                 'show' => true
             ],
+            // [
+            //     'type' => 'menu_group',
+            //     'title' => 'Applications',
+            //     'icon' => 'easyadmin::icons.users',
+            //     'show' => $this->showAccessControl(),
+            //     'menu_items' => [
+            //         [
+            //             'type' => 'menu_item',
+            //             'title' => 'Education Allowance',
+            //             'route' => 'allowances.education.create',
+            //             'route_params' => [],
+            //             'icon' => 'easyadmin::icons.users',
+            //             'show' => $this->showAccessControl()
+            //         ],
+            //     ]
+            // ],
             [
                 'type' => 'menu_group',
                 'title' => 'Access Control',
@@ -196,6 +212,11 @@ class SidebarService implements SidebarServiceInterface
     private function showAccessControl($action = 'View')
     {
        return $this->user->hasPermissionTo("User: {$action} In Any District");
+    }
+    private function showAllowances()
+    {
+        return true;
+    //    return $this->user->hasPermissionTo("Allowance: create In Any District");
     }
     private function showRoles()
     {

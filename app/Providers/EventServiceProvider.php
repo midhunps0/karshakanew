@@ -5,9 +5,11 @@ namespace App\Providers;
 // use Illuminate\Auth\Events\Registered;
 // use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 
+use App\Events\AllowanceEvent;
 use App\Events\BusinessActionEvent;
 use App\Events\FeeCollectoinEvent;
 use App\Events\MemberEvent;
+use App\Listeners\AllowanceEventListener;
 use App\Listeners\BusinessActionEventListener;
 use App\Listeners\FeeCollectionEventListener;
 use App\Listeners\MemberEventListener;
@@ -33,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MemberEvent::class => [
             MemberEventListener::class
+        ],
+        AllowanceEvent::class => [
+            AllowanceEventListener::class
         ]
     ];
 

@@ -93,6 +93,37 @@ class Member extends Model
         return $this->hasMany(FeeCollection::class, 'member_id', 'id');
     }
 
+    public function lastFeePaidPeriod()
+    {
+        $membership_fee_id = config('generalSettings.membership_fee_id', 1);
+        $lastPaidFrom = null;
+        $lastPaidTo = null;
+        foreach ($this->feePayments as $fp) {
+            foreach ($fp->feeItems as $fi) {
+                if ($fi->fee_type_id == $membership_fee_id) {
+                    $df = Carbon::createFromFormat('Y-m-d', $fi->period_from);
+                    $dt = Carbon::createFromFormat('Y-m-d', $fi->period_to);
+                    if ($lastPaidFrom == null || $df->gt($lastPaidFrom)) {
+                        $lastPaidFrom = $df;
+                    }
+                    if ($lastPaidTo == null || $dt->gt($lastPaidTo)) {
+                        $lastPaidTo = $dt;
+                    }
+                }
+            }
+
+        }
+        $today = Carbon::today();
+        info('reg_date');
+        info($this->reg_date);
+        $tillDate = $lastPaidTo != null ? $lastPaidTo : Carbon::createFromFormat('d-m-Y', $this->reg_date);
+        return [
+            'from' => $lastPaidFrom != null ? $lastPaidFrom->format('d-m-Y') : null,
+            'to' => $lastPaidTo != null ? $lastPaidTo->format('d-m-Y') : null,
+            'arrears_months' => $today->diffInMonths($tillDate)
+        ];
+    }
+
     public function feeItems()
     {
         return $this->hasManyThrough(

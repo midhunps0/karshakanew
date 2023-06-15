@@ -52,7 +52,7 @@ trait OwnsMedia
         }
     }
 
-    public function addOneMediaFromEAInput(string $property, string $input)
+    public function addOneMediaFromEAInput(string $property, string $input): void
     {
         if (strpos($input, config('mediaManager.ulid_separator')) === false) {
             $arr = explode('_::_', $input);
@@ -223,10 +223,10 @@ trait OwnsMedia
         return [];
     }
 
-    public function deleteAllMedia(string $property)
+    public function deleteAllMedia(string $property): void
     {
-        $this->media()->wherePivot('property', $property)
-            ->detach($property);
+        $this->media()->wherePivot('property', 'like', $property)
+            ->detach();
     }
 
     public function syncMedia(string $property, $items)

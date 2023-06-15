@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AllowanceController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TalukController;
@@ -92,6 +93,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     //     ->name('feecollections.report.data');
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");
     Route::post('/admin/roles/permission-update', [RoleController::class, 'permissionUpdate'])->name('roles.permission');
+    Route::get('/allowances/pending', [AllowanceController::class, 'pending'])->name('allowances.pending');
+    Route::get('/allowances/show/{id}', [AllowanceController::class, 'show'])->name('allowances.show');
+    Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
+    Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');
+    Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
 });
 
 

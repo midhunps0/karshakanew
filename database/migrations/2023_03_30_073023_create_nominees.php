@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('dob');
             $table->string('guardian_name')->nullable();
             $table->string('guardian_relation')->nullable();
+            $table->string('guardian_address', 355)->nullable();
             $table->timestamps();
         });
     }

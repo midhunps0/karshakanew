@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('welfare_schemes', function (Blueprint $table) {
+        Schema::create('post_death_schemes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code');
+
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('welfare_schemes');
+        Schema::dropIfExists('post_death_schemes');
     }
 };
