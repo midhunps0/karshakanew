@@ -101,12 +101,12 @@ class Member extends Model
         foreach ($this->feePayments as $fp) {
             foreach ($fp->feeItems as $fi) {
                 if ($fi->fee_type_id == $membership_fee_id) {
-                    $df = Carbon::createFromFormat('Y-m-d', $fi->period_from);
-                    $dt = Carbon::createFromFormat('Y-m-d', $fi->period_to);
-                    if ($lastPaidFrom == null || $df->gt($lastPaidFrom)) {
+                    $df = $fi->period_from != null ? Carbon::createFromFormat('Y-m-d', $fi->period_from) : null;
+                    $dt = $fi->period_to != null ? Carbon::createFromFormat('Y-m-d', $fi->period_to) : null;
+                    if ($df != null && $lastPaidFrom == null || $df->gt($lastPaidFrom)) {
                         $lastPaidFrom = $df;
                     }
-                    if ($lastPaidTo == null || $dt->gt($lastPaidTo)) {
+                    if ($dt != null && $lastPaidTo == null || $dt->gt($lastPaidTo)) {
                         $lastPaidTo = $dt;
                     }
                 }
