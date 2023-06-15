@@ -97,8 +97,8 @@ class AllowanceService
     {
         $did = auth()->user()->district_id;
         $ps = Allowance::$STATUS_PENDING;
-        return Allowance::with('member')
-            ->where('status', $ps)
+
+        return Allowance::where('status', $ps)
             ->where('district_id', $did)
             ->get();
     }
