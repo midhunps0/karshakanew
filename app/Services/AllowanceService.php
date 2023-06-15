@@ -94,14 +94,15 @@ class AllowanceService
 
     public function pending()
     {
+        $uid = auth()->user()->district_id;
+        $ps = Allowance::$STATUS_PENDING;
         return Allowance::with('member')
-            ->where('status', Allowance::$STATUS_PENDING)
+            ->where('status', $ps)
             ->whereHas(
-                'member', function($query) {
-                    return $query->where('district_id', auth()->user()->district_id);
+                'member', function($query) use ($uid) {
+                    return $query->where('district_id', $uid);
                 }
-            )
-            ->get();
+            )->get();
     }
 
 }
