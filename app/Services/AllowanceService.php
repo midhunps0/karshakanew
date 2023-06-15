@@ -53,6 +53,7 @@ class AllowanceService
 
         $alData = [
             'member_id' => $data['member_id'],
+            'district_id' => $member->district_id,
             'allowanceable_type' => EducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
@@ -94,15 +95,12 @@ class AllowanceService
 
     public function pending()
     {
-        $uid = auth()->user()->district_id;
+        $did = auth()->user()->district_id;
         $ps = Allowance::$STATUS_PENDING;
         return Allowance::with('member')
             ->where('status', $ps)
-            ->whereHas(
-                'member', function($query) use ($uid) {
-                    return $query->where('district_id', $uid);
-                }
-            )->get();
+            ->where('district_id', $did)
+            ->get();
     }
 
 }

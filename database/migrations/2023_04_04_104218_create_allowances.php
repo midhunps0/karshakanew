@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('member_id')->constrained(
                 'members', 'id'
             );
+            $table->foreignId('district_id')->constrained(
+                'districts', 'id'
+            );
             $table->string('allowanceable_type')->nullable();
             $table->integer('allowanceable_id')->nullable();
             $table->string('application_no')->nullable();

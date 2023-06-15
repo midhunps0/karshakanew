@@ -24,8 +24,10 @@ class AllowanceFactory extends Factory
         $y = rand(1, 10);
         $sdays = rand(7, 14);
         $xdays = $sdays + rand(2, 5);
+        $member = Member::all()->random();
         return [
-            'member_id' => Member::all()->random()->id,
+            'member_id' => $member->id,
+            'district_id' => $member->district_id,
             'application_no' => $this->faker->word().'/'.rand(101, 999),
             'application_date' => Carbon::now()->subYear($y),
             'applied_amount' => $amt,
