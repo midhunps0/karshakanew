@@ -54,6 +54,7 @@ class AllowanceService
             null,
             $esa,
             'Created EducationAllowanceApplication with id: '.$esa->id,
+            $member->district_id
         );
 
         if (isset($data['existing'])) {
@@ -83,6 +84,7 @@ class AllowanceService
             null,
             $allowance,
             'Created Allowance with id: '.$allowance->id,
+            $member->district_id
         );
         return $allowance;
     }
@@ -114,6 +116,7 @@ class AllowanceService
                 null,
                 $a,
                 $approval.' Allowance with id: '.$a->id,
+                $a->member->district_id
             );
             return [
                 'success' => true,

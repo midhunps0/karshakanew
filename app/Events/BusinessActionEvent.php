@@ -25,6 +25,7 @@ class BusinessActionEvent
         public $oldValue = null,
         public $newValue = null,
         public $description = '',
+        public $districtId = null
     ) {}
 
     /**

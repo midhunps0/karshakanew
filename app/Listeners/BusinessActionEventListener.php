@@ -22,6 +22,7 @@ class BusinessActionEventListener
      */
     public function handle(BusinessActionEvent $event): void
     {
+        $did = $event->districtId ?? auth()->user()->id;
         AuditLog::create([
             'user_id' => $event->userId,
             'auditable_type' => $event->modelType,
@@ -30,6 +31,7 @@ class BusinessActionEventListener
             'old_value' => $event->oldValue,
             'new_value' => $event->newValue,
             'description' => $event->description,
+            'district_id' => $did
         ]);
     }
 }

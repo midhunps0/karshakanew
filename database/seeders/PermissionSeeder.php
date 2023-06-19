@@ -104,7 +104,7 @@ class PermissionSeeder extends Seeder
         'Allowance: View Report In Any District',
         'Allowance: Create In Own District',
         'Allowance: View In Own District',
-        'Allowance: Edit In Own District Any Time',
+        'Allowance: Edit In Own District',
         'Allowance: Delete In Own District',
         'Allowance: Approve In Own District',
         'Allowance: Re-Approve In Own District',

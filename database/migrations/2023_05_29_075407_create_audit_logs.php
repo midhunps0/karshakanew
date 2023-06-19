@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('old_value')->nullable();
             $table->string('new_value')->nullable();
             $table->string('description')->nullable();
+            $table->foreignId('district_id')->constrained('districts', 'id');
             $table->timestamps();
         });
     }
