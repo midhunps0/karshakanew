@@ -34,8 +34,11 @@
     }" action="" id="{{$form['id']}}"
     @submit.prevent.stop="doSubmit();"
         @formresponse.window="console.log($event.detail);
+        console.log()
         if ($event.detail.target == $el.id) {
             let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', $event.detail.content.instance.id) : successRedirectUrl;
+            console.log('theUrl');
+            console.log(theUrl);
             if ($event.detail.content.success) {
                 $dispatch('shownotice', {message: $event.detail.content.message, mode: 'success', redirectUrl: theUrl, redirectRoute: successRedirectRoute});
                 $dispatch('formerrors', {errors: []});
@@ -51,9 +54,9 @@
         postUrl = '{{ count($form['action_route_params']) > 0 ? route($form['action_route'], $form['action_route_params']) : route($form['action_route']) }}';
         @if (isset($form['success_redirect_route']))
             @if (isset($form['success_redirect_key']))
-            successRedirectUrl = '{{route($form['success_redirect_route'], 1)}}';
+            successRedirectUrl = '{{route($form['success_redirect_route'], '_X_')}}';
             @else
-            successRedirectUrl = '{{route($form['success_redirect_route'], 1)}}';
+            successRedirectUrl = '{{route($form['success_redirect_route'], '_X_')}}';
             @endif
             successRedirectRoute = '{{$form['success_redirect_route']}}';
         @endif
