@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\District;
 use App\Services\RoleService;
+use App\Events\BusinessActionEvent;
 use Illuminate\Support\Facades\Hash;
 use Ynotz\AccessControl\Models\Role;
 use Ynotz\EasyAdmin\Services\FormHelper;
@@ -238,6 +239,32 @@ class UserService implements ModelViewConnector {
         $data['password'] = Hash::make($data['password']);
 
         return $data;
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            User::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created User: '.$instance->name.', id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            User::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated User: '.$instance->name.', id: '.$instance->id,
+        );
     }
 }
 

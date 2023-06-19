@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Events\BusinessActionEvent;
 use Ynotz\AccessControl\Models\Role;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
@@ -152,6 +153,32 @@ class RoleService implements ModelViewConnector {
             info($e->__toString());
             return false;
         }
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Role::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created Role: '.$instance->name.', id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Role::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated Role: '.$instance->name.', id: '.$instance->id,
+        );
     }
 }
 

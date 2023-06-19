@@ -162,7 +162,7 @@ class Member extends Model
 
     public function scopeUnapproved(Builder $query)
     {
-        return $query->where('approved_at', '=', null);
+        return $query->where('approved_at', 'IS', null);
     }
 
     public function getMediaStorage(): array

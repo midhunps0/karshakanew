@@ -103,7 +103,8 @@ class MemberFactory extends Factory
                 $y = rand(1, 2);
                 Allowance::factory($y)->create(
                     [
-                        'member_id' => $m->id
+                        'member_id' => $m->id,
+                        'created_by' => User::all()->random()->id
                     ]
                 );
             }

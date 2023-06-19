@@ -21,9 +21,10 @@ class BusinessActionEvent
         public $modelType,
         public $modelId,
         public $action,
+        public $userId,
         public $oldValue = null,
         public $newValue = null,
-        public $description = ''
+        public $description = '',
     ) {}
 
     /**

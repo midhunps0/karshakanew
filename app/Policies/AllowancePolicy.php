@@ -21,7 +21,9 @@ class AllowancePolicy
      */
     public function view(User $user, Allowance $allowance): bool
     {
-        //
+        return $user->hasPermissionTo('Allowance: View In Any District') ||
+            ($user->hasPermissionTo('Allowance: View In Own District') &&
+                $user->district_id == $allowance->district_id);
     }
 
     /**
@@ -71,6 +73,15 @@ class AllowancePolicy
     {
         return $user->hasPermissionTo('Allowance: Approve In Any District') ||
             ($user->hasPermissionTo('Allowance: Approve In Own District') &&
-                $user->district_id == $allowance->member->district_id);
+                $user->district_id == $allowance->district_id);
+    }
+
+    /**
+     * Determine whether the user can approve an allowance application
+     */
+    public function viewReport(User $user): bool
+    {
+        return $user->hasPermissionTo('Allowance: View Report In Any District') ||
+            $user->hasPermissionTo('Allowance: View Report In Own District');
     }
 }

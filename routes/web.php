@@ -94,6 +94,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     RouteHelper::getEasyRoutes(modelName: "FeeCollection");
     Route::post('/admin/roles/permission-update', [RoleController::class, 'permissionUpdate'])->name('roles.permission');
     Route::get('/allowances/pending', [AllowanceController::class, 'pending'])->name('allowances.pending');
+    Route::get('/allowances/report', [AllowanceController::class, 'report'])->name('allowances.report');
+    Route::get('allowances/full-report', [AllowanceController::class, 'fullReport'])
+        ->name('allowances.fullreport');
+    Route::get('allowances/report-dowload', [AllowanceController::class, 'download'])
+        ->name('allowances.report.download');
     Route::get('/allowances/show/{id}', [AllowanceController::class, 'show'])->name('allowances.show');
     Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
     Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');

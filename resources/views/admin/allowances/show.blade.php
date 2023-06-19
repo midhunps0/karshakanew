@@ -1,6 +1,14 @@
 <x-easyadmin::partials.adminpanel>
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
+        <div class="text-right p-4">
+            <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
+        </div>
+        @if (isset($error))
+        <div class="my-2 border border-base-content border-opacity-20 rounded-md text-center py-4">
+            <span class="text-error">{{$error}}</span>
+        </div>
+        @else
         <h4 class="my-4"><span class="font-bold opacity-60">Member Details:</span></h4>
         <div class="my-2 flex flex-row justify-between border border-base-content border-opacity-20 rounded-md">
             <div class="my-1 p-2">
@@ -229,6 +237,7 @@
                     amount: '',
                     sanctioned_amount: {{$application->sanctioned_amount ?? 'null'}},
                     sanctioned_date: '{{$application->sanctioned_date}}',
+                    rejection_reason: '{{$application->rejection_reason}}',
                     statusClass() {
                         switch (this.status) {
                             case 'Pending':
@@ -248,6 +257,9 @@
                         formData.append('approval', approval);
                         if (approval == 'Approved') {
                             formData.append('amount', this.amount);
+                        }
+                        if (approval == 'Rejected') {
+                            formData.append('rejection_reason', this.rejection_reason);
                         }
                         axios.post(
                             '{{route('allowances.approve', $application->id)}}',
@@ -290,9 +302,14 @@
                     },
                     doReject() {}
                 }">
-                <div class="my-4 flex flex-row">
-                    <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Amount:</span>&nbsp;<span x-text="sanctioned_amount"></span></div>
-                    <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Date:</span>&nbsp;<span x-text="sanctioned_date"></span></div>
+                <template x-if="trim(sanctioned_date) != ''">
+                    <div class="my-4 flex flex-row">
+                        <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Amount:</span>&nbsp;<span x-text="sanctioned_amount"></span></div>
+                        <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Date:</span>&nbsp;<span x-text="sanctioned_date"></span></div>
+                    </div>
+                </template>
+                <div x-show="rejection_reason != ''" class="my-4 flex flex-row">
+                    <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Reason for rejection:</span>&nbsp;<span x-text="rejection_reason"></span></div>
                 </div>
                 <div class="text-center border border-base-content border-opacity-20 rounded-md p-2 opacity-80" :class="statusClass()">
                     <h4 class="font-bold text-sm opacity-60 mb-2">Status</h4>
@@ -303,8 +320,14 @@
                         <form x-show="status == 'Pending'" x-transition id="approval-form" action="" class="md:w-3/5 mx-auto flex flex-row rounded-md overflow-hidden my-8">
                             <div class="w-1/2 text-center flex flex-col bg-error bg-opacity-10 p-4">
                                 <h4 class="text-lg opacity-60 mb-2 text-center font-bold">Reject</h4>
+                                <div class="form-control w-full max-w-xs mb-4">
+                                    <label class="label opacity-70">
+                                    <span class="label-text">Reason for rejection</span>
+                                    </label>
+                                    <input x-model="rejection_reason" name="sanctioned_amount" type="text" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" step="0.01"/>
+                                </div>
                                 <div class="flex justify-center items-center flex-grow">
-                                    <button class="btn btn-sm btn-error" type="button" @click.prevent.submit="doSubmit('Rejected')">Reject</button>
+                                    <button :disabled="rejection_reason == ''"  class="btn btn-sm btn-error" type="button" @click.prevent.submit="doSubmit('Rejected')">Reject</button>
                                 </div>
                             </div>
                             <div class="w-1/2 text-center flex flex-col bg-success bg-opacity-10 p-4">
@@ -329,6 +352,7 @@
                 Details not available for this application.
             </div>
         </div>
+        @endif
         @endif
     </div>
 </x-easyadmin::partials.adminpanel>

@@ -130,7 +130,7 @@
                     <div class="flex flex-col items-center p-3 pt-8">
                         <div><span class="text-warning underline font-bold">Nominees</span></div>
                         @if (count($member->nominees) > 0)
-                        <div class="w-full md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
+                        <div class="w-full md:max-w-4/5 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
                             <table class="table table-compact w-full">
                                 <thead>
                                     <tr>
@@ -270,7 +270,7 @@
 
                 </div>
                 <div x-show="activeTab == 2" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 py-4 px-2 rounded-b-lg">
-                    <div id="transactionstab" class="md:max-w-3/4 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
+                    <div id="transactionstab" class="md:max-w-5/6 mx-auto border border-base-content border-opacity-10 rounded-lg overflow-x-scroll">
                         <table class="table table-compact w-full">
                             <thead>
                                 <tr>

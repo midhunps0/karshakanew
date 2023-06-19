@@ -5,11 +5,12 @@ use App\Models\User;
 use App\Models\TradeUnion;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\FormHelper;
+use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 use Illuminate\Auth\Access\AuthorizationException;
-use Ynotz\EasyAdmin\Services\IndexTable;
 
 class TradeUnionService implements ModelViewConnector {
     use IsModelViewConnector;
@@ -149,6 +150,31 @@ class TradeUnionService implements ModelViewConnector {
         return $data;
     }
 
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            TradeUnion::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created TradeUnion: '.$instance->name.', id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            TradeUnion::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated TradeUnion: '.$instance->name.', id: '.$instance->id,
+        );
+    }
 }
 
 ?>

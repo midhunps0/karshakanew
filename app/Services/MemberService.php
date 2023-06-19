@@ -5,15 +5,16 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Taluk;
 use App\Models\Member;
+use App\Models\FeeItem;
 use App\Models\Village;
 use App\Models\District;
 use App\Helpers\AppHelper;
-use App\Models\FeeCollection;
-use App\Models\FeeItem;
 use App\Models\TradeUnion;
 use Illuminate\Support\Str;
+use App\Models\FeeCollection;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\RowLayout;
 use Ynotz\EasyAdmin\Services\TabLayout;
 use Ynotz\EasyAdmin\Services\TabsPanel;
@@ -1493,6 +1494,16 @@ class MemberService implements ModelViewConnector {
             $fc->save();
             DB::commit();
 
+            BusinessActionEvent::dispatch(
+                FeeCollection::class,
+                $fc->id,
+                'Created',
+                auth()->user()->id,
+                null,
+                $fc,
+                'Created Receipt. No.: '.$fc->receipt_number,
+            );
+
             $receipt = FeeCollection::with(
                 'feeItems', 'collectedBy', 'member', 'paymentMode'
             )->where('id', $fc->id)->get()->first();
@@ -1568,10 +1579,19 @@ class MemberService implements ModelViewConnector {
                 $successList[] = $id;
                 $fcIds[] = $fc->id;
 
+                BusinessActionEvent::dispatch(
+                    FeeCollection::class,
+                    $fc->id,
+                    'Created',
+                    auth()->user()->id,
+                    null,
+                    $fc,
+                    'Created Receipt. No.: '.$fc->receipt_number,
+                );
 
             } catch (\Throwable $e) {
-                info("couldn't create bulk receipts. Failed at id: ".$id);
-                info($e->__toString());
+                // info("Couldn't create bulk receipts. Failed at id: ".$id);
+                // info($e->__toString());
                 DB::rollback();
                 $success = false;
             }
@@ -1643,6 +1663,36 @@ class MemberService implements ModelViewConnector {
                 perPage: 10,
                 page: $data['page'] ?? 1
             );
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Member::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created Member with Membership No.: '.$instance->membership_no,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        $action = "Updated";
+        if ($oldInstance->approved_at == null && $instance->approved_at != null) {
+            $action = "Approved";
+        }
+        BusinessActionEvent::dispatch(
+            Member::class,
+            $instance->id,
+            $action,
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            $action.' Member with Membership No.: '.$instance->membership_no,
+        );
     }
 }
 

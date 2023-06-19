@@ -84,6 +84,7 @@ class RoleSeeder extends Seeder
             'Journal: View In Any District',
             'Journal: Edit In Any District',
             'Journal: Delete In Any District',
+            'Allowance: View Report In Any District',
         ],
         'State Admin' => [
             'User: Create In Any District',
@@ -116,7 +117,8 @@ class RoleSeeder extends Seeder
             'Fee Type: Edit',
             'Fee Type: Delete',
             'Fee Collection: View In Any District',
-            'Member: View In Any District'
+            'Member: View In Any District',
+            'Allowance: View Report In Any District',
         ],
         'District Admin' => [
             'User: Create In Own District',
@@ -148,6 +150,7 @@ class RoleSeeder extends Seeder
             'Allowance: Delete In Own District',
             'Allowance: Approve In Own District',
             'Allowance: Re-Approve In Own District',
+            'Allowance: View Report In Own District',
         ],
         'State Executive' => [
             'Religion: Create',

@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Taluk;
 use App\Models\Village;
 use App\Models\District;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -124,6 +125,32 @@ class TalukService implements ModelViewConnector {
     public function getVillages($id)
     {
         return Village::where('taluk_id', $id)->get()->pluck('name', 'id');
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Taluk::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created Taluk: '.$instance->name.', id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Taluk::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated Taluk: '.$instance->name.', id: '.$instance->id,
+        );
     }
 }
 

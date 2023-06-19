@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Member;
 use App\Models\WelfareScheme;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -34,7 +35,9 @@ class AllowanceFactory extends Factory
             'sanctioned_amount' => $samt,
             'sanctioned_date' => Carbon::now()->subYear($y)->addDay($sdays),
             'payment_date' => Carbon::now()->subYear($y)->addDay($xdays),
-            'welfare_scheme_id' => WelfareScheme::all()->random()->id
+            'welfare_scheme_id' => WelfareScheme::all()->random()->id,
+            'status' => 0,
+            'created_by' => User::all()->random()->id
         ];
     }
 }

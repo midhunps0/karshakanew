@@ -1,13 +1,15 @@
 <?php
 namespace App\Services;
 
-use App\Events\AllowanceEvent;
-use App\Events\ApplicationCreateEvent;
 use App\Models\Member;
 use App\Models\Allowance;
 use App\Helpers\AppHelper;
+use Illuminate\Support\Str;
 use App\Models\WelfareScheme;
+use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
+use App\Events\ApplicationCreateEvent;
+use App\Events\BusinessActionEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\EducationSchemeApplication;
 
@@ -44,6 +46,16 @@ class AllowanceService
         AppHelper::syncImageFromRequestData($esa, 'caste_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
 
+        BusinessActionEvent::dispatch(
+            EducationSchemeApplication::class,
+            $esa->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $esa,
+            'Created EducationAllowanceApplication with id: '.$esa->id,
+        );
+
         if (isset($data['existing'])) {
             foreach ($data['existing'] as $property => $ulid) {
                 $mi = MediaItem::where('ulid', $ulid)->get()->first();
@@ -59,13 +71,23 @@ class AllowanceService
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
             'application_date' => Carbon::today()->format('Y-m-d'),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
+            'created_by' => auth()->user()->id
         ];
         $allowance = Allowance::create($alData);
         AllowanceEvent::dispatch($member->district_id, 'created', $allowance);
+        BusinessActionEvent::dispatch(
+            Allowance::class,
+            $allowance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $allowance,
+            'Created Allowance with id: '.$allowance->id,
+        );
         return $allowance;
     }
 
-    public function approve($id, $approval, $amount = null)
+    public function approve($id, $approval, $amount = null, $reason = '')
     {
         try {
             $status = match($approval) {
@@ -74,13 +96,25 @@ class AllowanceService
             };
             $a = Allowance::find($id);
             $a->status = $status;
-            if ($amount != null) {
+            if ($status == Allowance::$STATUS_REJECTED) {
+                $a->rejection_reason = $reason;
+            }
+            if ($amount != null && $status == Allowance::$STATUS_APPROVED) {
                 $a->sanctioned_amount = $amount;
                 $a->sanctioned_date = Carbon::today()->format('Y-m-d');
             }
             $a->save();
             $a->refresh();
             AllowanceEvent::dispatch($a->member->district_id, 'approved', $a);
+            BusinessActionEvent::dispatch(
+                Allowance::class,
+                $a->id,
+                $approval,
+                auth()->user()->id,
+                null,
+                $a,
+                $approval.' Allowance with id: '.$a->id,
+            );
             return [
                 'success' => true,
                 'sanctioned_date' => $a->sanctioned_date,
@@ -101,6 +135,34 @@ class AllowanceService
         return Allowance::where('status', $ps)
             ->where('district_id', $did)
             ->get();
+    }
+
+    public function report($data)
+    {
+        $query = Allowance::query();
+        $query->userDistrictConstrained();
+        $datetype = $data['datetype'];
+        if (isset($data['created_by'])) {
+            $query->where('created_by', $data['created_by']);
+        }
+        if (isset($data['start'])) {
+            $query->where($datetype, '>=', AppHelper::formatDateForSave(thedate: $data['start'], setTimeTo: 'start'));
+        }
+        if (isset($data['end'])) {
+            $query->where($datetype, '<=', AppHelper::formatDateForSave(thedate: $data['end'], setTimeTo: 'end'));
+        }
+        if (isset($data['status'])) {
+            $statkey = 'STATUS_'.Str::upper($data['status']);
+            $query->where('status', Allowance::$$statkey);
+        }
+        if (isset($data['fullreport']) && $data['fullreport']) {
+            return $query->get();
+        } else {
+            return $query->paginate(
+                perPage: 100,
+                page: $data['page']
+            );
+        }
     }
 
 }

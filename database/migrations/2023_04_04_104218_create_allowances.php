@@ -27,10 +27,14 @@ return new class extends Migration
             $table->double('sanctioned_amount')->nullable();
             $table->date('sanctioned_date')->nullable();
             $table->date('payment_date')->nullable();
+            $table->text('rejection_reason')->nullable();
             $table->foreignId('welfare_scheme_id')->constrained(
                 'welfare_schemes', 'id'
             );
             $table->integer('status')->default(0);
+            $table->foreignId('created_by')->constrained(
+                'users', 'id'
+            );
             $table->timestamps();
         });
     }

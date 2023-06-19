@@ -1,9 +1,10 @@
 <?php
 namespace App\Services;
 
-use Ynotz\AccessControl\Models\Permission;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
+use Ynotz\AccessControl\Models\Permission;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 
@@ -105,6 +106,32 @@ class PermissionService implements ModelViewConnector {
             //     ],
             // ),
         ];
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Permission::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created Permission: '.$instance->name.', id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            Permission::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated Permission: '.$instance->name.', id: '.$instance->id,
+        );
     }
 }
 

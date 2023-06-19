@@ -23,8 +23,10 @@ class BusinessActionEventListener
     public function handle(BusinessActionEvent $event): void
     {
         AuditLog::create([
+            'user_id' => $event->userId,
             'auditable_type' => $event->modelType,
             'auditable_id' => $event->modelId,
+            'action' => $event->action,
             'old_value' => $event->oldValue,
             'new_value' => $event->newValue,
             'description' => $event->description,

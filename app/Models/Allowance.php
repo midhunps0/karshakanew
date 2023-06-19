@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\AuditLog;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,9 +22,11 @@ class Allowance extends Model
         'welfareScheme'
     ];
 
-    protected $casts = [
-        'sanctioned_date' => 'datetime:d-m-Y',
-    ];
+    // protected $casts = [
+    //     'sanctioned_date' => 'datetime:d-m-Y',
+    //     'appliaction_date' => 'datetime:d-m-Y',
+    //     'payment_date' => 'datetime:d-m-Y',
+    // ];
 
     protected $guarded = [];
 
@@ -67,10 +70,33 @@ class Allowance extends Model
         );
     }
 
-    protected function sanctioned_date(): Attribute
+    protected function sanctionedDate(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y'),
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
         );
+    }
+
+    protected function applicationDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
+        );
+    }
+
+    protected function paymentDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
+        );
+    }
+
+    public function scopeUserDistrictConstrained(Builder $query)
+    {
+        $districtId = auth()->user()->district_id;
+        if ($districtId != 15) {
+            $query->where('district_id', $districtId);
+        }
+        return $query;
     }
 }

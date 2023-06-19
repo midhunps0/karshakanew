@@ -6,6 +6,7 @@ use App\Models\Religion;
 use App\Helpers\AppHelper;
 use App\Models\FeeCollection;
 use Illuminate\Support\Carbon;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -110,8 +111,8 @@ class FeeCollectionService implements ModelViewConnector {
 
     public function update($data, $id)
     {
-        info($data);
         $fc = FeeCollection::where('id', $id)->with(['feeItems', 'member'])->get()->first();
+        $oldFc = $fc;
         $sum = 0;
         if ($fc != null) {
             $fc->receipt_date = AppHelper::formatDateForSave($data['date']);
@@ -136,6 +137,15 @@ class FeeCollectionService implements ModelViewConnector {
             }
             $fc->save();
             $fc->refresh();
+            BusinessActionEvent::dispatch(
+                FeeCollection::class,
+                $fc->id,
+                'Created',
+                auth()->user()->id,
+                $oldFc,
+                $fc,
+                'Updated Receipt with id: '.$fc->id,
+            );
             return [
                 'success' => true,
                 'receipt' => $fc
@@ -205,6 +215,18 @@ class FeeCollectionService implements ModelViewConnector {
             );
         }
     }
+    // public function processAfterStore($instance): void
+    // {
+    //     BusinessActionEvent::dispatch(
+    //         FeeCollection::class,
+    //         $instance->id,
+    //         'Created',
+    //         auth()->user()->id,
+    //         null,
+    //         $instance,
+    //         'Created Receipt with id: '.$instance->id,
+    //     );
+    // }
 }
 
 ?>

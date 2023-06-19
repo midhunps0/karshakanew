@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\Allowance;
 use App\Models\User;
 use Ynotz\EasyAdmin\Services\SidebarServiceInterface;
 
@@ -140,6 +141,14 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showCollections()
                     ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Allowances',
+                        'route' => 'allowances.report',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showAllowancesReport()
+                    ],
                     // [
                     //     'type' => 'menu_item',
                     //     'title' => 'All Trade Unions',
@@ -213,11 +222,6 @@ class SidebarService implements SidebarServiceInterface
     {
        return $this->user->hasPermissionTo("User: {$action} In Any District");
     }
-    private function showAllowances()
-    {
-        return true;
-    //    return $this->user->hasPermissionTo("Allowance: create In Any District");
-    }
     private function showRoles()
     {
         return auth()->check();
@@ -225,6 +229,10 @@ class SidebarService implements SidebarServiceInterface
     private function showCollections()
     {
         return auth()->check();
+    }
+    private function showAllowancesReport()
+    {
+        return auth()->user()->can('viewReport', Allowance::class);
     }
     private function showPermissions()
     {

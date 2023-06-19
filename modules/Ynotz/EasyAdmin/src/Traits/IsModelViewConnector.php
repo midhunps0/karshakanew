@@ -238,7 +238,6 @@ trait IsModelViewConnector{
         DB::beginTransaction();
         try {
             $instance = $this->modelClass::create($ownFields);
-
             //attach relationship instances as per the relation
             foreach ($relations as $rel => $val) {
                 $type = $this->getRelationType($rel);
@@ -271,7 +270,7 @@ trait IsModelViewConnector{
                 $instance->addMediaFromEAInput($fieldName, $val);
             }
             DB::commit();
-
+            $this->processAfterStore($instance);
             return $instance;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -285,6 +284,7 @@ trait IsModelViewConnector{
         info('data');
         info($data);
         $instance = $this->modelClass::find($id);
+        $oldInstance = $instance;
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseUpdate($instance)) {
             throw new AuthorizationException('Unable to update the '.$name.'. The user is not authorised for this action.');
@@ -345,6 +345,7 @@ trait IsModelViewConnector{
 //                 $instance->addMediaFromEAInput($fieldName, $val);
 //             }
             DB::commit();
+            $this->processAfterUpdate($oldInstance, $instance);
         } catch (\Exception $e) {
             info('rolled back: '.$e->__toString());
             DB::rollBack();
@@ -352,6 +353,12 @@ trait IsModelViewConnector{
 
         return $instance;
     }
+
+    public function processAfterStore($instance): void
+    {}
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {}
 
     public function destroy($id)
     {

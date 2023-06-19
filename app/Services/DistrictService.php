@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\Taluk;
 use App\Models\District;
+use App\Events\BusinessActionEvent;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -123,6 +124,32 @@ class DistrictService implements ModelViewConnector {
     public function getTaluks($id)
     {
         return Taluk::where('district_id', $id)->get()->pluck('name', 'id');
+    }
+
+    public function processAfterStore($instance): void
+    {
+        BusinessActionEvent::dispatch(
+            District::class,
+            $instance->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $instance,
+            'Created District with id: '.$instance->id,
+        );
+    }
+
+    public function processAfterUpdate($oldInstance, $instance): void
+    {
+        BusinessActionEvent::dispatch(
+            District::class,
+            $instance->id,
+            'Updated',
+            auth()->user()->id,
+            $oldInstance,
+            $instance,
+            'Updated District with id: '.$instance->id,
+        );
     }
 }
 
