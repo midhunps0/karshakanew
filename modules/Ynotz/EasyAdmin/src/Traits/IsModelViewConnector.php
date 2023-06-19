@@ -274,7 +274,8 @@ trait IsModelViewConnector{
             return $instance;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new Exception($e->getMessage());
+            info($e->__toString());
+            throw new Exception($e->__toString());
         }
     }
 

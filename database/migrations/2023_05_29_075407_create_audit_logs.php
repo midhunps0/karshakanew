@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('auditable_id');
             $table->string('action')->nullable(); //created,updated,deleted,approved,rejected
             $table->foreignId('user_id')->constrained('users', 'id');
-            $table->string('old_value')->nullable();
-            $table->string('new_value')->nullable();
+            $table->text('old_value')->nullable();
+            $table->text('new_value')->nullable();
             $table->string('description')->nullable();
             $table->foreignId('district_id')->constrained('districts', 'id');
             $table->timestamps();

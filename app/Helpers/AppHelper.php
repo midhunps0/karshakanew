@@ -41,7 +41,7 @@ class AppHelper
             default:
                 break;
         }
-        $outputFormat = $outputFormat ?? 'Y-m-d H:i:s';
+        $outputFormat = $outputFormat ?? 'Y-m-d';
 
         return $d->format($outputFormat);
     }

@@ -19,16 +19,16 @@ class Member extends Model
 {
     use HasFactory, SoftDeletes, OwnsMedia;
 
-    protected $casts = [
-        'dob' => 'datetime:d-m-Y',
-        'work_start_date' => 'datetime:d-m-Y',
-        'created_by' => 'datetime:d-m-Y',
-        'approved_at' => 'datetime:d-m-Y',
-        'created_at' => 'datetime:d-m-Y',
-        'updated_at' => 'datetime:d-m-Y',
-        'deleted_at' => 'datetime:d-m-Y',
-        'reg_date' => 'datetime:d-m-Y',
-    ];
+    // protected $casts = [
+    //     'dob' => 'datetime:d-m-Y',
+    //     'work_start_date' => 'datetime:d-m-Y',
+    //     'created_by' => 'datetime:d-m-Y',
+    //     'approved_at' => 'datetime:d-m-Y',
+    //     'created_at' => 'datetime:d-m-Y',
+    //     'updated_at' => 'datetime:d-m-Y',
+    //     'deleted_at' => 'datetime:d-m-Y',
+    //     'reg_date' => 'datetime:d-m-Y',
+    // ];
 
     protected $guarded = [];
 
@@ -276,7 +276,7 @@ class Member extends Model
     protected function dob(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y'),
+            get: fn ($value) => (Carbon::createFromFormat('Y-m-d', $value))->format('d-m-Y'),
         );
     }
 
