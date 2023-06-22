@@ -237,7 +237,7 @@
                     amount: '',
                     sanctioned_amount: {{$application->sanctioned_amount ?? 'null'}},
                     sanctioned_date: '{{$application->sanctioned_date}}',
-                    rejection_reason: '{{$application->rejection_reason}}',
+                    rejection_reason: '{{\App\Helpers\AppHelper::jssafe($application->rejection_reason)}}',
                     statusClass() {
                         switch (this.status) {
                             case 'Pending':

@@ -45,7 +45,7 @@
                             })
                             .catch((e) => {
                                 this.result = -1;
-                                this.error = 'Sorry, something wnet wrong.';
+                                this.error = 'Sorry, something went wrong.';
                                 console.log(e);
                             });
                         }

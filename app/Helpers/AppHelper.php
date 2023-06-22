@@ -142,5 +142,10 @@ class AppHelper
             $instance->addOneMediaFromEAInput($property, $data[$property]);
         }
     }
+
+    public static function jsSafe($val)
+    {
+        return str_replace('"', ' ', str_replace('\'', ' ', $val));
+    }
 }
 ?>

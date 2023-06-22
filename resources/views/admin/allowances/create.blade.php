@@ -81,7 +81,7 @@
                     }
                 }"
                 x-init="
-                    member_name = '{{$member->display_name}}';
+                    member_name = '{{\App\Helpers\AppHelper::jssafe($member->display_name)}}';
                     member_address = `{{$member->current_address != '' ? $member->current_address : $member->current_address_mal}}`;
                     membership_no = '{{$member->membership_no}}';
                     fee_period_from = '{{$member->lastFeePaidPeriod()['from']}}';

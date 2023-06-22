@@ -74,17 +74,15 @@
             items = [];
             @foreach ($_old['nominees'] as $n)
                 items.push({
-                    name: '{{$n->name}}',
+                    name: '{{\App\Helpers\AppHelper::jssafe($n->name)}}',
                     relation: '{{$n->relation}}',
                     percentage: '{{$n->percentage}}',
                     dob: '{{$n->dob}}',
-                    guardian_name: '{{$n->guardian_name}}',
+                    guardian_name: '{{\App\Helpers\AppHelper::jssafe($n->guardian_name)}}',
                     guardian_relation: '{{$n->guardian_relation}}'
                 });
             @endforeach
             @endif
-            console.log('items');
-            console.log(items);
         ">
         <div x-show="items.length == 0">
             <button class="btn btn-sm btn-warning" @click.prevent.stop="addDummyItem();">

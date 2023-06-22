@@ -261,7 +261,7 @@
         @if (isset($receipt))
             member = {
                 id: {{$receipt->member->id}},
-                name: '{{$receipt->member->name}}',
+                name: '{{\App\Helpers\AppHelper::jssafe($receipt->member->name)}}',
                 membership_no: '{{$receipt->member->membership_no}}',
                 @if(isset($receipt->member->approved_at))
                 approved_at: {{$receipt->member->approved_at ?? ''}},

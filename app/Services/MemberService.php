@@ -1452,7 +1452,7 @@ class MemberService implements ModelViewConnector {
             }
             DB::beginTransaction();
             $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($distict);
-            $receiptNo = $data['receipt_number'] ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($distict);
+            $receiptNo = isset($data['receipt_number']) ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($distict);
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,

@@ -282,7 +282,7 @@
                         class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
                 </div>
             </div>
-            <div class="text-center font-bold bg-error bg-opacity-30 text-base-content rounded-md p-2 mt-2">
+            <div x-show="member != null && member.aadhaar_no == null" class="text-center font-bold bg-error bg-opacity-30 text-base-content rounded-md p-2 mt-2">
                 Aadhaar number not verified. Cannot create receipt for unverified members.
             </div>
         </div>
@@ -412,7 +412,7 @@
                             <div class="flex flex-wrap space-x-0 md:space-x-4 items-end">
                                 <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full md:w-3/4" placeholder="Notes"></textarea>
                                 <button class="my-2 md:my-0 btn btn-md btn-warning flex-grow"
-                                :disabled="member.aadhaar_no == null"> Create Receipt </button>
+                                :disabled="member != null && member.aadhaar_no == null"> Create Receipt </button>
                             </div>
                         </div>
                     </div>
