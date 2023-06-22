@@ -162,7 +162,7 @@ class Member extends Model
 
     public function scopeUnapproved(Builder $query)
     {
-        return $query->where('approved_at', 'IS', null);
+        return $query->where('approved_at', null);
     }
 
     public function getMediaStorage(): array
@@ -290,7 +290,7 @@ class Member extends Model
     protected function approvedAt(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Carbon::createFromTimestamp($value)->format('d-m-Y'),
+            get: fn ($value) => $value != null ? Carbon::createFromTimestamp($value)->format('d-m-Y') : null,
         );
     }
 

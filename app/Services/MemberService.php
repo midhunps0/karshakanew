@@ -675,7 +675,7 @@ class MemberService implements ModelViewConnector {
             ),
             'is_approved' => FormHelper::makeCheckbox(
                 key: 'is_approved',
-                label: 'Is Approved',
+                label: 'Is Approved?',
                 // toggle: true,
                 displayText: ['Yes', 'No'],
                 show: $user->hasPermissionTo('Member: Approve In Own District')
@@ -1083,13 +1083,13 @@ class MemberService implements ModelViewConnector {
                             ))->addInputSlot('one_and_same_cert'),
                         ]
                     ),
-                    (new RowLayout())->addElements(
+                    (new RowLayout(null, $style = "background-color: rgba(255, 255, 0, 0.5); font-weight: bold; padding: 10px 0 10px 0;"))->addElements(
                         [
                             (new ColumnLayout(
                                 width: '1/3'
                             ))->addInputSlot('is_approved'),
                         ]
-                    )
+                    ),
                 ]
             );
 
@@ -1660,7 +1660,7 @@ class MemberService implements ModelViewConnector {
     {
         return Member::userAccessControlled()->unapproved()
             ->paginate(
-                perPage: 10,
+                perPage: 100,
                 page: $data['page'] ?? 1
             );
     }

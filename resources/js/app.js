@@ -6,6 +6,7 @@ import page from '@/components/page';
 import datepicker from '@/components/datepicker';
 import utils from '@/components/utils';
 import progressbar from '@/components/progressbar';
+import Compressor from 'compressorjs';
 
 
 Alpine.plugin(persist)
@@ -25,6 +26,7 @@ Alpine.store('app', {
 Alpine.data('initPage', page);
 Alpine.data('progressBar', progressbar);
 Alpine.data('datepicker', datepicker);
+window.Compressor = Compressor;
 
 Alpine.start();
 

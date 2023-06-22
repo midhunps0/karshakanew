@@ -132,18 +132,18 @@
                     sizeBytes = size * 1024;
                     break;
             }
+            console.log('size validation: '+file.size + ' < ' + this.validations.maxSize);
             if(file.size > sizeBytes) {
                 return false;
             }
-            console.log(file.size + ' < ' + this.validations.maxSize);
+
             return true;
         },
         doUpload(files) {
             if (!this.multiple) { this.files = []; }
             for(i = 0; i < this.inputElement.files.length; i++) {
                 file = this.inputElement.files[i];
-                // validate size
-                // validate type
+                let isValidSize = this.validateSize(file);
                 newFile = {
                     file: file,
                     name: file.name,
@@ -153,15 +153,45 @@
                     url: '',
                     show: true,
                     fromServer: false,
-                    sizeValidation: this.validateSize(file),
-                    typeValidation:this.validateType(file),
+                    sizeValidation: isValidSize,
+                    typeValidation: this.validateType(file),
                     error: false
                 };
-                this.files.push(newFile);
-                this.upoladFile(newFile);
+                if (!isValidSize) {
+                    this.compressAndUpload(newFile);
+                } else {
+                    this.files.push(newFile);
+                    this.upoladFile(newFile);
+                }
+                // validate size
+                // validate type
             }
             this.inputElement.value = '';
             {{-- if (this.inputElement != null) { this.inputElement.value = ''; } --}}
+        },
+        compressAndUpload(img) {
+            console.log(img.file);
+            new window.Compressor(img.file, {
+                quality: 0.6,
+                maxWidth: 750,
+                maxHeight: 400,
+
+                // The compression process is asynchronous,
+                // which means you have to access the `result` in the `success` hook function.
+                success: (result) => {
+                    console.log('result file');
+                    console.log(result);
+                    img.file = result;
+                    console.log(img.file);
+                    img.sizeValidation = this.validateSize(img.file);
+                    this.files.push(img);
+                    this.upoladFile(img);
+                },
+                error(err) {
+                  console.log(err.message);
+                },
+              });
+            return img;
         },
         upoladFile(file) {
             let formData = new FormData();

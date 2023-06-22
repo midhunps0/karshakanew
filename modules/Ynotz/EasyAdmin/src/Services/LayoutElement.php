@@ -8,12 +8,14 @@ class LayoutElement implements LayoutElementInterface
 {
     protected $type;
     protected $width;
+    protected $style;
     protected $elements = [];
     protected $properties = [];
 
-    public function __construct(string $width = null)
+    public function __construct(string $width = null, string $style = '')
     {
         $this->width = $width ?? 'full';
+        $this->style = $style;
     }
 
     public function getLayout(): array
@@ -22,6 +24,7 @@ class LayoutElement implements LayoutElementInterface
             'item_type' => 'layout',
             'layout_type' => $this->type,
             'width' => $this->width,
+            'style' => $this->style,
             'items' => $this->elements,
             'properties' => $this->properties
         ];

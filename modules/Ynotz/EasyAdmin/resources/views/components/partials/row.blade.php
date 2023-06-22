@@ -13,7 +13,7 @@
     ];
     $width = isset($item['width']) && isset($wclasses[$item['width']]) ? $wclasses[$item['width']] : 'flex-grow';
 @endphp
-<div class="flex flex-row w-full flex-wrap md:flex-nowrap md:{{$width}} space-x-0 sm:space-x-4">
+<div class="flex flex-row w-full flex-wrap md:flex-nowrap md:{{$width}} space-x-0 sm:space-x-4" style="{{$item['style']}}">
 @foreach ($item['items'] as $item)
     @if ($item['item_type'] == 'layout')
         <x-easyadmin::partials.layoutrenderer
