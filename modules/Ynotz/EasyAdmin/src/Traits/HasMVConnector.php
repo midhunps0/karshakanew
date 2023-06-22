@@ -221,20 +221,24 @@ trait HasMVConnector {
                     // return $this->buildResponse($view, $data);
                 }
                 // return 'success';
-                $this->connectorService->update($id, $validator->validated());
+                $result = $this->connectorService->update($id, $validator->validated());
             } else {
-                return config('easyadmin.enforce_validation') ?
-                response()->json(
-                    [
-                        'success' => false,
-                        'errors' => 'Validation rules not defined'
-                    ],
-                    status: 401
-                ) : $this->connectorService->update($id, $request->all());
+                if (config('easyadmin.enforce_validation')) {
+                    return response()->json(
+                        [
+                            'success' => false,
+                            'errors' => 'Validation rules not defined'
+                        ],
+                        status: 401
+                    );
+                } else {
+                    $result = $this->connectorService->update($id, $request->all());
+                }
             }
 
             return response()->json([
                 'success' => true,
+                'instance' => $result,
                 'message' => 'New '.$this->getItemName().' updated.'
             ]);
         } catch (AuthorizationException $e) {
@@ -248,7 +252,7 @@ trait HasMVConnector {
         }
         catch (\Throwable $e) {
             info($e);
-            $name = Str::lower($this->getModelShortName());
+            $name = Str::lower($this->connectorService->getModelShortName());
             $msg = config('app.debug') ? $e->getMessage()
                 : 'Unable to update the '.$name.'.';
             return response()->json(

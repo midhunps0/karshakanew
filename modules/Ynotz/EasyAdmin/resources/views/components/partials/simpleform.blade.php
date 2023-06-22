@@ -33,11 +33,18 @@
         }
     }" action="" id="{{$form['id']}}"
     @submit.prevent.stop="doSubmit();"
-        @formresponse.window="console.log($event.detail);
+        @formresponse.window="
+        {{-- console.log($event.detail); --}}
         if ($event.detail.target == $el.id) {
-            console.log('response for form submission');
-            console.log($event.detail.content.instance.id);
-            let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', $event.detail.content.instance.id) : successRedirectUrl;
+            {{-- console.log('response for form submission');
+            console.log($event.detail.content); --}}
+            let theId = null;
+            if ($event.detail.content.instance != undefined && $event.detail.content.instance != undefined != null) {
+                theId = $event.detail.content.instance.id;
+            } else {
+                theId = $event.detail.content.id;
+            }
+            let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', theId) : successRedirectUrl;
             console.log('theUrl');
             console.log(theUrl);
             if ($event.detail.content.success) {
@@ -61,6 +68,8 @@
             @endif
             successRedirectRoute = '{{$form['success_redirect_route']}}';
         @endif
+        {{-- console.log('successRedirectUrl');
+        console.log(successRedirectUrl); --}}
         {{-- @if (isset($form['cancel_route']))
             cancelRoute = '{{route($form['cancel_route'])}}';
         @endif --}}

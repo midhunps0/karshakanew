@@ -286,7 +286,7 @@ class MemberService implements ModelViewConnector {
                 id: 'form_members_edit',
                 action_route: 'members.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'members.index',
+                success_redirect_route: 'members.show',
                 items: $this->getEditFormElements($member),
                 layout: $this->buildEditFormLayout(),
                 label_position: 'top',
