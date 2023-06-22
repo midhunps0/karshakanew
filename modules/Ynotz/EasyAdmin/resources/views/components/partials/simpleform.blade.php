@@ -34,8 +34,9 @@
     }" action="" id="{{$form['id']}}"
     @submit.prevent.stop="doSubmit();"
         @formresponse.window="console.log($event.detail);
-        console.log()
         if ($event.detail.target == $el.id) {
+            console.log('response for form submission');
+            console.log($event.detail.content.instance.id);
             let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', $event.detail.content.instance.id) : successRedirectUrl;
             console.log('theUrl');
             console.log(theUrl);
