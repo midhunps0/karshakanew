@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Models\District;
+use App\Helpers\AppHelper;
 use App\Events\AllowanceEvent;
+use Illuminate\Support\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -22,15 +24,25 @@ class AllowanceEventListener
      */
     public function handle(AllowanceEvent $event): void
     {
-        info('appln event captured: ' . $event->action);
         switch ($event->action) {
-            case 'created':
+            case AllowanceEvent::$ACTION_CREATED:
                 $d = District::find($event->districtId);
-                $d->last_application_no = $d->last_application_no + 1;
+                $ano_arr = explode('/', $event->allowance->application_no);
+                $n= array_pop($ano_arr);
+                $d->last_application_no = $n;
+                $d->last_application_date = Carbon::createFromFormat(
+                    'd-m-Y',
+                    $event->allowance->application_date
+                );
                 $d->pending_applications = $d->pending_applications + 1;
                 $d->save();
                 break;
-            case 'approved':
+            case AllowanceEvent::$ACTION_APPROVED:
+                $d = District::find($event->districtId);
+                $d->pending_applications = $d->pending_applications - 1;
+                $d->save();
+                break;
+            case AllowanceEvent::$ACTION_DELETED:
                 $d = District::find($event->districtId);
                 $d->pending_applications = $d->pending_applications - 1;
                 $d->save();

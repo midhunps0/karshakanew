@@ -5,16 +5,16 @@ namespace App\Providers;
 // use Illuminate\Auth\Events\Registered;
 // use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 
-use App\Events\AllowanceEvent;
-use App\Events\BusinessActionEvent;
-use App\Events\FeeCollectoinEvent;
 use App\Events\MemberEvent;
-use App\Listeners\AllowanceEventListener;
-use App\Listeners\BusinessActionEventListener;
-use App\Listeners\FeeCollectionEventListener;
-use App\Listeners\MemberEventListener;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Events\AllowanceEvent;
+use App\Events\FeeCollectionEvent;
+use App\Events\BusinessActionEvent;
 use Illuminate\Support\Facades\Event;
+use App\Listeners\MemberEventListener;
+use App\Listeners\AllowanceEventListener;
+use App\Listeners\FeeCollectionEventListener;
+use App\Listeners\BusinessActionEventListener;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
         BusinessActionEvent::class => [
             BusinessActionEventListener::class
         ],
-        FeeCollectoinEvent::class => [
+        FeeCollectionEvent::class => [
             FeeCollectionEventListener::class
         ],
         MemberEvent::class => [

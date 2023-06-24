@@ -275,7 +275,7 @@
                 </div>
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Reg. Date</span>:&nbsp;
-                    <span class="md:text-xl font-bold" x-text="member != null ? member.approved_at : ''"></span>
+                    <span class="md:text-xl font-bold" x-text="member != null ? member.reg_date : ''"></span>
                 </div>
                 <div class="flex-grow text-right">
                     <a href="" @click.prevent.stop="editAction(member.id);"

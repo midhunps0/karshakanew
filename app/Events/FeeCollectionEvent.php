@@ -2,24 +2,27 @@
 
 namespace App\Events;
 
+use App\Models\FeeCollection;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class FeeCollectoinEvent
+class FeeCollectionEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    static $ACTION_CREATED = 'created';
     /**
      * Create a new event instance.
      */
     public function __construct(
-        public $feeCollection,
-        public $action
+        public int $districtId,
+        public FeeCollection $feeCollection,
+        public string $action
     ) {}
 
     /**

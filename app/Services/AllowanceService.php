@@ -75,7 +75,7 @@ class AllowanceService
             'created_by' => auth()->user()->id
         ];
         $allowance = Allowance::create($alData);
-        AllowanceEvent::dispatch($member->district_id, 'created', $allowance);
+        AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_CREATED, $allowance);
         BusinessActionEvent::dispatch(
             Allowance::class,
             $allowance->id,
@@ -107,7 +107,7 @@ class AllowanceService
             }
             $a->save();
             $a->refresh();
-            AllowanceEvent::dispatch($a->member->district_id, 'approved', $a);
+            AllowanceEvent::dispatch($a->member->district_id, AllowanceEvent::$ACTION_APPROVED, $a);
             BusinessActionEvent::dispatch(
                 Allowance::class,
                 $a->id,

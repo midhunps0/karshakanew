@@ -15,6 +15,7 @@ use App\Models\FeeCollection;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Events\BusinessActionEvent;
+use App\Events\FeeCollectionEvent;
 use Ynotz\EasyAdmin\Services\RowLayout;
 use Ynotz\EasyAdmin\Services\TabLayout;
 use Ynotz\EasyAdmin\Services\TabsPanel;
@@ -1493,6 +1494,12 @@ class MemberService implements ModelViewConnector {
             $fc->total_amount = $sum;
             $fc->save();
             DB::commit();
+
+            FeeCollectionEvent::dispatch(
+                $distict->id,
+                $fc,
+                FeeCollectionEvent::$ACTION_CREATED
+            );
 
             BusinessActionEvent::dispatch(
                 FeeCollection::class,

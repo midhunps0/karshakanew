@@ -60,14 +60,14 @@ class AppHelper
         $y = $cyear % 100;
         $y = $y == 0 ? $cyear : $y;
         $fystr = '';
-        if ($t->month > 2) {
+        if ($t->month > 3) {
             $yx = $y + 1;
             if ($yx % 100 == 0) {
                 $y = $cyear;
                 $yx = $cyear + 1;
             }
             $fystr = str_pad($y, 2, '0', STR_PAD_LEFT)
-                . '-' . str_pad($yx, 2, '0', STR_PAD_LEFT) . '-';
+                . '-' . str_pad($yx, 2, '0', STR_PAD_LEFT);
         } else {
             $yx = $y - 1;
             if ($yx % 100 == 0) {
@@ -77,7 +77,7 @@ class AppHelper
             $fystr = str_pad($yx, 2, '0', STR_PAD_LEFT)
                 . '-' . str_pad($y, 2, '0', STR_PAD_LEFT);
         }
-        return $fystr;
+        return 'FY'.$fystr;
     }
 
     public static function getBookNumber($district)
@@ -86,20 +86,33 @@ class AppHelper
             : $district->short_code;
 
         // return 'FY23-24-'.$code;
-        return Self::getFinancialYearCode().'-'.$code;
+        return Self::getFinancialYearCode().'/'.$code;
     }
 
     public static function getWelfareApplicationNumber($member, $schemeCode): string
     {
         $district = District::find($member->district_id);
-        $slno = $district->last_application_no + 1;
+        if ($district->last_application_date != null) {
+            $lastApplnMonth = Carbon::createFromFormat('Y-m-d', $district->last_application_date)->month;
+        } else {
+            $lastApplnMonth = Carbon::today()->month;
+        }
+        $todayMonth = Carbon::today()->month;
+        if ($lastApplnMonth < $todayMonth) {
+            $newApplnNumeric = 1;
+        } else {
+            $newApplnNumeric = $district->last_application_no + 1;
+        }
+
         return $schemeCode.'/'.Self::getFinancialYearCode().'/'
-            .$district->short_code.'/'.$slno;
+            .$district->short_code.'/'.$newApplnNumeric;
     }
 
     public static function getReceiptNumber(int|District $district)
     {
+        /*
         $districtId = is_int($district) ? $district : $district->id;
+
         $fc = FeeCollection::where('district_id', $districtId)
             ->where('manual_numbering', false)
             ->orderBy('created_at', 'desc')->withTrashed()->get()->first();
@@ -108,8 +121,21 @@ class AppHelper
             $t = explode('/', $fc->receipt_number);
             $lastReceiptNumeric = intval(array_pop($t));
         }
-        $lastReceiptNumeric++;
-        return Self::getBookNumber($district).'/'.$lastReceiptNumeric;
+        */
+        $district = is_int($district) ? District::find($district) : $district;
+        $lastReceiptNumeric = $district->last_receipt_no;
+        if ($district->last_receipt_date != null) {
+            $lastReceiptMonth = Carbon::createFromFormat('Y-m-d', $district->last_receipt_date)->month;
+        } else {
+            $lastReceiptMonth = Carbon::today()->month;
+        }
+        $todayMonth = Carbon::today()->month;
+        if ($lastReceiptMonth == 3 && $todayMonth > 3) {
+            $newReceiptNumeric = 1;
+        } else {
+            $newReceiptNumeric = $district->last_receipt_no + 1;
+        }
+        return Self::getBookNumber($district).'/'.$newReceiptNumeric;
     }
 
     public static function getMembershipNumber(
