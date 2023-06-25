@@ -166,7 +166,7 @@ class FeeCollectionService implements ModelViewConnector {
         $query = FeeCollection::with(
             'district', 'feeItems', 'member', 'collectedBy', 'paymentMode'
         );
-        $query->userDistrictConstrained();
+        $query->userConstrained();
         $datetype = $data['datetype'];
         if (isset($data['created_by'])) {
             $query->where('collected_by', $data['created_by']);

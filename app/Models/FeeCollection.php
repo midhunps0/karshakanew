@@ -21,8 +21,6 @@ class FeeCollection extends Model
 
     protected $appends = [
         'formatted_receipt_date',
-        'formatted_period_from',
-        'formatted_period_to',
         'is_editable_period'
     ];
 
@@ -61,26 +59,6 @@ class FeeCollection extends Model
         );
     }
 
-    protected function formattedPeriodFrom(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                $tdate = new \DateTime($this->from);
-                return $tdate->format('d-m-Y');
-            },
-        );
-    }
-
-    protected function formattedPeriodTo(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                $tdate = new \DateTime($this->to);
-                return $tdate->format('d-m-Y');
-            },
-        );
-    }
-
     protected function isEditablePeriod(): Attribute
     {
         return Attribute::make(
@@ -101,6 +79,22 @@ class FeeCollection extends Model
             $query->where('district_id', $districtId);
         }
         return $query;
+    }
+
+    public function scopeUserConstrained(Builder $query)
+    {
+        /**
+         * @var App\Models\User
+         */
+        $user = auth()->user();
+        if ($user->hasPermissionTo('Fee Collection: View In Any District')) {
+            return $query;
+        } elseif($user->hasPermissionTo('Fee Collection: View Any In Own District')) {
+            return $query->where('district_id', $user->district_id);
+        } elseif('Fee Collection: View Own In Own District') {
+            return $query->where('district_id', $user->district_id)
+                ->where('collected_by', $user->id);
+        }
     }
 
     public function auditLogs()

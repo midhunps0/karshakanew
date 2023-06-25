@@ -19,8 +19,9 @@
                     bank_branch: '',
                     account_no: '',
                     ifsc_code: '',
+                    is_sc_st: false,
                     passed_exam_details: {
-                        exam_name: '',
+                        exam_name: 'SSLC',
                         reg_no: '',
                         institution: '',
                         affiliated_board: '',
@@ -31,10 +32,17 @@
                             subject: '',
                             marks_scored: '',
                             max_mark: '',
+                            percentage: '',
+                            grade: '',
                             points: '',
-                            percentage: ''
                         }
                     ],
+                    marks_total: {
+                        total_scored: '',
+                        total_max: '',
+                        percentage: '',
+                        points: '',
+                    },
                     addSubject() {
                         this.marks.push(
                             {
@@ -50,6 +58,38 @@
                         this.marks = this.marks.filter((m, index) => {
                             return i != index;
                         });
+                    },
+                    setPercentage(item) {
+                        if(item.max_mark == 0 || item.max_mark == '') {
+                            item.percentage = '';
+                        } else {
+                            item.percentage = Math.round(item.marks_scored / item.max_mark * 10000) / 100 ;
+                        }
+                    },
+                    setPoints(item) {
+                        switch(item.grade) {
+                            case 'A+':
+                                item.points = 9;
+                                break;
+                            case 'A':
+                                item.points = 8;
+                                break;
+                            case 'B+':
+                                item.points = 7;
+                                break;
+                            case 'B':
+                                item.points = 6;
+                                break;
+                            case 'C+':
+                                item.points = 5;
+                                break;
+                            case 'C':
+                                item.points = 4;
+                                break;
+                            case 'D+':
+                                item.points = 3;
+                                break;
+                        }
                     },
                     doSubmit() {
                         let el = document.getElementById('education_scheme_form');
@@ -88,6 +128,32 @@
                     fee_period_to = '{{$member->lastFeePaidPeriod()['to']}}';
                     mobile_no = '{{$member->mobile_no}}';
                     aadhaar_no = '{{$member->aadhaar_no}}';
+                    $watch('marks', (marks) => {
+                        if (['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)) {
+                            let pointsSum = 0;
+                            marks.forEach((m) => {
+                                pointsSum += m.points * 1;
+                            });
+                            marks_total.total_scored = '';
+                            marks_total.total_max = '';
+                            marks_total.percentage = '';
+                            marks_total.points = pointsSum;
+                        }
+                        if (['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)) {
+                            let tscored = 0;
+                            let tmax = 0;
+                            let pc = 0;
+                            marks.forEach((m) => {
+                                tscored += m.marks_scored * 1;
+                                tmax += m.max_mark * 1;
+                            });
+                            pc = tmax > 0 ? Math.round(tscored / tmax * 10000) / 100 : '';
+                            marks_total.total_scored = tscored * 1;
+                            marks_total.total_max = tmax * 1;
+                            marks_total.percentage = pc * 1.0;
+                            marks_total.points = '';
+                        }
+                    });
                 "
                 action=""
                 @submit.prevent.stop="
@@ -159,7 +225,13 @@
                         <label class="label opacity-70">
                         <span class="label-text">Name of Exam</span>
                         </label>
-                        <input name="passed_exam_details[exam_name]" type="text" x-model="passed_exam_details.exam_name" class="input input-bordered w-full max-w-xs input-sm" />
+                        {{-- <input name="passed_exam_details[exam_name]" type="text" x-model="passed_exam_details.exam_name" class="input input-bordered w-full max-w-xs input-sm" /> --}}
+                        <select name="passed_exam_details[exam_name]" x-model="passed_exam_details.exam_name" class="select select-sm select-bordered py-0" required>
+                            <option value="SSLC">SSLC</option>
+                            <option value="THSLC">THSLC</option>
+                            <option value="Plus2">Plus 2</option>
+                            <option value="VHSE">VHSE</option>
+                        </select>
                     </div>
                     <div class="form-control w-1/6">
                         <label class="label opacity-70">
@@ -192,6 +264,15 @@
                     </label>
                     <input name="arrear_months_exdt" type="text" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" />
                 </div>
+                <div class="form-control w-1/3">
+                    <label class="label opacity-70">
+                    <span class="label-text">Whether belonging to SC/ST category?</span>
+                    </label>
+                    <select name="is_sc_st" x-model="is_sc_st" class="select select-sm py-0 select-bordered w-24">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
                 <div class="my-8">
                     <label class="label opacity-70">
                         <span class="label-text">Marks scored by the student:</span>
@@ -200,10 +281,21 @@
                         <thead>
                             <tr>
                                 <td>Subject</td>
-                                <td>Marks Scored</td>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                    <td>Marks Scored</td>
+                                </template>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
                                 <td>Maximum Mark</td>
-                                <td>Points</td>
-                                <td>Percentage</td>
+                                </template>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                    <td>Percentage</td>
+                                </template>
+                                <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                    <td>Grade</td>
+                                </template>
+                                <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                    <td>Points</td>
+                                </template>
                                 <td></td>
                             </tr>
                         </thead>
@@ -213,18 +305,33 @@
                                     <td>
                                         <input :name="'marks_scored['+i+'][subject]'" type="text" x-model="m.subject" class="input input-bordered w-full max-w-xs input-sm" />
                                     </td>
-                                    <td>
-                                        <input :name="'marks_scored['+i+'][marks_scored]'" type="text" x-model="m.marks_scored" class="input input-bordered w-full max-w-xs input-sm" />
-                                    </td>
-                                    <td>
-                                        <input :name="'marks_scored['+i+'][max_mark]'" type="text" x-model="m.max_mark" class="input input-bordered w-full max-w-xs input-sm" />
-                                    </td>
-                                    <td>
-                                        <input :name="'marks_scored['+i+'][points]'" type="text" x-model="m.points" class="input input-bordered w-full max-w-xs input-sm" />
-                                    </td>
-                                    <td>
-                                        <input :name="'marks_scored['+i+'][percentage]'" type="text" x-model="m.percentage" class="input input-bordered w-full max-w-xs input-sm" />
-                                    </td>
+
+                                    <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                        <td>
+                                            <input :name="'marks_scored['+i+'][marks_scored]'" type="text" x-model="m.marks_scored" class="input input-bordered w-full max-w-xs input-sm"  @change="setPercentage(m)"/>
+                                        </td>
+                                    </template>
+                                    <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                        <td>
+                                            <input :name="'marks_scored['+i+'][max_mark]'" type="text" x-model="m.max_mark" class="input input-bordered w-full max-w-xs input-sm" @change="setPercentage(m)" />
+                                        </td>
+                                    </template>
+                                    <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                        <td>
+                                            <input :name="'marks_scored['+i+'][percentage]'" type="text" x-model="m.percentage" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                        </td>
+                                    </template>
+                                    <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                        <td>
+                                            <input :name="'marks_scored['+i+'][grade]'" type="text" x-model="m.grade" class="input input-bordered w-full max-w-xs input-sm" @change="setPoints(m)"/>
+                                        </td>
+                                    </template>
+                                    <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                        <td>
+                                            <input :name="'marks_scored['+i+'][points]'" type="text" x-model="m.points" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                        </td>
+                                    </template>
+\
                                     <td>
                                         <button x-show="i == marks.length - 1" type="button" class="btn btn-sm btn-warning" @click.prevent.stop="addSubject();">
                                             <x-easyadmin::display.icon icon="easyadmin::icons.plus"/>
@@ -235,6 +342,35 @@
                                     </td>
                                 </tr>
                             </template>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold bg-base-200">Total</td>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                    <td class="font-bold bg-base-200">
+                                        <input :name="'marks_total[total_scored]'" type="text" x-model="marks_total.total_scored" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                    </td>
+                                </template>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                <td class="font-bold bg-base-200">
+                                    <input :name="'marks_total[total_max]'" type="text" x-model="marks_total.total_max" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                </td>
+                                </template>
+                                <template x-if="['Plus2', 'VHSE'].includes(passed_exam_details.exam_name)">
+                                    <td class="font-bold bg-base-200">
+                                        <input :name="'marks_total[percentage]'" type="text" x-model="marks_total.percentage" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                    </td>
+                                </template>
+                                <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                    <td class="font-bold bg-base-200"></td>
+                                </template>
+                                <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
+                                    <td class="font-bold bg-base-200">
+                                        <input :name="'marks_total[points]'" type="text" x-model="marks_total.points" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                    </td>
+                                </template>
+                                <td class="font-bold bg-base-200"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

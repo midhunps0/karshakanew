@@ -126,7 +126,7 @@ class MemberService implements ModelViewConnector {
         )->addColumn(
             fields: ['membership_no']
         )->addColumn(
-            fields: ['aadhaar_no']
+            fields: ['display_current_address']
         );
         /**
          * @var User

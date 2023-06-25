@@ -58,6 +58,7 @@
                     '{{route('members.fetch', '_X_')}}'.replace('_X_', id)
                 ).then((r) => {
                     this.member = r.data.member;
+                    /*
                     this.fees = [
                         {
                             particulars: '',
@@ -68,6 +69,7 @@
                             history: true,
                         }
                     ];
+                    */
                     this.notes = '';
                     this.date = null;
                     $dispatch('easetdate', {date: null, key: 'date'});
@@ -219,6 +221,7 @@
             },
             newReceipt() {
                 this.showreceipt = false;
+                /*
                 this.fees = [
                     {
                         particulars: '',
@@ -228,7 +231,7 @@
                         amount: null,
                         history: true,
                     }
-                ];
+                ];*/
                 this.showform = true;
             },
             close() {

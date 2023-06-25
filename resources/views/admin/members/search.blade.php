@@ -126,10 +126,11 @@
                         }*/
 
                         if (this.getSearchBy() == 'membership_no') {
-                            searchStr = this.memNumDistrict + '/'
-                                + this.memNumTaluk + '/'
-                                + this.memNumVillage + '/'
-                                + this.memNumStr;
+                            searchStr = '';
+                            searchStr += this.memNumDistrict != null ? this.memNumDistrict + '/' : '';
+                            searchStr += this.memNumTaluk != null ? this.memNumTaluk + '/' : '';
+                            searchStr += this.memNumVillage != null ? this.memNumVillage + '/' : '';
+                            searchStr += this.memNumStr != null ? this.memNumStr + '/' : '';
                         } else {
                             searchStr = this.search_string;
                         }

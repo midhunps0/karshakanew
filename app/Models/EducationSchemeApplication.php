@@ -16,6 +16,7 @@ class EducationSchemeApplication extends Model implements MediaOwner
     protected $casts = [
         'passed_exam_details' => 'array',
         'marks_scored' => 'array',
+        'total_marks' => 'array',
         'member_bank_account' => 'array',
     ];
 

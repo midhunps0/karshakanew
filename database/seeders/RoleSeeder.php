@@ -141,7 +141,7 @@ class RoleSeeder extends Seeder
             'Member: Delete In Own District',
             'Member: Approve In Own District',
             'Fee Collection: Create In Own District',
-            'Fee Collection: View In Own District',
+            'Fee Collection: View Any In Own District',
             'Fee Collection: Edit In Own District Any Time',
             'Fee Collection: Delete In Own District',
             'Allowance: Create In Own District',
@@ -161,7 +161,7 @@ class RoleSeeder extends Seeder
             'Member: Create In Own District',
             'Member: View In Own District',
             'Fee Collection: Create In Own District',
-            'Fee Collection: View In Own District',
+            'Fee Collection: View Own In Own District',
             'Fee Collection: Edit In Own District Limited Time',
         ],
         'Union Representative' => [

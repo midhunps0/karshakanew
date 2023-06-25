@@ -40,7 +40,8 @@ class Member extends Model
         'wb_passbook_back',
         'one_and_same_cert',
         'is_approved',
-        'display_name'
+        'display_name',
+        'display_current_address'
     ];
 
     public function district()
@@ -264,6 +265,21 @@ class Member extends Model
                     return $this->name;
                 }
                 return $this->name_mal ?? '';
+            },
+        );
+    }
+
+    protected function displayCurrentAddress(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->current_address != null && $this->current_address != '') {
+                    if ($this->current_address_mal != null && $this->current_address_mal != '') {
+                        return $this->current_address . '(' .$this->current_address_mal .')';
+                    }
+                    return $this->current_address;
+                }
+                return $this->current_address_mal ?? '';
             },
         );
     }
