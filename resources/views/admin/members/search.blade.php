@@ -130,7 +130,7 @@
                             searchStr += this.memNumDistrict != null ? this.memNumDistrict + '/' : '';
                             searchStr += this.memNumTaluk != null ? this.memNumTaluk + '/' : '';
                             searchStr += this.memNumVillage != null ? this.memNumVillage + '/' : '';
-                            searchStr += this.memNumStr != null ? this.memNumStr + '/' : '';
+                            searchStr += this.memNumStr != null ? this.memNumStr : '';
                         } else {
                             searchStr = this.search_string;
                         }
