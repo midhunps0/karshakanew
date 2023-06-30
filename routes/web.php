@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\AllowanceController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TalukController;
 use Ynotz\EasyAdmin\Services\RouteHelper;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\AllowanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeeCollectionController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Accounting\LedgerController;
+use App\Http\Controllers\Accounting\TransactionController;
+use App\Http\Controllers\Accounting\AccountGroupController;
+use App\Http\Controllers\Accounting\AccountsReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +107,41 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
     Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');
     Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
+
+    Route::get('/account-group-all', [AccountGroupController::class, 'index']);
+    Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);
+    Route::post('/account-group-create', [AccountGroupController::class, 'store']);
+    Route::post('/account-group-update/{id}', [AccountGroupController::class, 'update']);
+    Route::post('/account-group-delete/{id}', [AccountGroupController::class, 'delete']);
+
+    RouteHelper::getEasyRoutes(
+        modelName: "LedgerAccount",
+        controller: 'App\Http\Controllers\Accounting\LedgerController'
+    );
+    /*
+    Route::post('/ledger-create', [LedgerController::class, 'create']);
+    Route::post('/ledger-store', [LedgerController::class, 'store']);
+    Route::post('/ledger-update/{id}', [LedgerController::class, 'update']);
+    Route::post('/ledger-delete/{id}', [LedgerController::class, 'delete']);
+    Route::get('/ledger-show/{id}', [LedgerController::class, 'show']);
+    */
+    Route::get('/ledger-list', [LedgerController::class, 'index']);
+    // Route::get('/ledger-cashbankaccounts', [LedgerController::class, 'cashBankAccounts']);
+
+    Route::get('/transaction-create', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/transation-create-journal', [TransactionController::class, 'createJournal'])->name('transaction.create.journal');
+    Route::get('/transaction-create-receipt', [TransactionController::class, 'createReceipt'])->name('transaction.create.receipt');
+    Route::get('/transaction-create-voucher', [TransactionController::class, 'createPayment'])->name('transaction.create.voucher');
+    Route::post('/transaction-store', [TransactionController::class, 'store'])->name('transaction.store');
+    Route::post('/transaction-edit/{id}', [TransactionController::class, 'update']);
+    Route::post('/transaction-delete/{id}', [TransactionController::class, 'delete']);
+    Route::get('/transaction-show/{id}', [TransactionController::class, 'show']);
+    Route::get('/transaction-index', [TransactionController::class, 'index'])->name('transaction.index');
+
+    Route::get('/accounts-chart', [AccountsReportsController::class, 'accountsChart']);
+    Route::get('/account-statement', [AccountsReportsController::class, 'accountStatement']);
+    Route::get('/journal-statement', [AccountsReportsController::class, 'journalStatement']);
+    Route::get('/transaction-types', [AccountsReportsController::class, 'transactionTypes']);
 });
 
 

@@ -149,14 +149,47 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showAllowancesReport()
                     ],
-                    // [
-                    //     'type' => 'menu_item',
-                    //     'title' => 'All Trade Unions',
-                    //     'route' => 'tradeunions.index',
-                    //     'route_params' => [],
-                    //     'icon' => 'easyadmin::icons.users',
-                    //     'show' => (new TradeUnionService())->authoriseIndex()
-                    // ],
+                ],
+            ],
+            [
+                'type' => 'menu_group',
+                'title' => 'Accounts',
+                'icon' => 'easyadmin::icons.gear',
+                // 'show' => $this->showAccounts(),
+                'show' => true,
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Create Journal Entry',
+                        'route' => 'transaction.create.journal',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showTransaction()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Create Receipt',
+                        'route' => 'transaction.create.receipt',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showTransaction()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Create Voucher',
+                        'route' => 'transaction.create.voucher',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showTransaction()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Journal Entries',
+                        'route' => 'transaction.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showTransaction()
+                    ],
                 ]
             ],
             // [
@@ -237,6 +270,14 @@ class SidebarService implements SidebarServiceInterface
     private function showPermissions()
     {
         return auth()->check();
+    }
+    private function showAccounts()
+    {
+        return auth()->user()->hasRole('System Admin');
+    }
+    private function showTransaction()
+    {
+        return auth()->user()->hasRole('System Admin');
     }
     // private function showTradeUnions()
     // {
