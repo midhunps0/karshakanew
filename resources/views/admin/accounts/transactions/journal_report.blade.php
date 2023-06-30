@@ -59,15 +59,15 @@
                     <thead>
                         <tr>
                             <td></td>
-                            <td colspan="2" class="text-center">Debit</td>
-                            <td colspan="2" class="text-center">Credit</td>
+                            <td colspan="2" class="text-center text-error opacity-75">Debit</td>
+                            <td colspan="2" class="text-center text-success opacity-75">Credit</td>
                         </tr>
                         <tr>
                             <td>Date</td>
-                            <td>Account</td>
-                            <td>Amount</td>
-                            <td>Account</td>
-                            <td>Amount</td>
+                            <td class="text-error opacity-75">Account</td>
+                            <td class="text-error opacity-75">Amount</td>
+                            <td class="text-success opacity-75">Amount</td>
+                            <td class="text-success opacity-75">Account</td>
                         </tr>
                     </thead>
                     {{-- {{dd($transactions)}} --}}
