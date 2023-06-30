@@ -27,7 +27,7 @@ class StoreTransactionRequest extends FormRequest
         return [
             'district_id' => 'sometimes|integer',
             'date' => 'required|date_format:d-m-Y',
-            'type' => 'required|in:payment,receipt,journal',
+            'type' => 'required|in:voucher,receipt,journal',
             'remarks' => 'sometimes|nullable|string',
             'clients' => 'required|array',
             'ref_no' => 'sometimes|nullable|string'
