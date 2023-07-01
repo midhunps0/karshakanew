@@ -422,6 +422,13 @@ class MemberService implements ModelViewConnector {
                 inputType: 'hidden',
                 key: 'aadhaar_no',
                 properties: ['required' => true,],
+                formTypes: ['create']
+            ),
+            'aadhaar_no' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'aadhaar_no',
+                properties: ['required' => true,],
+                formTypes: ['edit']
             ),
             'membership_no' => FormHelper::makeInput(
                 inputType: 'text',
