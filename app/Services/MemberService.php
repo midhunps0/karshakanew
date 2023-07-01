@@ -414,7 +414,7 @@ class MemberService implements ModelViewConnector {
             'aadhaar_no_display_edit' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'aadhaar_no',
-                label: 'Verified Aadhaar No.',
+                label: 'Aadhaar No.',
                 properties: ['required' => true],
                 formTypes: ['edit']
             ),
@@ -424,12 +424,12 @@ class MemberService implements ModelViewConnector {
                 properties: ['required' => true,],
                 formTypes: ['create']
             ),
-            'aadhaar_no' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'aadhaar_no',
-                properties: ['required' => true,],
-                formTypes: ['edit']
-            ),
+            // 'aadhaar_no' => FormHelper::makeInput(
+            //     inputType: 'text',
+            //     key: 'aadhaar_no',
+            //     properties: ['required' => true,],
+            //     formTypes: ['edit']
+            // ),
             'membership_no' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'membership_no',
@@ -927,14 +927,14 @@ class MemberService implements ModelViewConnector {
         $layout = (new ColumnLayout())
             ->addElements(
                 [
-                    (new RowLayout())->addElements(
+                    (new RowLayout(width: '1/4'))->addElements(
                         [
                             (new ColumnLayout(
                                 width: '1/4'
                             ))->addInputSlot('aadhaar_no_display_edit'),
-                            (new ColumnLayout(
-                                width: '1/4'
-                            ))->addInputSlot('aadhaar_no'),
+                            // (new ColumnLayout(
+                            //     width: '1/4'
+                            // ))->addInputSlot('aadhaar_no'),
                         ]
                     ),
                     (new RowLayout())->addElements(
