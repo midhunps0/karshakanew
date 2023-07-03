@@ -451,7 +451,7 @@
                         </div>
                         <div>
                             <span class="text-warning">Date: </span>
-                            <span x-text="receipt.receipt_date"></span>
+                            <span x-text="receipt.formatted_receipt_date"></span>
                         </div>
                     </div>
                 </div>
