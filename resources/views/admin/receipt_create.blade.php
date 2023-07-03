@@ -213,11 +213,16 @@
                 let divContents = document.getElementById('receipt').innerHTML;
                 let a = window.open('', '', 'height=500, width=500');
                 a.document.write('<html>');
+                let head = document.getElementsByTagName('head')[0].innerHTML;
+                a.document.write('<head>');
+                a.document.write(head);
+                a.document.write('</head>');
                 a.document.write('<body>');
                 a.document.write(divContents);
                 a.document.write('</body></html>');
                 a.document.close();
-                a.print();
+
+                setTimeout(() => {a.print(); a.close();}, 100);
             },
             newReceipt() {
                 this.showreceipt = false;
@@ -423,17 +428,31 @@
             </div>
 
         </form>
-        <div id="receipt" x-show="showreceipt" class="w-full md:w-10/12 m-auto p-3 border            border-base-content border-opacity-50 rounded-md my-8 min-w-48 overflow-x-scroll">
-            <div>
-                <div class="text-center my-4 font-bold underline text-warning">Receipt</div>
+        <div x-show="showreceipt" class="w-full md:w-10/12 m-auto p-3 border border-base-content border-opacity-50 rounded-md my-8 min-w-48 overflow-x-scroll">
+            <div id="receipt">
+                <div class="text-center my-4 font-bold underline">കേരള കർഷക തൊഴിലാളി ക്ഷേമനിധി ബോർഡ്<br/>
+                    രസീത്
+                    </div>
                 <div class="flex flex-row flex-wrap justify-between items-center w-full p-2">
                     <div>
-                        <span class="text-warning">Receipt No.:</span>
-                        <span x-text="receipt.receipt_number"></span>
+                        <div>
+                            <span class="text-warning">Member: </span>
+                            <span x-text="receipt.member.name"></span>
+                        </div>
+                        <div>
+                            <span class="text-warning">Membership No.: </span>
+                            <span x-text="receipt.member.membership_no"></span>
+                        </div>
                     </div>
                     <div>
-                        <span class="text-warning">Date.:</span>
-                        <span x-text="receipt.receipt_date"></span>
+                        <div>
+                            <span class="text-warning">Receipt No.: </span>
+                            <span x-text="receipt.receipt_number"></span>
+                        </div>
+                        <div>
+                            <span class="text-warning">Date: </span>
+                            <span x-text="receipt.receipt_date"></span>
+                        </div>
                     </div>
                 </div>
                 <div>
