@@ -211,7 +211,7 @@
             },
             printReceipt() {
                 let divContents = document.getElementById('receipt').innerHTML;
-                let a = window.open('', '', 'height=500, width=500');
+                let a = window.open('', '', 'width=210');
                 a.document.write('<html>');
                 let head = document.getElementsByTagName('head')[0].innerHTML;
                 a.document.write('<head>');
@@ -481,6 +481,9 @@
                             <td colspan="4" class="bg-base-200"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
                         </tr>
                     </table>
+                    <div class="text-right w-full p-4 mt-4">
+                        sd/-<br/>DEO
+                    </div>
                 </div>
             </div>
             <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
