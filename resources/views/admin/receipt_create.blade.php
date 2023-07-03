@@ -459,22 +459,34 @@
                     <table class="w-full table table-compact">
                         <tbody>
                             <tr class="border-b border-base-content border-opacity-50">
-                                <td class="bg-base-200">Particulars</td>
-                                <td class="bg-base-200">From</td>
-                                <td class="bg-base-200">To</td>
+                                <td class="bg-base-200">
+                                    <span>
+                                        Particulars
+                                    </span>
+                                    <span class="hidden print:inline">
+                                        From<br/>To
+                                    </span>
+                                </td>
+                                <td class="bg-base-200 print:hidden">From</td>
+                                <td class="bg-base-200 print:hidden">To</td>
                                 <td class="bg-base-200 text-center">Amount</td>
                             </tr>
                             <template x-for="item in receipt.fee_items">
                                 <tr>
-                                    <td x-text="item.fee_type.name"></td>
-                                    <td x-text="item.period_from || '--'"></td>
-                                    <td x-text="item.period_to || '--'"></td>
+                                    <td>
+                                        <span x-text="item.fee_type.name"></span>
+                                        <span class="hidden print:inline" x-text="item.period_from || '--'"></span>
+                                        <span class="hidden print:inline" x-text="item.period_to || '--'"></span>
+                                    </td>
+                                    <td class="print:hidden" x-text="item.period_from || '--'"></td>
+                                    <td class="print:hidden" x-text="item.period_to || '--'"></td>
                                     <td class="text-right" x-text="item.amount"></td>
                                 </tr>
                             </template>
                         </tbody>
                         <tr class="border-t border-base-content border-opacity-50">
-                            <td colspan="3" class="text-right text-warning">Total: </td>
+                            <td colspan="3" class="text-right text-warning print:hidden">Total: </td>
+                            <td class="hidden text-right text-warning print:table-column">Total: </td>
                             <td colspan="1" class="text-right" x-text="receipt.total_amount"></td>
                         </tr>
                         <tr>
