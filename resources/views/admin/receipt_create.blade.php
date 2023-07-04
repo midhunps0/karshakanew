@@ -485,9 +485,9 @@
                             </template>
                         </tbody>
                         <tr class="border-t border-base-content border-opacity-50">
-                            <td colspan="3" class="text-right text-warning print:hidden">Total: </td>
-                            <td class="hidden text-right text-warning print:table-column">Total: </td>
-                            <td colspan="1" class="text-right" x-text="receipt.total_amount"></td>
+                            <td colspan="3" class="text-right font-bold print:hidden">Total: </td>
+                            <td class="hidden text-right font-bold print:table-column">Total: </td>
+                            <td colspan="1" class="text-right font-bold" x-text="receipt.total_amount"></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="bg-base-200 hidden print:table-column"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
