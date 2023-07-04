@@ -40,7 +40,15 @@ class FeesCollectionStoreRequest extends FormRequest
             'fee_item.*.period_from' => ['sometimes', 'string'],
             'fee_item.*.period_to' => ['sometimes', 'string'],
             'fee_item.*.amount' => ['required', 'numeric'],
-            'notes' => ['sometimes', 'string']
+            'notes' => ['sometimes', 'string'],
+            'is_sc_st' => ['required', 'boolean']
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_sc_st' => $this->is_sc_st == 'Yes',
+        ]);
     }
 }

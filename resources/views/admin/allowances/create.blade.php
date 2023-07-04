@@ -186,7 +186,7 @@
                         <label class="label opacity-70">
                         <span class="label-text">Member's Aadhaar No.</span>
                         </label>
-                        <input name="member_aadhaar" type="text" x-model="aadhaar_no" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  readonly/>
+                        <input name="member_aadhaar" type="text" x-model="aadhaar_no" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"/>
                     </div>
                 </div>
                 <div class="flex flex-row space-x-2">
@@ -202,13 +202,13 @@
                             <label class="label opacity-70">
                             <span class="label-text">From</span>
                             </label>
-                            <input name="fee_perid_from" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_from" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  readonly/>
+                            <input name="fee_perid_from" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_from" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"/>
                         </div>
                         <div class="form-control w-full max-w-xs">
                             <label class="label opacity-70">
                             <span class="label-text">To</span>
                             </label>
-                            <input name="fee_perid_to" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_to" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" readonly/>
+                            <input name="fee_perid_to" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_to" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"/>
                         </div>
                     </fieldset>
                 </div>
@@ -217,7 +217,7 @@
                     <label class="label opacity-70">
                     <span class="label-text">Name of Student</span>
                     </label>
-                    <input name="student_name" type="text" x-model="student_name" class="input input-bordered w-full max-w-xs input-sm" />
+                    <input name="student_name" type="text" x-model="student_name" class="input input-bordered w-full max-w-xs input-sm" required/>
                 </div>
                 <fieldset class="flex flex-row p-2 my-2 py-4 space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
                     <legend>Passed Exam Details</legend>
@@ -262,7 +262,7 @@
                     <label class="label opacity-70">
                     <span class="label-text">Arrears in Annual Subscription On Exam Date (No. of months, if any)</span>
                     </label>
-                    <input name="arrear_months_exdt" type="text" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" />
+                    <input name="arrear_months_exdt" type="text" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
                 </div>
                 <div class="form-control w-1/3">
                     <label class="label opacity-70">
@@ -328,7 +328,7 @@
                                     </template>
                                     <template x-if="['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)">
                                         <td>
-                                            <input :name="'marks_scored['+i+'][points]'" type="text" x-model="m.points" class="input input-bordered w-full max-w-xs input-sm" readonly/>
+                                            <input :name="'marks_scored['+i+'][points]'" type="text" x-model="m.points" class="input input-bordered w-full max-w-xs input-sm"/>
                                         </td>
                                     </template>
 \
@@ -336,7 +336,7 @@
                                         <button x-show="i == marks.length - 1" type="button" class="btn btn-sm btn-warning" @click.prevent.stop="addSubject();">
                                             <x-easyadmin::display.icon icon="easyadmin::icons.plus"/>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-error" @click.prevent.stop="removeSubject(i);">
+                                        <button x-show="marks.length > 1" type="button" class="btn btn-sm btn-error" @click.prevent.stop="removeSubject(i);">
                                             <x-easyadmin::display.icon icon="easyadmin::icons.delete"/>
                                         </button>
                                     </td>
@@ -378,13 +378,13 @@
                     <legend>Bank Details</legend>
                     <div class="form-control w-1/4">
                         <label class="label opacity-70">
-                        <span class="label-text">Name Of Bank</span>
+                        <span class="label-text">Name Of Payee</span>
                         </label>
                         <input name="member_bank_account[bank_name]" type="text" x-model="bank_name" class="input input-bordered w-full max-w-xs input-sm" />
                     </div>
                     <div class="form-control w-1/4">
                         <label class="label opacity-70">
-                        <span class="label-text">Branch</span>
+                        <span class="label-text">Bank & Branch</span>
                         </label>
                         <input name="member_bank_account[bank_branch]" type="text" x-model="bank_branch" class="input input-bordered w-full max-w-xs input-sm" />
                     </div>

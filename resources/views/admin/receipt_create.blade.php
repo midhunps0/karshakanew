@@ -469,14 +469,14 @@
                                 </td>
                                 <td class="bg-base-200 print:hidden">From</td>
                                 <td class="bg-base-200 print:hidden">To</td>
-                                <td class="bg-base-200 text-center">Amount</td>
+                                <td class="bg-base-200 text-right">Amount</td>
                             </tr>
                             <template x-for="item in receipt.fee_items">
                                 <tr>
                                     <td>
-                                        <span x-text="item.fee_type.name"></span>
-                                        <span class="hidden print:inline" x-text="item.period_from || '--'"></span>
-                                        <span class="hidden print:inline" x-text="item.period_to || '--'"></span>
+                                        <span x-text="item.fee_type.name"></span><br/>
+                                        <span class="hidden print:inline" x-text="item.period_from || ''"></span><br/>
+                                        <span class="hidden print:inline" x-text="item.period_to || ''"></span>
                                     </td>
                                     <td class="print:hidden" x-text="item.period_from || '--'"></td>
                                     <td class="print:hidden" x-text="item.period_to || '--'"></td>
@@ -490,7 +490,8 @@
                             <td colspan="1" class="text-right" x-text="receipt.total_amount"></td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="bg-base-200"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
+                            <td colspan="2" class="bg-base-200 hidden print:table-column"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
+                            <td colspan="4" class="bg-base-200"><span class="font-bold text-warning print:hidden">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
                         </tr>
                     </table>
                     <div class="text-right w-full p-4 mt-4">

@@ -18,7 +18,7 @@ class AllowanceService
     public function storeEducationSchemeApplication($data)
     {
         $member = Member::find($data['member_id']);
-        $applnData = collect($data)->only([
+        $applnData = collect($this->prepareForStoreValidation($data))->only([
             'member_id',
             'member_name',
             'member_address',
@@ -168,6 +168,16 @@ class AllowanceService
                 page: $data['page']
             );
         }
+    }
+
+
+    public function prepareForStoreValidation(array $data): array
+    {
+        info($data);
+        $data['is_sc_st'] = $data['is_sc_st'] == 'Yes';
+        $data['total_marks'] = $data['marks_total'];
+        info($data);
+        return $data;
     }
 
 }

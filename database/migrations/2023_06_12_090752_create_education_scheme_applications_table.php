@@ -20,8 +20,8 @@ return new class extends Migration
             $table->json('passed_exam_details');
             $table->float('arrear_months_exdt'); //no. of months of arears on exam date
             $table->boolean('is_sc_st');
-            $table->json('marks_scored');
-            $table->json('total_marks');
+            $table->json('marks_scored')->nullable();
+            $table->json('total_marks')->nullable();
             $table->string('member_phone');
             $table->string('member_aadhaar');
             $table->json('member_bank_account');

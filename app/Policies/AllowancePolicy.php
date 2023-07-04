@@ -22,8 +22,8 @@ class AllowancePolicy
     public function view(User $user, Allowance $allowance): bool
     {
         return $user->hasPermissionTo('Allowance: View In Any District') ||
-            ($user->hasPermissionTo('Allowance: View In Own District') &&
-                $user->district_id == $allowance->district_id);
+            (($user->hasPermissionTo('Allowance: View In Own District') &&
+                $user->district_id == $allowance->district_id));
     }
 
     /**

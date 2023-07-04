@@ -101,12 +101,19 @@
                                 @foreach ($application->allowanceable->marks_scored as $m)
                                 <tr>
                                     <td>{{$m['subject']}}</td>
-                                    <td>{{$m['marks_scored']}}</td>
-                                    <td>{{$m['max_mark']}}</td>
-                                    <td>{{$m['points']}}</td>
-                                    <td>{{$m['percentage']}}</td>
+                                    <td>{{$m['marks_scored'] ?? ''}}</td>
+                                    <td>{{$m['max_mark'] ?? ''}}</td>
+                                    <td>{{$m['points'] ?? ''}}</td>
+                                    <td>{{$m['percentage'] ?? ''}}</td>
                                 </tr>
                                 @endforeach
+                            </tbody>
+                            <tbody>
+                                <tr class="font-bold">
+                                    <td colspan="3">Total</td>
+                                    <td>{{$application->allowanceable->total_marks['points'] ?? ''}}</td>
+                                    <td>{{$application->allowanceable->total_marks['percentage'] ?? ''}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

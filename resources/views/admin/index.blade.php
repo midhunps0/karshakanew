@@ -239,9 +239,10 @@
 
             $dispatch('downloadurl', { url_all: this.downloadUrl + '?' + url_all, url_selected: this.downloadUrl + '?' + url_selected, idscount: this.selectedIds.length });
         },
-        getPaginatedPage(page) {
+        getPaginatedPage(page, link) {
             this.paginatorPage = page;
-            this.triggerFetch();
+            {{-- this.triggerFetch(); --}}
+            $dispatch('linkaction', { link: link, route: currentroute, fresh: true, fragment: 'main-panel', target: 'renderedpanel' });
         },
         showDeleteWarning(url) {
             this.deleteUrl = url;
@@ -303,7 +304,7 @@
     @setparam.window="setParam($event.detail)"
     @spotsort.window="doSort($event.detail)" @setsort.window="setSort($event.detail)"
     @spotfilter.window="doFilter($event.detail);" @setfilter.window="setFilter($event.detail);"
-    @pageaction.window="getPaginatedPage($event.detail.page);" @advsearch.window="doAdvSearch($event.detail);"
+    @pageaction.window="getPaginatedPage($event.detail.page, $event.detail.link);" @advsearch.window="doAdvSearch($event.detail);"
     @formresponse.window="onDeleteResponse($event.detail);" class="pb-4" id="{{ $index_id }}"
     >
     <h3 class="text-xl font-bold pb-3"><span>{{ $title }}</span>&nbsp;</h3>
