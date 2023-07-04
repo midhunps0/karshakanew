@@ -484,15 +484,17 @@
                                 </tr>
                             </template>
                         </tbody>
-                        <tr class="border-t border-base-content border-opacity-50">
-                            <td colspan="3" class="text-right font-bold print:hidden">Total: </td>
-                            <td class="hidden text-right font-bold print:table-column">Total: </td>
-                            <td colspan="1" class="text-right font-bold" x-text="receipt.total_amount"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="bg-base-200 hidden print:table-column"><span class="font-bold text-warning">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
-                            <td colspan="4" class="bg-base-200"><span class="font-bold text-warning print:hidden">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
-                        </tr>
+                        <tbody>
+                            <tr class="border-t border-base-content border-opacity-50">
+                                <td colspan="3" class="font-bold print:hidden">Total: </td>
+                                <td class="hidden font-bold print:table-column">Total: </td>
+                                <td colspan="1" class="text-right font-bold" x-text="receipt.total_amount"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="bg-base-200 hidden print:table-column"><span class="font-bold">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
+                                <td colspan="4" class="bg-base-200"><span class="font-bold print:hidden">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
+                            </tr>
+                        </tbody>
                     </table>
                     <div class="text-right w-full p-4 mt-4">
                         sd/-<br/>DEO
