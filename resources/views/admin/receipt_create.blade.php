@@ -491,14 +491,22 @@
                                 <td colspan="1" class="text-right font-bold" x-text="receipt.total_amount"></td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="bg-base-200 hidden print:table-cell"><span class="font-bold">Notes:&nbsp;</span><span x-text="receipt.notes"></span></td>
-                                <td colspan="4" class="bg-base-200"><span class="font-bold print:hidden">Notes:&nbsp;</span><span x-text="receipt.notes || '--'"></span></td>
+                                <td colspan="2" class="hidden print:table-cell"><span class="font-bold">Notes:&nbsp;</span><br/><span x-text="receipt.notes || '--'"></span></td>
+                                <td colspan="4" class="bg-base-200 print:hidden">
+                                    <span class="font-bold">Notes:</span><br/>
+                                    <span x-text="receipt.notes || '--'"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="hidden print:table-cell text-right">sd/-<br/>DEO</td>
+                                <td colspan="4" class="print:hidden text-right">
+                                    sd/-<br/>DEO
+                                </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="text-right w-full p-4 mt-4">
-                        sd/-<br/>DEO
-                    </div>
                 </div>
             </div>
             <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
