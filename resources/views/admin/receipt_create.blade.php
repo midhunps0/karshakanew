@@ -246,7 +246,8 @@
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
                 let date = Date.parse(this.date);
-                fd.append('date', date.toString('dd-MM-yyyy'));
+                fd.append('date', this.date);
+                {{-- fd.append('date', date.toString('dd-MM-yyyy')); --}}
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
                     if (f.tenure != null && f.tenure != '') {
@@ -314,7 +315,7 @@
                     }
                 }
             "
-            @datepicker.window="console.log($event);date = $event.detail.value;"
+            @datepicker.window="date = $event.detail.value;"
             @selectmember.window="fetchMember($event.detail.id); showform = true; showreceipt = false;"
             class="p-1" action=""
             id="{{$form['id']}}"
@@ -437,11 +438,11 @@
                     <div>
                         <div>
                             <span class="text-warning">Member: </span>
-                            <span x-text="receipt.member.name"></span>
+                            <span x-text="receipt.member ? receipt.member.name : ''"></span>
                         </div>
                         <div>
                             <span class="text-warning">Membership No.: </span>
-                            <span x-text="receipt.member.membership_no"></span>
+                            <span x-text="receipt.member ? receipt.member.membership_no : ''"></span>
                         </div>
                     </div>
                     <div>
@@ -475,11 +476,11 @@
                                 <tr>
                                     <td>
                                         <span x-text="item.fee_type.name"></span><br/>
-                                        <span class="hidden print:inline" x-text="item.period_from || ''"></span><br/>
-                                        <span class="hidden print:inline" x-text="item.period_to || ''"></span>
+                                        <span class="hidden print:inline" x-text="item.formatted_period_from || ''"></span><br/>
+                                        <span class="hidden print:inline" x-text="item.formatted_period_to || ''"></span>
                                     </td>
-                                    <td class="print:hidden" x-text="item.period_from || '--'"></td>
-                                    <td class="print:hidden" x-text="item.period_to || '--'"></td>
+                                    <td class="print:hidden" x-text="item.formatted_period_from || '--'"></td>
+                                    <td class="print:hidden" x-text="item.formatted_period_to || '--'"></td>
                                     <td class="text-right" x-text="item.amount"></td>
                                 </tr>
                             </template>
@@ -543,7 +544,7 @@
                         <template x-for="fp in member.fee_payments">
                             <template x-for="item in fp.fee_items">
                                 <tr>
-                                    <td><span x-text="fp.receipt_date"></span></td>
+                                    <td><span x-text="fp.formatted_receipt_date"></span></td>
                                     <td><span @click.stop.prevent="fetchReceipt(fp.id)" x-text="fp.receipt_number" class="cursor-pointer text-warning"></span></td>
                                     <td><span x-text="item.fee_type.name"></span></td>
                                     <td><span x-text="item.amount"></span></td>

@@ -1390,7 +1390,7 @@ class MemberService implements ModelViewConnector {
     public function fetch($id)
     {
         return Member::userAccessControlled()
-            ->with(['taluk', 'village', 'feePayments'])
+            ->with(['taluk', 'village', 'feePayments' =>  fn ($query) => $query->orderBy('receipt_date', 'asc')])
             ->where('id', $id)
             ->get()->first();
     }

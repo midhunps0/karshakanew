@@ -262,7 +262,7 @@
                     <label class="label opacity-70">
                     <span class="label-text">Arrears in Annual Subscription On Exam Date (No. of months, if any)</span>
                     </label>
-                    <input name="arrear_months_exdt" type="text" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
+                    <input name="arrear_months_exdt" type="number" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
                 </div>
                 <div class="form-control w-1/3">
                     <label class="label opacity-70">

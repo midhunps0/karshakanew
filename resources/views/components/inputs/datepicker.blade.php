@@ -304,6 +304,9 @@
                     }
                 }
             }" x-init="
+                $watch('datepickerValue', (v) => {
+                    $dispatch('datepicker', {value: v})
+                });
                 key = '{{$name}}';
                 displaybox = $el;
                 @if (isset($_old[$name]))
@@ -346,9 +349,6 @@
                     @endforeach
                 @endforeach
                 @endif
-                $watch('datepickerValue', (v) => {
-                    $dispatch('datepicker', {value: v})
-                });
             "
             @if (isset($update_on_events) || isset($toggle_on_events))
             @eaforminputevent.window="@if (isset($update_on_events))updateOnEvent($event.detail.source, $event.detail.value);@endif @if(isset($toggle_on_events))toggleOnEvent($event.detail.source, $event.detail.value);@endif"
