@@ -1369,7 +1369,7 @@ class MemberService implements ModelViewConnector {
         return $data;
     }
 
-    public function suggestionslist($data)
+    public function suggestionslist($data, $onlyVerified = false)
     {
         if (isset($data['exact']) && $data['exact'] == 'true') {
             $members = Member::userAccessControlled()
@@ -1450,17 +1450,19 @@ class MemberService implements ModelViewConnector {
             }
         }
         $member = Member::find($id);
-        $distict = $member->district;
+        $district = $member->district;
         if ($member == null) {
             return [ '' => false ];
         }
         try {
+            $updateLastReceiptNo = true;
             if(isset($data['receipt_number'])) {
-                info($data['receipt_number']);
+                // info($data['receipt_number']);
+                $updateLastReceiptNo = false;
             }
             DB::beginTransaction();
-            $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($distict);
-            $receiptNo = isset($data['receipt_number']) ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($distict);
+            $bookNo = $data['book_number'] ?? AppHelper::getBookNumber($district);
+            $receiptNo = isset($data['receipt_number']) ? $bookNo.'/'.$data['receipt_number'] : AppHelper::getReceiptNumber($district);
             $fc = FeeCollection::create([
                 'member_id' => $member->id,
                 'district_id' => $member->district_id,
@@ -1502,11 +1504,13 @@ class MemberService implements ModelViewConnector {
             $fc->save();
             DB::commit();
 
-            FeeCollectionEvent::dispatch(
-                $distict->id,
-                $fc,
-                FeeCollectionEvent::$ACTION_CREATED
-            );
+            if ($updateLastReceiptNo) {
+                FeeCollectionEvent::dispatch(
+                    $district->id,
+                    $fc,
+                    FeeCollectionEvent::$ACTION_CREATED
+                );
+            }
 
             BusinessActionEvent::dispatch(
                 FeeCollection::class,
@@ -1567,10 +1571,12 @@ class MemberService implements ModelViewConnector {
             $member = Member::find($id);
             // info('__mid: '.$id);
             // info('__member: '.$member);
+            $attemptSuccess = false;
             try {
                 DB::beginTransaction();
                 $bookNo = AppHelper::getBookNumber($member->district_id);
                 $receiptNo = AppHelper::getReceiptNumber($member->district_id);
+
                 $fc = FeeCollection::create([
                     'member_id' => $id,
                     'district_id' => $member->district_id,
@@ -1589,14 +1595,26 @@ class MemberService implements ModelViewConnector {
                     FeeItem::create($fid);
                 }
 
+                info('Receipt created');
                 DB::commit();
+                info('Receipt created');
                 $successList[] = $id;
                 $fcIds[] = $fc->id;
+                $attemptSuccess = true;
+
+            } catch (\Throwable $e) {
+                // info("Couldn't create bulk receipts. Failed at id: ".$id);
+                // info($e->__toString());
+                DB::rollback();
+                $success = false;
+            }
+            if ($attemptSuccess) {
                 FeeCollectionEvent::dispatch(
-                    $member->distict_id,
+                    $member->district_id,
                     $fc,
                     FeeCollectionEvent::$ACTION_CREATED
                 );
+
                 BusinessActionEvent::dispatch(
                     FeeCollection::class,
                     $fc->id,
@@ -1606,12 +1624,6 @@ class MemberService implements ModelViewConnector {
                     $fc,
                     'Created Receipt. No.: '.$fc->receipt_number,
                 );
-
-            } catch (\Throwable $e) {
-                // info("Couldn't create bulk receipts. Failed at id: ".$id);
-                // info($e->__toString());
-                DB::rollback();
-                $success = false;
             }
         }
 

@@ -124,6 +124,7 @@ class AppHelper
         */
         $district = is_int($district) ? District::find($district) : $district;
         $lastReceiptNumeric = $district->last_receipt_no;
+
         if ($district->last_receipt_date != null) {
             $lastReceiptMonth = Carbon::createFromFormat('Y-m-d', $district->last_receipt_date)->month;
         } else {
@@ -133,8 +134,10 @@ class AppHelper
         if ($lastReceiptMonth == 3 && $todayMonth > 3) {
             $newReceiptNumeric = 1;
         } else {
-            $newReceiptNumeric = $district->last_receipt_no + 1;
+            $newReceiptNumeric = $lastReceiptNumeric + 1;
         }
+        info('new receipt_no');
+        info($newReceiptNumeric);
         return Self::getBookNumber($district).'/'.$newReceiptNumeric;
     }
 
