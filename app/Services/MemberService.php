@@ -1592,7 +1592,11 @@ class MemberService implements ModelViewConnector {
                 DB::commit();
                 $successList[] = $id;
                 $fcIds[] = $fc->id;
-
+                FeeCollectionEvent::dispatch(
+                    $member->distict_id,
+                    $fc,
+                    FeeCollectionEvent::$ACTION_CREATED
+                );
                 BusinessActionEvent::dispatch(
                     FeeCollection::class,
                     $fc->id,
