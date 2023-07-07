@@ -148,6 +148,8 @@
                             <tr>
                                 <th>Date</th>
                                 <th>District</th>
+                                <th>Member</th>
+                                <th>Membership No.</th>
                                 <th>Receipt No.</th>
                                 <th>particulars</th>
                                 <th>From</th>
@@ -168,6 +170,16 @@
                                     @endif
                                 </td>
                                 <td>@if ($loop->first){{$fp->district->name}}@endif</td>
+                                <td>
+                                    @if ($loop->first)
+                                        {{$fp->member->display_name}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($loop->first)
+                                        {{$fp->member->membership_no}}
+                                    @endif
+                                </td>
                                 <td>@if ($loop->first){{$fp->receipt_number}}@endif</td>
                                 <td>{{$fi->feeType->name}}</td>
                                 <td>{{$fi->formatted_period_from ?? '--'}}</td>
@@ -246,6 +258,8 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>District</th>
+                                    <th>Member</th>
+                                    <th>Member Reg. No.</th>
                                     <th>Receipt No.</th>
                                     <th>particulars</th>
                                     <th>From</th>
@@ -264,6 +278,12 @@
                                         <span x-show="index == 0" x-text="r.formatted_receipt_date"></span>
                                     </td>
                                     <td><span x-show="index == 0" x-text="r.district.name"></span></td>
+                                    <td>
+                                        <span x-show="index == 0" x-text="r.receipt_number"></span>
+                                    </td>
+                                    <td>
+                                        <span x-show="index == 0" x-text="r.receipt_number"></span>
+                                    </td>
                                     <td>
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>
                                     </td>
