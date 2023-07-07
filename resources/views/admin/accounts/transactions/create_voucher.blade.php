@@ -225,7 +225,7 @@
                         <label class="label">
                         <span class="label-text">Date</span>
                         </label>
-                        <input x-model="date" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                        <input x-model="date" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">

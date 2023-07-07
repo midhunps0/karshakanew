@@ -348,7 +348,7 @@
                                     label_position="float"
                                     /> --}}
                                     Date:<span class="text-warning">*</span>
-                                    <input type="text" x-model="date" placeholder="(dd-mm-yyyy)" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" class="input input-md" required>
+                                    <input type="text" x-model="date" placeholder="(dd-mm-yyyy)" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" class="input input-md" required>
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}
                                 </div>
 
@@ -390,7 +390,7 @@
                                             </td> --}}
                                             <td class="">
                                                 <input :name="'period_from['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.from" :required="typesWithTenure.includes(parseInt(fee.particulars))"
-                                                :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]"
+                                                :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"
                                                 {{-- @change="onFromChanged(i);" --}}
                                                 {{-- @input="formatFromDate(i);" --}}
                                                 {{-- @focus="formatFromDate(i);" --}}
@@ -398,7 +398,7 @@
                                                 >
                                             </td>
                                             <td class="">
-                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy">
+                                                <input :name="'period_to['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.to" :disabled="!typesWithTenure.includes(parseInt(fee.particulars))" :required="typesWithTenure.includes(parseInt(fee.particulars))"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" placeholder="dd-mm-yyyy">
                                             </td>
                                             <td class="">
                                                 <input :name="'amount['+i+']'" class="input input-sm md:input-md input-bordered w-full" type="text" x-model="fee.amount" required>

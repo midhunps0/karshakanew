@@ -40,13 +40,13 @@
                         <label class="label">
                         <span class="label-text">From</span>
                         </label>
-                        <input x-model="from" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                        <input x-model="from" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
                         <span class="label-text">To</span>
                         </label>
-                        <input x-model="to" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                        <input x-model="to" @change="formatDate($el, $event);" type="text" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                 </div>
                 <div class="text-center">
