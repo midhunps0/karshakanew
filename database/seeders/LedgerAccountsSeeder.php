@@ -17,6 +17,89 @@ class LedgerAccountsSeeder extends Seeder
     private $dirExpId;
     private $inDirIncomeId;
     private $inDirExpId;
+    private $incomeAccounts = [
+        'AR',
+        'Bank Charges reversed',
+        'Covid 19',
+        'Digitilisation amount credited in CE A/c',
+        'DPB',
+        'education return',
+        'Employers Contribution',
+        'EPF',
+        'FD',
+        'FINE',
+        'GOVT. GRANT',
+        'INT FD',
+        'INT SB',
+        'interest on TSB',
+        'LOC',
+        'marriage return',
+        'Maternity Refund From LC',
+        'Member cancellation',
+        'meternity return',
+        'MR',
+        'PALMLET',
+        'PB',
+        'RI',
+        'sa return',
+        'TFR OF FUND',
+        'TSBA/C',
+        'U I D Registration',
+        'W.F.O A/C',
+        'workers Contribution',
+    ];
+    private $expenseAccounts = [
+        'Audit Fee',
+        'BANK CHARGE',
+        'CAR RENT',
+        'COMPUTER',
+        'COMPUTERISATION',
+        'Covid 19',
+        'Covid 19  board',
+        'Diesal/Petrol',
+        'ELECTRICITY CHARGE',
+        'Employees Con.',
+        'EPF Emplr. Con.',
+        'EXGRATIA',
+        'FD',
+        'FURNITURE',
+        'Govt. Grant',
+        'Honorarium',
+        'LEGAL CHARGE',
+        'Maintce of Veh./ Insrce.',
+        'MARRIAGE',
+        'MEDICAL',
+        'METERNITY',
+        'MISC.EXP',
+        'OE',
+        'PENSION CONTRIBUTION',
+        'POSTAGE',
+        'PRAN',
+        'PRINTING',
+        'Purchase of Veh.',
+        'RENT',
+        'SA',
+        'SALARY',
+        'SCHOLAR SHIP',
+        'SEMINAR/MEETING',
+        'STATIONARY',
+        'TA Board Members',
+        'TA STAFF',
+        'TDS',
+        'TDS Deducted from FD interest',
+        'TELE CHARGE',
+        'Telephone Allowance',
+        'TFR OF FUND',
+        'TSB A/C',
+        'UID Expence',
+        'WAGES',
+        'WATER CHARGE',
+        'WFO A/C',
+    ];
+    private $assetsAccounts = [
+        'CASH',
+        'CE A/C'
+    ];
     private $accounts = [
         [
             'district_id' => 5,
@@ -130,6 +213,49 @@ class LedgerAccountsSeeder extends Seeder
      */
     public function run()
     {
+        $districts = District::all();
+        foreach ($districts as $d) {
+            foreach ($this->incomeAccounts as $a) {
+                $account = [];
+                $gid = 'Direct Incomes';
+                $account['name'] = $a;
+                $account['district_id'] = $d->id;
+                $account['group_id'] = $this->findGroupId($gid, $d->id);
+                $account['opening_balance'] = 0;
+                $account['opening_bal_type'] = 'credit';
+                LedgerAccount::create(
+                    $account
+                );
+            }
+            foreach ($this->expenseAccounts as $a) {
+                $account = [];
+                $gid = 'Direct Expenses';
+                $account['name'] = $a;
+                $account['district_id'] = $d->id;
+                $account['group_id'] = $this->findGroupId($gid, $d->id);
+                $account['opening_balance'] = 0;
+                $account['opening_bal_type'] = 'debit';
+                LedgerAccount::create(
+                    $account
+                );
+            }
+            foreach ($this->assetsAccounts as $a) {
+                $account = [];
+                $gid = 'Current Assets';
+                $account['name'] = $a;
+                $account['district_id'] = $d->id;
+                $account['group_id'] = $this->findGroupId($gid, $d->id);
+                $account['opening_balance'] = 0;
+                $account['opening_bal_type'] = 'debit';
+                $account['cashorbank'] = true;
+                LedgerAccount::create(
+                    $account
+                );
+            }
+        }
+
+
+        /*
         $ekm = District::where('name', 'Ernakulam')->get()->first()->id;
         $alp = District::where('name', 'Kottayam')->get()->first()->id;
 
@@ -147,6 +273,7 @@ class LedgerAccountsSeeder extends Seeder
                 $account
             );
         }
+        */
     }
 
     private function findGroupId($name, $districtId)

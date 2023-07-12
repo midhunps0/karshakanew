@@ -95,6 +95,7 @@ class AllowanceService
     {
         try {
             $status = match($approval) {
+                'Paid' => Allowance::$STATUS_PAID,
                 'Approved' => Allowance::$STATUS_APPROVED,
                 'Rejected' => Allowance::$STATUS_REJECTED,
             };
@@ -106,6 +107,9 @@ class AllowanceService
             if ($amount != null && $status == Allowance::$STATUS_APPROVED) {
                 $a->sanctioned_amount = $amount;
                 $a->sanctioned_date = Carbon::today()->format('Y-m-d');
+            }
+            if ($status == Allowance::$STATUS_PAID) {
+                $a->payment_date = Carbon::today()->format('Y-m-d');
             }
             $a->save();
             $a->refresh();

@@ -58,16 +58,20 @@
                 <table class="table table-compact w-full">
                     <thead>
                         <tr>
-                            <td></td>
+                            <td class="w-24"></td>
+                            <td class="w-20"></td>
+                            <td class="w-48"></td>
                             <td colspan="2" class="text-center text-error opacity-75">Debit</td>
-                            <td colspan="2" class="text-center text-success opacity-75">Credit</td>
+                            <td colspan="2" class="text-center text-success opacity-95">Credit</td>
                         </tr>
                         <tr>
                             <td>Date</td>
+                            <td>Instr.<br/>No.</td>
+                            <td>Receipt/<br/>Voucher No.</td>
                             <td class="text-error opacity-75">Account</td>
-                            <td class="text-error opacity-75">Amount</td>
-                            <td class="text-success opacity-75">Amount</td>
-                            <td class="text-success opacity-75">Account</td>
+                            <td class="text-error opacity-75 w-24">Amount</td>
+                            <td class="text-success opacity-95">Account</td>
+                            <td class="text-success opacity-95 w-24">Amount</td>
                         </tr>
                     </thead>
                     {{-- {{dd($transactions)}} --}}
@@ -80,16 +84,26 @@
                                         {{$t->date}}
                                     @endif
                                 </td>
+                                <td class="border-l border-r border-r-base-content border-l-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif">
+                                    @if ($loop->first)
+                                        {{$t->instrument_no}}
+                                    @endif
+                                </td>
+                                <td class="border-l border-r border-r-base-content border-l-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif w-40">
+                                    @if ($loop->first)
+                                        {{$t->receipt_voucher_no}}
+                                    @endif
+                                </td>
                                 @if ($c->action == 'debit')
                                     <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif">{{$c->ledgerAccount->name}}</td>
-                                    <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif">{{$c->client_amount}}</td>
+                                    <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif text-right">{{$c->client_amount}}</td>
                                 @else
                                     <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif"></td>
                                     <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif"></td>
                                 @endif
                                 @if ($c->action == 'credit')
                                     <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif">{{$c->ledgerAccount->name}}</td>
-                                    <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif">{{$c->client_amount}}</td>
+                                    <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif text-right">{{$c->client_amount}}</td>
                                 @else
                                 <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif"></td>
                                 <td class="border-r border-r-base-content border-opacity-10 @if($loop->last) border-b border-b-base-content @endif"></td>

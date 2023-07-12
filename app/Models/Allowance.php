@@ -16,6 +16,7 @@ class Allowance extends Model
 
     static $STATUS_PENDING = 0;
     static $STATUS_APPROVED = 1;
+    static $STATUS_PAID = 2;
     static $STATUS_REJECTED = -1;
 
     protected $with = [
@@ -56,6 +57,8 @@ class Allowance extends Model
             get: function (mixed $value, array $attributes) {
                 $str = 'Pending';
                 switch ($value) {
+                    case self::$STATUS_PAID:
+                        $str = 'Paid';
                     case self::$STATUS_APPROVED:
                         $str = 'Approved';
                         break;

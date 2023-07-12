@@ -266,8 +266,9 @@
                 @if(isset($receipt->member->approved_at))
                 approved_at: {{$receipt->member->approved_at ?? ''}},
                 @else
-                approved_at: null
+                approved_at: null,
                 @endif
+                reg_date: '{{$receipt->member->reg_date}}'
             }
             receipt_id = {{$receipt->id}};
             @if (count($receipt->feeItems) > 0)
@@ -281,6 +282,7 @@
                         @else
                         tenure: null,
                         @endif --}}
+                        tenure: {{$fi->display_tenure}},
                         @if (isset($fi->formatted_period_from))
                         from: '{{$fi->formatted_period_from}}',
                         @else
@@ -315,7 +317,7 @@
                 </div>
                 <div class="p-0 min-w-72">
                     <span class="font-bold">Reg. Date</span>:&nbsp;
-                    <span class="md:text-xl font-bold" :class="member.approved_at != null || 'text-error'" x-text="member.approved_at || 'Un-approved'"></span>
+                    <span class="md:text-xl font-bold" :class="member.reg_date != null || 'text-error'" x-text="member.reg_date || 'Un-approved'"></span>
                 </div>
                 {{-- <div class="flex-grow text-right">
                     <a href="" @click.prevent.stop="editAction(member.id);"

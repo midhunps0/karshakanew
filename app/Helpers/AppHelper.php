@@ -110,18 +110,6 @@ class AppHelper
 
     public static function getReceiptNumber(int|District $district)
     {
-        /*
-        $districtId = is_int($district) ? $district : $district->id;
-
-        $fc = FeeCollection::where('district_id', $districtId)
-            ->where('manual_numbering', false)
-            ->orderBy('created_at', 'desc')->withTrashed()->get()->first();
-        $lastReceiptNumeric = 0;
-        if ($fc != null) {
-            $t = explode('/', $fc->receipt_number);
-            $lastReceiptNumeric = intval(array_pop($t));
-        }
-        */
         $district = is_int($district) ? District::find($district) : $district;
         $lastReceiptNumeric = $district->last_receipt_no;
 
@@ -139,6 +127,44 @@ class AppHelper
         info('new receipt_no');
         info($newReceiptNumeric);
         return Self::getBookNumber($district).'/'.$newReceiptNumeric;
+    }
+
+    public static function getGeneralReceiptNumber(int|District $district)
+    {
+        $district = is_int($district) ? District::find($district) : $district;
+        $lastReceiptNumeric = $district->last_gen_receipt_no;
+        if ($district->last_gen_receipt_date != null) {
+            $lastReceiptMonth = Carbon::createFromFormat('Y-m-d', $district->last_gen_receipt_date)->month;
+        } else {
+            $lastReceiptMonth = Carbon::today()->month;
+        }
+        $todayMonth = Carbon::today()->month;
+        if ($lastReceiptMonth == 3 && $todayMonth > 3) {
+            $newReceiptNumeric = 1;
+        } else {
+            $newReceiptNumeric = $lastReceiptNumeric + 1;
+        }
+
+        return Self::getBookNumber($district).'/'.'GR/'.$newReceiptNumeric;
+    }
+
+    public static function getGeneralVoucherNumber(int|District $district)
+    {
+        $district = is_int($district) ? District::find($district) : $district;
+        $lastVoucherNumeric = $district->last_gen_voucher_no;
+
+        if ($district->last_gen_voucher_date != null) {
+            $lastVoucherMonth = Carbon::createFromFormat('Y-m-d', $district->last_gen_voucher_date)->month;
+        } else {
+            $lastVoucherMonth = Carbon::today()->month;
+        }
+        $todayMonth = Carbon::today()->month;
+        if ($lastVoucherMonth == 3 && $todayMonth > 3) {
+            $newVoucherNumeric = 1;
+        } else {
+            $newVoucherNumeric = $lastVoucherNumeric + 1;
+        }
+        return Self::getBookNumber($district).'/'.'GV/'.$newVoucherNumeric;
     }
 
     public static function getMembershipNumber(
@@ -175,6 +201,21 @@ class AppHelper
     public static function jsSafe($val)
     {
         return str_replace('"', ' ', str_replace('\'', ' ', $val));
+    }
+
+    public static function dateFromString($date, $setMidnightTime = true)
+    {
+        $date = str_replace('/', '-', $date);
+        $t = explode('-', $date);
+        if (!checkdate(intval($t[1]), intval($t[0]), intval($t[2]))) {
+            throw new InvalidData('Incorrect date format', 400);
+        }
+
+        $thedate = Carbon::createFromDate($t[2], $t[1], $t[0]);
+        if ($setMidnightTime) {
+            $thedate->setTime(0, 0, 0, 0);
+        }
+        return $thedate;
     }
 }
 ?>

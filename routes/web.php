@@ -138,9 +138,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/transaction-show/{id}', [TransactionController::class, 'show']);
     Route::get('/transaction-index', [TransactionController::class, 'index'])->name('transaction.index');
 
-    Route::get('/accounts-chart', [AccountsReportsController::class, 'accountsChart']);
-    Route::get('/account-statement', [AccountsReportsController::class, 'accountStatement']);
-    Route::get('/journal-statement', [AccountsReportsController::class, 'journalStatement']);
+    Route::get('/accounts-chart', [AccountsReportsController::class, 'accountsChart'])->name('accounts.chart');
+    Route::get('/account-statement', [AccountsReportsController::class, 'accountStatement'])->name('accounts.account.statement');
+    Route::get('/journal-statement', [AccountsReportsController::class, 'journalStatement'])->name('accounts.journal.statement');
     Route::get('/transaction-types', [AccountsReportsController::class, 'transactionTypes']);
 });
 

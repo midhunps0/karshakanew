@@ -9,11 +9,13 @@ use App\Events\MemberEvent;
 use App\Events\AllowanceEvent;
 use App\Events\FeeCollectionEvent;
 use App\Events\BusinessActionEvent;
+use App\Events\TransactionEvent;
 use Illuminate\Support\Facades\Event;
 use App\Listeners\MemberEventListener;
 use App\Listeners\AllowanceEventListener;
 use App\Listeners\FeeCollectionEventListener;
 use App\Listeners\BusinessActionEventListener;
+use App\Listeners\TransactionEventListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -38,6 +40,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AllowanceEvent::class => [
             AllowanceEventListener::class
+        ],
+        TransactionEvent::class => [
+            TransactionEventListener::class
         ]
     ];
 

@@ -30,7 +30,8 @@ class StoreTransactionRequest extends FormRequest
             'type' => 'required|in:voucher,receipt,journal',
             'remarks' => 'sometimes|nullable|string',
             'clients' => 'required|array',
-            'ref_no' => 'sometimes|nullable|string'
+            'ref_no' => 'sometimes|nullable|string',
+            'instrument_no' => 'sometimes|nullable|string'
         ];
     }
 

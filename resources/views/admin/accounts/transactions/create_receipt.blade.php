@@ -10,6 +10,7 @@
                 type: 'receipt',
                 remarks: '',
                 ref_no: '',
+                instrument_no: '',
                 debit_total: 0,
                 credit_total: 0,
                 errors: '',
@@ -168,6 +169,7 @@
                         formData.append('type', this.type);
                         formData.append('remarks', this.remarks);
                         formData.append('ref_no', this.ref_no);
+                        formData.append('instrument_no', this.instrument_no);
                         let clients = [...this.debit_clients, ...this.credit_clients];
                         console.log(clients);
                         clients.forEach((c, i) => {
@@ -229,7 +231,13 @@
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
-                        <span class="label-text">Ref. No:</span>
+                        <span class="label-text">Instrument No.:</span>
+                        </label>
+                        <input x-model="instrument_no" type="text" class="input input-bordered w-full max-w-xs" required/>
+                    </div>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                        <span class="label-text">Ref. No.:</span>
                         </label>
                         <input x-model="ref_no" type="text" class="input input-bordered w-full max-w-xs" required/>
                     </div>
@@ -247,9 +255,9 @@
                                     <template x-for="(dc, index) in debit_clients" :key="index">
                                         <tr>
                                             <td>
-                                                <select x-model="dc.account_id" type="select" class="select select-sm py-0 select-bordered rounded">
+                                                <select x-model="dc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
                                                     <option value="">--Select--</option>
-                                                    @foreach ($accounts as $a)
+                                                    @foreach ($cashOrBank as $a)
                                                         <option value="{{$a->id}}" :disabled="chosen_accounts.debits.includes({{$a->id}}) || chosen_accounts.credits.includes({{$a->id}})">{{$a->name}}</option>
                                                     @endforeach
                                                 </select>
@@ -258,7 +266,7 @@
                                                 <input type="text" x-model="dc.amount" class="input input-sm input-bordered rounded" @keyup="validate('debit', index)">
                                             </td>
                                             <td>
-                                                <button type="button" x-show="index == (debit_clients.length - 1) && credit_clients.length == 1" class="btn btn-sm btn-warning"
+                                                {{-- <button type="button" x-show="index == (debit_clients.length - 1) && credit_clients.length == 1" class="btn btn-sm btn-warning"
                                                 @click.prevent.stop="addClient('debit')">
                                                     <x-easyadmin::display.icon
                                                     icon="easyadmin::icons.plus"
@@ -270,7 +278,7 @@
                                                     <x-easyadmin::display.icon
                                                     icon="easyadmin::icons.delete"
                                                     height="h-4" width="w-4"/>
-                                                </button>
+                                                </button> --}}
                                             </td>
                                         </tr>
                                     </template>
@@ -299,7 +307,7 @@
                                     <template x-for="(cc, index) in credit_clients" :key="index">
                                         <tr>
                                             <td>
-                                                <select x-model="cc.account_id" type="select" class="select select-sm py-0 select-bordered rounded">
+                                                <select x-model="cc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
                                                     <option value="">--Select--</option>
                                                     @foreach ($accounts as $a)
                                                         <option value="{{$a->id}}" :disabled="chosen_accounts.debits.includes({{$a->id}}) || chosen_accounts.credits.includes({{$a->id}})">{{$a->name}}</option>
@@ -310,7 +318,7 @@
                                                 <input type="text" x-model="cc.amount" class="input input-sm input-bordered rounded" @keyup="validate('credit', index)">
                                             </td>
                                             <td>
-                                                {{-- <button type="button" x-show="index == (credit_clients.length - 1) && debit_clients.length == 1" class="btn btn-sm btn-warning"
+                                                <button type="button" x-show="index == (credit_clients.length - 1) && debit_clients.length == 1" class="btn btn-sm btn-warning"
                                                 @click.prevent.stop="addClient('credit')">
                                                     <x-easyadmin::display.icon
                                                     icon="easyadmin::icons.plus"
@@ -322,7 +330,7 @@
                                                     <x-easyadmin::display.icon
                                                     icon="easyadmin::icons.delete"
                                                     height="h-4" width="w-4"/>
-                                                </button> --}}
+                                                </button>
                                             </td>
                                         </tr>
                                     </template>

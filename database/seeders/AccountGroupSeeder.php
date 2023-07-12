@@ -33,10 +33,9 @@ class AccountGroupSeeder extends Seeder
     public function run()
     {
         foreach($this->coreGroups as $group => $subGroups) {
-            $districtId = District::where('name', 'Ernakulam')->get()->first()->id;
-            $this->createGroup($group, $subGroups, $districtId);
-            $districtId = District::where('name', 'Kottayam')->get()->first()->id;
-            $this->createGroup($group, $subGroups, $districtId);
+            foreach (District::all() as $d) {
+                $this->createGroup($group, $subGroups, $d->id);
+            }
         }
     }
 

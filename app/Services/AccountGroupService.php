@@ -32,6 +32,8 @@ class AccountGroupService
 
     public function accountsChart()
     {
-        return AccountGroup::with(['subGroupsFamilyAccounts'])->where('parent_id', null)->get();
+        return AccountGroup::with(['subGroupsFamilyAccounts'])->where('parent_id', null)
+            ->userDistrictConstrained()
+            ->get();
     }
 }

@@ -80,7 +80,7 @@ class AccountsHelper
             'net_balance' => $obNetBal
         ];
         foreach ($transactions as $t) {
-            $tdate = $t->date;
+            $tdate = $t->formatted_date;
             // $tamount = $t->ammount;
             // $tremarks = $t->remarks;
             $transactionClientsData = $this->transactionClientsData($t, $accountId);

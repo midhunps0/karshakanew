@@ -21,8 +21,9 @@
         </div>
         <h4 class="my-4 text-center text-2xl underline mt-8"><span class="font-bold opacity-80">Application Details:</span></h4>
         @if (isset($application->allowanceable))
-            <div>
+            <div class="flex flex-row justify-between">
                 <div class="my-2 py-2 text-xl"><span class="font-bold opacity-60">Scheme:</span>&nbsp;<span>{{$application->welfareScheme->name}}</span></div>
+                <div class="my-2 py-2 text-xl"><span class="font-bold opacity-60">Appl. No.:</span>&nbsp;<span>{{$application->application_no}}</span></div>
             </div>
             <div class="flex flex-row flex-wrap">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Name:</span>&nbsp;<span>{{$application->allowanceable->member_name}}</span></div>
@@ -251,6 +252,9 @@
                                 return 'bg-base-200';
                                 break;
                             case 'Approved':
+                                return 'bg-success bg-opacity-30';
+                                break;
+                            case 'Paid':
                                 return 'bg-success';
                                 break;
                             case 'Rejected':
@@ -297,6 +301,7 @@
                                     this.sanctioned_amount = r.data.sanctioned_amount;
                                 }
                                 $dispatch('showtoast', {message: 'Application ' + apr, mode: smode, });
+                                $dispatch('applnapproved');
                                 {{-- setTimeout(() => {
                                     $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
                                 }, 500); --}}
@@ -308,8 +313,10 @@
                         });
                     },
                     doReject() {}
-                }">
-                <template x-if="trim(sanctioned_date) != ''">
+                }"
+                @applnstatusupdated.window="status = $event.detail.status;"
+                >
+                <template x-if="sanctioned_date.trim() != ''">
                     <div class="my-4 flex flex-row">
                         <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Amount:</span>&nbsp;<span x-text="sanctioned_amount"></span></div>
                         <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Sanctioned Date:</span>&nbsp;<span x-text="sanctioned_date"></span></div>
@@ -352,6 +359,47 @@
                         </form>
                     </div>
                 @endif
+
+                <form x-data="{
+                        status: 'Pending',
+                        paid: false,
+                        doSubmit() {
+                            let formData = new FormData();
+                            formData.append('approval', 'Paid');
+                            axios.post(
+                                '{{route('allowances.approve', $application->id)}}',
+                                formData,
+                                {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                    },
+                                }
+                            ).then((r) => {
+                                console.log(r);
+                                if (r.data.success) {
+                                    this.paid = true;
+                                    $dispatch('showtoast', {message: 'Application marked as paid', mode: 'success', });
+                                    $dispatch('applnstatusupdated', {status: 'Paid'});
+                                    {{-- setTimeout(() => {
+                                        $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                    }, 500); --}}
+                                } else {
+                                    $dispatch('shownotice', {message: 'Application updation failed', mode: 'error', });
+                                }
+                            }).catch((e) => {
+                                console.log(e);
+                            });
+                        },
+                    }
+                    "
+                    @applnapproved.window="
+                        status='Approved';
+                        window.scrollTo(0, document.body.scrollHeight);
+                    "
+                    x-transition action="" class="md:w-3/5 mx-auto flex flex-row justify-center rounded-md overflow-hidden my-8">
+                    <Button x-show="status == 'Approved' && !paid" type="button" class="btn btn-sm btn-primary" @click.prevent.stop="doSubmit();">Mark As Paid</Button>
+                </form>
+
             </div>
         @else
         <div class="border border-base-content border-opacity-20 rounded-md py-4 my-4">

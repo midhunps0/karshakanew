@@ -3,9 +3,11 @@
 namespace App\Models\Accounting;
 
 use App\Models\District;
+use Illuminate\Support\Carbon;
 use App\Models\Accounting\AccountGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -27,6 +29,11 @@ class LedgerAccount extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    protected $appends = [
+        'name_with_district'
+    ];
+
     public function getOpeningBalanceAttribute($value)
     {
         return $value / 100;
@@ -63,4 +70,18 @@ class LedgerAccount extends Model
         return $query;
     }
 
+    public function scopeIsCashOrBank(Builder $query) {
+        $query->where('cashorbank', true);
+    }
+
+    public function scopeNotCashOrBank(Builder $query) {
+        $query->where('cashorbank', false);
+    }
+
+    protected function nameWithDistrict(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => '('.$this->district->short_code.') '.$this->name,
+        );
+    }
 }

@@ -155,7 +155,7 @@ class SidebarService implements SidebarServiceInterface
                 'type' => 'menu_group',
                 'title' => 'Accounts',
                 'icon' => 'easyadmin::icons.gear',
-                // 'show' => $this->showAccounts(),
+                // 'show' => auth()->user()->hasPermissionTo(''),
                 'show' => true,
                 'menu_items' => [
                     [
@@ -188,7 +188,23 @@ class SidebarService implements SidebarServiceInterface
                         'route' => 'transaction.index',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showTransaction()
+                        'show' => $this->showJournal()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Chart Of Accounts',
+                        'route' => 'accounts.chart',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showJournal()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Account Statement',
+                        'route' => 'accounts.account.statement',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showJournal()
                     ],
                 ]
             ],
@@ -271,13 +287,13 @@ class SidebarService implements SidebarServiceInterface
     {
         return auth()->check();
     }
-    private function showAccounts()
+    private function showJournal()
     {
-        return auth()->user()->hasRole('System Admin');
+        return auth()->user()->hasPermissionTo('Journal: View In Any District') || auth()->user()->hasPermissionTo('Journal: View In Own District');
     }
     private function showTransaction()
     {
-        return auth()->user()->hasRole('System Admin');
+        return auth()->user()->hasPermissionTo('Journal: Create In Any District') || auth()->user()->hasPermissionTo('Journal: Create In Own District');
     }
     // private function showTradeUnions()
     // {

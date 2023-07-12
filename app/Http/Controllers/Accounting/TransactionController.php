@@ -92,17 +92,21 @@ class TransactionController extends SmartController
 
     public function createReceipt()
     {
-        $accounts = LedgerAccount::userDistrictConstrained()->get();
+        $accounts = LedgerAccount::userDistrictConstrained()->notCashOrBank()->get();
+        $cashOrBank = LedgerAccount::userDistrictConstrained()->isCashOrBank()->get();
         return $this->buildResponse('admin.accounts.transactions.create_receipt', [
             'accounts' => $accounts,
+            'cashOrBank' => $cashOrBank
         ]);
     }
 
     public function createPayment()
     {
-        $accounts = LedgerAccount::userDistrictConstrained()->get();
+        $accounts = LedgerAccount::userDistrictConstrained()->notCashOrBank()->get();
+        $cashOrBank = LedgerAccount::userDistrictConstrained()->isCashOrBank()->get();
         return $this->buildResponse('admin.accounts.transactions.create_voucher', [
             'accounts' => $accounts,
+            'cashOrBank' => $cashOrBank
         ]);
     }
 

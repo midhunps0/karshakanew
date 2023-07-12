@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\TransactionEvent;
 use Exception;
 use Carbon\Carbon;
 use App\Helpers\AppHelper;
@@ -60,10 +61,21 @@ class TransactionService
         $inputs['amount'] = $clients['amount'];
         $inputs['owner_id'] = auth()->user()->id;
         $transaction = null;
+
+        switch($inputs['type']) {
+            case 'receipt':
+                $inputs['receipt_voucher_no'] = AppHelper::getGeneralReceiptNumber($inputs['district_id']);
+                break;
+            case 'voucher':
+                $inputs['receipt_voucher_no'] = AppHelper::getGeneralVoucherNumber($inputs['district_id']);
+                break;
+        }
+
         DB::transaction(
             function () use ($clients, $inputs, &$transaction) {
 
                 Transaction::lockForUpdate();
+                info('3');
 
                 // if (!isset($inputs['ref_no'])) {
                 //     $inputs['ref_no'] = $this->getRefDocNumber(
@@ -71,7 +83,6 @@ class TransactionService
                 //         $inputs['district_id']
                 //     );
                 // }
-
                 $transaction = Transaction::create($inputs);
 
                 foreach ($clients['debtors'] as $debtor) {
@@ -83,8 +94,17 @@ class TransactionService
                 }
             }
         );
+        info($transaction);
+        if ($transaction != null) {
+            TransactionEvent::dispatch(
+                $transaction->district_id,
+                $transaction,
+                TransactionEvent::$ACTION_CREATED
+            );
+            info('transaction event fired');
+        }
 
-        return Transaction::find($transaction->id);
+        return $transaction != null ? Transaction::find($transaction->id) : null;
     }
 
     public function update($inputs, $id, $attribute = 'id')

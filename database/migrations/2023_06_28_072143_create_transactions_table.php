@@ -20,10 +20,12 @@ class CreateTransactionsTable extends Migration
                 ->references('id')
                 ->on('districts')
                 ->onDelete('restrict');
+            $table->string('receipt_voucher_no')->nullable(); //receipt/voucher no.
             $table->date('date');
             $table->bigInteger('amount');
             $table->string('type');
             $table->string('ref_no')->nullable();
+            $table->string('instrument_no')->nullable();
             $table->text('remarks')->nullable();
             $table->integer('owner_id')
                 ->references('id')

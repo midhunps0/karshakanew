@@ -2,10 +2,11 @@
 
 namespace App\Models\Accounting;
 
-use App\Models\Accounting\LedgerAccount;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Accounting\LedgerAccount;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AccountGroup extends Model
 {
@@ -75,5 +76,14 @@ class AccountGroup extends Model
     public function isEditAllowed()
     {
         return !$this->is_core_group;
+    }
+
+    public function scopeUserDistrictConstrained(Builder $query)
+    {
+        $districtId = auth()->user()->district_id;
+        if ($districtId != 15) {
+            $query->where('district_id', $districtId);
+        }
+        return $query;
     }
 }

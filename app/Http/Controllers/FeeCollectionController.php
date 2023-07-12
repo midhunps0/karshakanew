@@ -21,6 +21,7 @@ class FeeCollectionController extends SmartController
         parent::__construct($request);
         // $this->itemName = 'districts';
         // $this->indexView = 'easyadmin::admin.indexpanel';
+        $this->showView = 'admin.feecollections.show';
         $this->createView = 'admin.receipt_create';
         $this->editView = 'admin.feecollections.receipt_edit';
     }

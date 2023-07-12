@@ -180,7 +180,13 @@
                                         {{$fp->member->membership_no}}
                                     @endif
                                 </td>
-                                <td>@if ($loop->first){{$fp->receipt_number}}@endif</td>
+                                <td>
+                                    @if ($loop->first)
+                                    <a class="underline text-success" href="" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('feecollections.show', $fp->id)}}', route: 'feecollections.show'})">
+                                        {{$fp->receipt_number}}
+                                    </a>
+                                    @endif
+                                </td>
                                 <td>{{$fi->feeType->name}}</td>
                                 <td>{{$fi->formatted_period_from ?? '--'}}</td>
                                 <td>{{$fi->formatted_period_to ?? '--'}}</td>

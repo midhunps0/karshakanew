@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,7 @@ class FeeItem extends Model
     protected $appends = [
         'formatted_period_from',
         'formatted_period_to',
+        'display_tenure'
     ];
 
     protected $with = ['feeType'];
@@ -40,6 +42,22 @@ class FeeItem extends Model
             get: function (mixed $value, array $attributes) {
                 $tdate = $this->period_to != null ? new \DateTime($this->period_to) : null;
                 return $tdate != null ? $tdate->format('d-m-Y') : null;
+            },
+        );
+    }
+
+    protected function displayTenure(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->period_from != null && $this->period_to != null) {
+                    $f = Carbon::createFromFormat('Y-m-d', $this->period_from);
+                    $t = Carbon::createFromFormat('Y-m-d', $this->period_to);
+                    return $t->diffInMonths($f);
+                }
+                else {
+                    return '';
+                }
             },
         );
     }

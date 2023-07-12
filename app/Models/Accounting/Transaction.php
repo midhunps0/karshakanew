@@ -5,9 +5,11 @@ namespace App\Models\Accounting;
 use App\User;
 use App\Models\District;
 use App\Helpers\AppHelper;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Accounting\TransactionClient;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
@@ -18,6 +20,10 @@ class Transaction extends Model
         'created_at',
         'updated_at',
         'deleted_at'
+    ];
+
+    protected $appends = [
+        'formatted_date'
     ];
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
@@ -69,6 +75,13 @@ class Transaction extends Model
     {
         $td = AppHelper::dateFromString($date)->addDay();
         return $query->where('date', '<', $td);
+    }
+
+    protected function formattedDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->date != null ? Carbon::createFromFormat('Y-m-d', $this->date)->format('d-m-Y') : '',
+        );
     }
     // public function getOpeningBalance($accountId, $date)
     // {
