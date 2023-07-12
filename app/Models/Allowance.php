@@ -20,7 +20,9 @@ class Allowance extends Model
     static $STATUS_REJECTED = -1;
 
     protected $with = [
-        'welfareScheme'
+        'welfareScheme',
+        'allowanceable',
+        'member'
     ];
 
     // protected $casts = [

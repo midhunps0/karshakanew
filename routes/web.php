@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('allowances.report.download');
     Route::get('/allowances/show/{id}', [AllowanceController::class, 'show'])->name('allowances.show');
     Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
+    Route::get('/allowances/education/edit/{id}', [AllowanceController::class, 'educationEdit'])->name('allowances.education.edit');
     Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');
     Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
 

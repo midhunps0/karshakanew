@@ -168,11 +168,14 @@
                                 <tr>
                                     <th class="px-2">Appln. Date</th>
                                     <th class="px-2">Appln. No.</th>
+                                    <th class="px-2">Member</th>
+                                    <th class="px-2">Membership No.</th>
                                     <th class="px-2">Scheme Applied For</th>
                                     <th class="px-2">Status</th>
-                                    <th class="px-2">Applied Amount</th>
+                                    {{-- <th class="px-2">Applied Amount</th> --}}
                                     <th class="px-2">Sanctioned Amount</th>
                                     <th class="px-2">Sanctioned Date</th>
+                                    <th class="px-2">Bank Details</th>
                                     <th class="px-2">Payment Date</th>
                                 </tr>
                             </thead>
@@ -188,15 +191,23 @@
                                             </a>
                                             @endif
                                         </td>
+                                        <td class="px-2">{{$a->member->name}}</td>
+                                        <td class="px-2">{{$a->member->membership_no}}</td>
                                         <td class="px-2">{{$a->welfareScheme->name}}</td>
                                         <td class="px-2
                                         @if ($a->status == 'Pending') text-warning @endif
                                         @if ($a->status == 'Approved') text-success @endif
                                         @if ($a->status == 'Rejected') text-error @endif
                                         ">{{$a->status}}</td>
-                                        <td class="text-right px-2">{{$a->applied_amount}}</td>
+                                        {{-- <td class="text-right px-2">{{$a->applied_amount}}</td> --}}
                                         <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
                                         <td class="px-2">{{$a->sanctioned_date}}</td>
+                                        <td class="text-left px-2">
+                                            Payee: {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_name'] : '--'}}<br/>
+                                            Bank & Branch: {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_branch'] : '--'}}<br/>
+                                            Acc. No.: {{$a->allowanceable ? $a->allowanceable->member_bank_account['account_no'] : '--'}}<br/>
+                                            IFSC: {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}<br/>
+                                        </td>
                                         <td class="px-2">{{$a->payment_date}}</td>
                                     </tr>
                                 @endforeach

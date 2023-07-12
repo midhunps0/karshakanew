@@ -1,7 +1,8 @@
 <x-easyadmin::partials.adminpanel>
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
-        <div class="text-right p-4">
+        <div class="text-right p-4 flex flex-row justify-between">
+            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.edit', $application->id)}}'});" >Edit</a>
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
         @if (isset($error))
@@ -21,9 +22,10 @@
         </div>
         <h4 class="my-4 text-center text-2xl underline mt-8"><span class="font-bold opacity-80">Application Details:</span></h4>
         @if (isset($application->allowanceable))
-            <div class="flex flex-row justify-between">
+            <div class="flex flex-row justify-between p-3 border border-base-content border-opacity-10 rounded-md mb-4">
                 <div class="my-2 py-2 text-xl"><span class="font-bold opacity-60">Scheme:</span>&nbsp;<span>{{$application->welfareScheme->name}}</span></div>
                 <div class="my-2 py-2 text-xl"><span class="font-bold opacity-60">Appl. No.:</span>&nbsp;<span>{{$application->application_no}}</span></div>
+                <div class="my-2 py-2 text-xl"><span class="font-bold opacity-60">Appl. Date:</span>&nbsp;<span>{{$application->application_date}}</span></div>
             </div>
             <div class="flex flex-row flex-wrap">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Name:</span>&nbsp;<span>{{$application->allowanceable->member_name}}</span></div>
@@ -391,6 +393,9 @@
                             });
                         },
                     }
+                    "
+                    x-init="
+                        status = '{{$application->status}}';
                     "
                     @applnapproved.window="
                         status='Approved';

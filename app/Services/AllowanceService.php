@@ -23,6 +23,7 @@ class AllowanceService
             'member_name',
             'member_address',
             'student_name',
+            'application_date',
             'passed_exam_details',
             'arrear_months_exdt',
             'is_sc_st',
@@ -177,10 +178,9 @@ class AllowanceService
 
     public function prepareForStoreValidation(array $data): array
     {
-        info($data);
         $data['is_sc_st'] = $data['is_sc_st'] == 'Yes';
         $data['total_marks'] = $data['marks_total'];
-        info($data);
+
         return $data;
     }
 

@@ -1,6 +1,8 @@
 <x-easyadmin::partials.adminpanel>
     <div>
-        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Educational Allowance Application</span>&nbsp;</h3>
+        <h3 class="text-xl font-bold pb-3 print:hidden">
+            <span>Edit Educational Allowance Application</span>
+        </h3>
         <div class="text-right p-4">
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
@@ -122,13 +124,13 @@
                     }
                 }"
                 x-init="
-                    member_name = '{{\App\Helpers\AppHelper::jssafe($member->display_name)}}';
-                    member_address = `{{$member->current_address != '' ? $member->current_address : $member->current_address_mal}}`;
-                    membership_no = '{{$member->membership_no}}';
-                    fee_period_from = '{{$member->lastFeePaidPeriod()['from']}}';
-                    fee_period_to = '{{$member->lastFeePaidPeriod()['to']}}';
-                    mobile_no = '{{$member->mobile_no}}';
-                    aadhaar_no = '{{$member->aadhaar_no}}';
+                    member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
+                    member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
+                    membership_no = '{{$allowance->member->membership_no}}';
+                    fee_period_from = '{{$allowance->member->lastFeePaidPeriod()['from']}}';
+                    fee_period_to = '{{$allowance->member->lastFeePaidPeriod()['to']}}';
+                    mobile_no = '{{$allowance->member->mobile_no}}';
+                    aadhaar_no = '{{$allowance->member->aadhaar_no}}';
                     application_date = '{{$today}}';
                     $watch('marks', (marks) => {
                         if (['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)) {
@@ -163,8 +165,8 @@
                 "
                 id="education_scheme_form"
                 >
-                <input type="hidden" name="member_id" value="{{$member->id}}">
-                <input type="hidden" name="scheme_code" value="{{$scheme_code}}">
+                <input type="hidden" name="member_id" value="{{$allowance->member->id}}">
+                <input type="hidden" name="scheme_code" value="{{$allowance->allowanceable->scheme_code}}">
                 <div class="flex flex-row space-x-2">
                     <div class="form-control w-1/4 max-w-xs">
                         <label class="label opacity-70">
@@ -220,13 +222,13 @@
                         <label class="label opacity-70">
                         <span class="label-text">Name of Student</span>
                         </label>
-                        <input name="student_name" type="text" x-model="student_name" class="input input-bordered w-full max-w-xs input-sm" required/>
+                        <input name="student_name" type="text" class="input input-bordered w-full max-w-xs input-sm" value="{{$allowance->allowanceable->student_name}}" required/>
                     </div>
                     <div class="form-control w-1/3">
                         <label class="label opacity-70">
                         <span class="label-text">Application Date</span>
                         </label>
-                        <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                        <input name="student_name" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
                     </div>
                 </div>
                 <fieldset class="flex flex-row p-2 my-2 py-4 space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
@@ -434,7 +436,7 @@
                             ]
                         ]"/>
                     </div>
-                    @if ($member->getSingleMediaUlid('wb_passbook_front') == null)
+                    @if ($allowance->member->getSingleMediaUlid('wb_passbook_front') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'wb_passbook_front',
@@ -449,12 +451,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[wb_passbook_front]'"
-                        value="{{$member->getSingleMediaUlid('wb_passbook_front')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('wb_passbook_front')}}">
                         <label class="label opacity-70">Welfare Board Passbook (Front)</label>
-                        <img class="w-28" src="{{$member->wb_passbook_front['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->wb_passbook_front['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('wb_passbook_back') == null)
+                    @if ($allowance->member->getSingleMediaUlid('wb_passbook_back') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'wb_passbook_back',
@@ -469,12 +471,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[wb_passbook_back]'"
-                        value="{{$member->getSingleMediaUlid('wb_passbook_back')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('wb_passbook_back')}}">
                         <label class="label opacity-70">Welfare Board Passbook (Back)</label>
-                        <img class="w-28" src="{{$member->wb_passbook_back['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->wb_passbook_back['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('aadhaar_card') == null)
+                    @if ($allowance->member->getSingleMediaUlid('aadhaar_card') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'aadhaar_card',
@@ -489,12 +491,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[aadhaar_card]'"
-                        value="{{$member->getSingleMediaUlid('aadhaar_card')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('aadhaar_card')}}">
                         <label class="label opacity-70">Aadhaar Card</label>
-                        <img class="w-28" src="{{$member->aadhaar_card['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->aadhaar_card['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('bank_passbook') == null)
+                    @if ($allowance->member->getSingleMediaUlid('bank_passbook') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'bank_passbook',
@@ -509,9 +511,9 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[bank_passbook]'"
-                        value="{{$member->getSingleMediaUlid('bank_passbook')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('bank_passbook')}}">
                         <label class="label opacity-70">Bank Passbook Front Page</label>
-                        <img class="w-28" src="{{$member->bank_passbook['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->bank_passbook['path']}}" alt="">
                     </div>
                     @endif
                     <div class="w-1/3 p-4">

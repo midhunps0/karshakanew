@@ -8,6 +8,7 @@ use App\Models\Member;
 use App\Models\Allowance;
 use Illuminate\Http\Request;
 use App\Models\WelfareScheme;
+use Illuminate\Support\Carbon;
 use App\Services\AllowanceService;
 use Maatwebsite\Excel\Facades\Excel;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -124,11 +125,25 @@ class AllowanceController extends SmartController
         $memberId = $this->request->input('member_id', null);
         $member = $memberId != null ? Member::with(['feePayments'])->where('id', $memberId)->get()->first() : null;
         $schemeCode = WelfareScheme::where('name', 'Education Assistance')->get()->first()->code;
+        $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
             'admin.allowances.create',
             [
                 'member' => $member,
-                'scheme_code' => $schemeCode
+                'scheme_code' => $schemeCode,
+                'today' => $today
+            ]);
+    }
+
+    public function educationEdit($id)
+    {
+        $allowance = Allowance::find($id);
+        $today = Carbon::today()->format('d-m-Y');
+        return $this->buildResponse(
+            'admin.allowances.edit',
+            [
+                'allowance' => $allowance,
+                'today' => $today
             ]);
     }
 
