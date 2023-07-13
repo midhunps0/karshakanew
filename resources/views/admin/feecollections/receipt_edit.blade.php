@@ -283,8 +283,8 @@
                         tenure: null,
                         @endif
                         {{-- tenure: {{$fi->display_tenure}}, --}}
-                        @if (isset($fi->formatted_period_from))
-                        from: '{{$fi->formatted_period_from}}',
+                        @if (isset($fi->display_tenure))
+                        from: '{{$fi->display_tenure}}',
                         @else
                         from: null,
                         @endif
