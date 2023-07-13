@@ -23,7 +23,7 @@ class AllowanceService
             'member_name',
             'member_address',
             'student_name',
-            'application_date',
+            // 'application_date',
             'passed_exam_details',
             'arrear_months_exdt',
             'is_sc_st',
@@ -99,6 +99,8 @@ class AllowanceService
                 'Paid' => Allowance::$STATUS_PAID,
                 'Approved' => Allowance::$STATUS_APPROVED,
                 'Rejected' => Allowance::$STATUS_REJECTED,
+                'Pending' => Allowance::$STATUS_PENDING,
+                'Old - Unknown' => Allowance::$STATUS_OLD_UNKNOWN,
             };
             $a = Allowance::find($id);
             $a->status = $status;
@@ -129,6 +131,7 @@ class AllowanceService
                 'success' => true,
                 'sanctioned_date' => $a->sanctioned_date,
                 'sanctioned_amount' => $a->sanctioned_amount,
+                'payment_date' => $a->payment_date
             ];
         } catch (\Throwable $e) {
             return [

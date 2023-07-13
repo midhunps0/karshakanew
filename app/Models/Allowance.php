@@ -17,6 +17,7 @@ class Allowance extends Model
     static $STATUS_PENDING = 0;
     static $STATUS_APPROVED = 1;
     static $STATUS_PAID = 2;
+    static $STATUS_OLD_UNKNOWN = 3;
     static $STATUS_REJECTED = -1;
 
     protected $with = [
@@ -57,10 +58,17 @@ class Allowance extends Model
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                $str = 'Pending';
+                $str = 'None';
                 switch ($value) {
+                    case self::$STATUS_OLD_UNKNOWN:
+                        $str = 'Old - Unknown';
+                        break;
+                    case self::$STATUS_PENDING:
+                        $str = 'Pending';
+                        break;
                     case self::$STATUS_PAID:
                         $str = 'Paid';
+                        break;
                     case self::$STATUS_APPROVED:
                         $str = 'Approved';
                         break;

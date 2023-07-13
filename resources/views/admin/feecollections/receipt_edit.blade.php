@@ -269,7 +269,7 @@
                 approved_at: null,
                 @endif
                 reg_date: '{{$receipt->member->reg_date}}'
-            }
+            };
             receipt_id = {{$receipt->id}};
             @if (count($receipt->feeItems) > 0)
                 fees = [];
@@ -277,12 +277,12 @@
             @foreach ($receipt->feeItems as $fi)
                 fees.push({
                         particulars: '{{$fi->feeType->id}}',
-                        {{-- @if (isset($fi->tenure))
+                        @if (isset($fi->tenure))
                         tenure: '{{$fi->tenure}}',
                         @else
                         tenure: null,
-                        @endif --}}
-                        tenure: {{$fi->display_tenure}},
+                        @endif
+                        {{-- tenure: {{$fi->display_tenure}}, --}}
                         @if (isset($fi->formatted_period_from))
                         from: '{{$fi->formatted_period_from}}',
                         @else

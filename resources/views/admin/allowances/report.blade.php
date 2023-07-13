@@ -7,6 +7,34 @@
         status: null,
         page: 1,
         dowloadUrl: '',
+        allColumns: [
+            'application_date',
+            'application_no',
+            'member_name',
+            'member_membership_no',
+            'scheme_name',
+            'sanctioned_amount',
+            'sanctioned_date',
+            'member_bank_account_bank_name',
+            'member_bank_account_bank_branch',
+            'member_bank_account_account_no',
+            'member_bank_account_ifsc_code',
+            'payment_date'
+        ],
+        selectedColumns: [
+            'application_date',
+            'application_no',
+            'member_name',
+            'member_membership_no',
+            'scheme_name',
+            'sanctioned_amount',
+            'sanctioned_date',
+            'member_bank_account_bank_name',
+            'member_bank_account_bank_branch',
+            'member_bank_account_account_no',
+            'member_bank_account_ifsc_code',
+            'payment_date'
+        ],
         getParams() {
             let p = {
                 datetype: this.dateType
@@ -139,6 +167,16 @@
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
+                    <div x-data="{
+                            showList: false,
+                        }" class="form-control w-1/3 max-w-xs relative">
+                        <label class="label">
+                        <span class="label-text">Columns</span>
+                        </label>
+                        <div class="w-full">
+                            <input type="text" class="input input-md input-bordered rounded-md w-full" value="Choose Columns" readonly>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-row w-full space-x-4 justify-start items-end my-4">
                     <div class="form-control w-full max-w-xs">
@@ -175,7 +213,10 @@
                                     {{-- <th class="px-2">Applied Amount</th> --}}
                                     <th class="px-2">Sanctioned Amount</th>
                                     <th class="px-2">Sanctioned Date</th>
-                                    <th class="px-2">Bank Details</th>
+                                    <th class="px-2">Payee Name</th>
+                                    <th class="px-2">Bank & Branch</th>
+                                    <th class="px-2">Account No.</th>
+                                    <th class="px-2">IFSC COde</th>
                                     <th class="px-2">Payment Date</th>
                                 </tr>
                             </thead>
@@ -196,7 +237,8 @@
                                         <td class="px-2">{{$a->welfareScheme->name}}</td>
                                         <td class="px-2
                                         @if ($a->status == 'Pending') text-warning @endif
-                                        @if ($a->status == 'Approved') text-success @endif
+                                        @if ($a->status == 'Approved') text-primary @endif
+                                        @if ($a->status == 'Paid') text-success @endif
                                         @if ($a->status == 'Rejected') text-error @endif
                                         ">{{$a->status}}</td>
                                         {{-- <td class="text-right px-2">{{$a->applied_amount}}</td> --}}
@@ -208,6 +250,9 @@
                                             Acc. No.: {{$a->allowanceable ? $a->allowanceable->member_bank_account['account_no'] : '--'}}<br/>
                                             IFSC: {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}<br/>
                                         </td>
+                                        <td class="px-2">{{$a->payment_date}}</td>
+                                        <td class="px-2">{{$a->payment_date}}</td>
+                                        <td class="px-2">{{$a->payment_date}}</td>
                                         <td class="px-2">{{$a->payment_date}}</td>
                                     </tr>
                                 @endforeach
