@@ -8,33 +8,73 @@
         page: 1,
         dowloadUrl: '',
         allColumns: [
-            'application_date',
-            'application_no',
-            'member_name',
-            'member_membership_no',
-            'scheme_name',
-            'sanctioned_amount',
-            'sanctioned_date',
-            'member_bank_account_bank_name',
-            'member_bank_account_bank_branch',
-            'member_bank_account_account_no',
-            'member_bank_account_ifsc_code',
-            'payment_date'
+            {
+                no: 0,
+                title: 'Application Date',
+                selected: true,
+            },
+            {
+                no: 1,
+                title: 'Application No.',
+                selected: true,
+            },
+            {
+                no: 2,
+                title: 'Member Name',
+                selected: true,
+            },
+            {
+                no: 3,
+                title: 'Membership No',
+                selected: true,
+            },
+            {
+                no: 4,
+                title: 'Scheme Name',
+                selected: true,
+            },
+            {
+                no: 5,
+                title: 'Status',
+                selected: true,
+            },
+            {
+                no: 6,
+                title: 'Sanctioned Amount',
+                selected: true,
+            },
+            {
+                no: 7,
+                title: 'Sanctioned Date',
+                selected: true,
+            },
+            {
+                no: 8,
+                title: 'Payee Name',
+                selected: true,
+            },
+            {
+                no: 9,
+                title: 'Bank & Branch',
+                selected: true,
+            },
+            {
+                no: 10,
+                title: 'Account No.',
+                selected: true,
+            },
+            {
+                no: 11,
+                title: 'IFSC Code',
+                selected: true,
+            },
+            {
+                no: 12,
+                title: 'Payment Date',
+                selected: true,
+            },
         ],
-        selectedColumns: [
-            'application_date',
-            'application_no',
-            'member_name',
-            'member_membership_no',
-            'scheme_name',
-            'sanctioned_amount',
-            'sanctioned_date',
-            'member_bank_account_bank_name',
-            'member_bank_account_bank_branch',
-            'member_bank_account_account_no',
-            'member_bank_account_ifsc_code',
-            'payment_date'
-        ],
+        selectedColumns: [],
         getParams() {
             let p = {
                 datetype: this.dateType
@@ -108,6 +148,18 @@
             page = {{request()->get('page')}};
             downloadUrl += 'page=' + page + '&';
         @endif
+        selectedColumns = allColumns.filter((c) => {
+            return c.selected == true;
+        }).map((s) => {
+            return s.no;
+        });
+        $watch('allColumns', (v) => {
+            selectedColumns = allColumns.filter((c) => {
+                return c.selected == true;
+            }).map((s) => {
+                return s.no;
+            });
+        });
     "
     @contentupdate.window="
             if($event.detail.target == 'allowances_report') {
@@ -174,7 +226,15 @@
                         <span class="label-text">Columns</span>
                         </label>
                         <div class="w-full">
-                            <input type="text" class="input input-md input-bordered rounded-md w-full" value="Choose Columns" readonly>
+                            <input type="text" class="input input-md input-bordered rounded-md w-full" :value="selectedColumns.length + ' of ' + allColumns.length + ' columns selected'" readonly @click.prevent.stop="showList = !showList;">
+                        </div>
+                        <div @click.outside="showList = false;" x-show="showList" class="absolute z-10 top-20 left-0 bg-base-200 p-3 rounded-md bordered max-h-60 overflow-y-scroll">
+                            <template x-for="c in allColumns">
+                                <button type="button" class="block w-full text-left px-3 py-2 border-b border-base-300 border-opacity-50">
+                                    <input type="checkbox" x-model="c.selected" class="checkbox checkbox-sm checkbox-primary">
+                                    <span x-text="c.title"></span>
+                                </button>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -204,27 +264,27 @@
                         <table class="table table-compact w-full">
                             <thead>
                                 <tr>
-                                    <th class="px-2">Appln. Date</th>
-                                    <th class="px-2">Appln. No.</th>
-                                    <th class="px-2">Member</th>
-                                    <th class="px-2">Membership No.</th>
-                                    <th class="px-2">Scheme Applied For</th>
-                                    <th class="px-2">Status</th>
+                                    <th x-show="selectedColumns.includes(0)" class="px-2">Appln. Date</th>
+                                    <th x-show="selectedColumns.includes(1)" class="px-2">Appln. No.</th>
+                                    <th x-show="selectedColumns.includes(2)"  class="px-2">Member</th>
+                                    <th x-show="selectedColumns.includes(3)"  class="px-2">Membership No.</th>
+                                    <th x-show="selectedColumns.includes(4)"  class="px-2">Scheme Applied For</th>
+                                    <th x-show="selectedColumns.includes(5)"  class="px-2">Status</th>
                                     {{-- <th class="px-2">Applied Amount</th> --}}
-                                    <th class="px-2">Sanctioned Amount</th>
-                                    <th class="px-2">Sanctioned Date</th>
-                                    <th class="px-2">Payee Name</th>
-                                    <th class="px-2">Bank & Branch</th>
-                                    <th class="px-2">Account No.</th>
-                                    <th class="px-2">IFSC COde</th>
-                                    <th class="px-2">Payment Date</th>
+                                    <th x-show="selectedColumns.includes(6)"  class="px-2">Sanctioned Amount</th>
+                                    <th x-show="selectedColumns.includes(7)"  class="px-2">Sanctioned Date</th>
+                                    <th x-show="selectedColumns.includes(8)"  class="px-2">Payee Name</th>
+                                    <th x-show="selectedColumns.includes(9)"  class="px-2">Bank & Branch</th>
+                                    <th x-show="selectedColumns.includes(10)"  class="px-2">Account No.</th>
+                                    <th x-show="selectedColumns.includes(11)" class="px-2">IFSC COde</th>
+                                    <th x-show="selectedColumns.includes(12)" class="px-2">Payment Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($allowances as $a)
                                     <tr>
-                                        <td class="px-2">{{$a->application_date}}</td>
-                                        <td class="px-2">
+                                        <td x-show="selectedColumns.includes(0)" class="px-2">{{$a->application_date}}</td>
+                                        <td x-show="selectedColumns.includes(1)" class="px-2">
                                             {{$a->application_no}}
                                             @if($a->allowanceable != null)
                                             <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.show', $a->id)}}', route: 'allowances.show'})">
@@ -232,28 +292,31 @@
                                             </a>
                                             @endif
                                         </td>
-                                        <td class="px-2">{{$a->member->name}}</td>
-                                        <td class="px-2">{{$a->member->membership_no}}</td>
-                                        <td class="px-2">{{$a->welfareScheme->name}}</td>
-                                        <td class="px-2
+                                        <td x-show="selectedColumns.includes(2)" class="px-2">{{$a->member->name}}</td>
+                                        <td x-show="selectedColumns.includes(3)" class="px-2">{{$a->member->membership_no}}</td>
+                                        <td x-show="selectedColumns.includes(4)" class="px-2">{{$a->welfareScheme->name}}</td>
+                                        <td x-show="selectedColumns.includes(5)" class="px-2
                                         @if ($a->status == 'Pending') text-warning @endif
                                         @if ($a->status == 'Approved') text-primary @endif
                                         @if ($a->status == 'Paid') text-success @endif
                                         @if ($a->status == 'Rejected') text-error @endif
                                         ">{{$a->status}}</td>
                                         {{-- <td class="text-right px-2">{{$a->applied_amount}}</td> --}}
-                                        <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
-                                        <td class="px-2">{{$a->sanctioned_date}}</td>
-                                        <td class="text-left px-2">
-                                            Payee: {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_name'] : '--'}}<br/>
-                                            Bank & Branch: {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_branch'] : '--'}}<br/>
-                                            Acc. No.: {{$a->allowanceable ? $a->allowanceable->member_bank_account['account_no'] : '--'}}<br/>
-                                            IFSC: {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}<br/>
+                                        <td x-show="selectedColumns.includes(6)" class="text-right px-2">{{$a->sanctioned_amount}}</td>
+                                        <td x-show="selectedColumns.includes(7)" class="px-2">{{$a->sanctioned_date}}</td>
+                                        <td x-show="selectedColumns.includes(8)" class="text-left px-2">
+                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_name'] : '--'}}
                                         </td>
-                                        <td class="px-2">{{$a->payment_date}}</td>
-                                        <td class="px-2">{{$a->payment_date}}</td>
-                                        <td class="px-2">{{$a->payment_date}}</td>
-                                        <td class="px-2">{{$a->payment_date}}</td>
+                                        <td x-show="selectedColumns.includes(9)" class="px-2">
+                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_branch'] : '--'}}
+                                        </td>
+                                        <td x-show="selectedColumns.includes(10)" class="px-2">
+                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['account_no'] : '--'}}
+                                        </td>
+                                        <td x-show="selectedColumns.includes(11)" class="px-2">
+                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}
+                                        </td>
+                                        <td x-show="selectedColumns.includes(12)" class="px-2">{{$a->payment_date}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

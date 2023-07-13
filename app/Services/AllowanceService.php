@@ -73,7 +73,7 @@ class AllowanceService
             'allowanceable_type' => EducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
-            'application_date' => Carbon::today()->format('Y-m-d'),
+            'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
         ];
