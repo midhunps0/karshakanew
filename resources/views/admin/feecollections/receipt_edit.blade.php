@@ -277,14 +277,14 @@
             @foreach ($receipt->feeItems as $fi)
                 fees.push({
                         particulars: '{{$fi->feeType->id}}',
-                        @if (isset($fi->tenure))
-                        tenure: '{{$fi->tenure}}',
+                        @if (isset($fi->display_tenure))
+                        tenure: '{{$fi->display_tenure}}',
                         @else
                         tenure: null,
                         @endif
                         {{-- tenure: {{$fi->display_tenure}}, --}}
-                        @if (isset($fi->display_tenure))
-                        from: '{{$fi->display_tenure}}',
+                        @if (isset($fi->formatted_period_from))
+                        from: '{{$fi->formatted_period_from}}',
                         @else
                         from: null,
                         @endif
