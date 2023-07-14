@@ -125,6 +125,8 @@ class AllowanceService
         ])->toArray();
 
         $esa->update($applnData);
+        $esa->save();
+        $esa->refresh();
         AppHelper::syncImageFromRequestData($esa, 'mark_list', $data);
         AppHelper::syncImageFromRequestData($esa, 'tc', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
@@ -159,13 +161,12 @@ class AllowanceService
             'district_id' => $member->district_id,
             'allowanceable_type' => EducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $allowance->application_no,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
-            'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
         ];
         $allowance->update($alData);
-        AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_UPDATED, $allowance);
+        // AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_UPDATED, $allowance);
         BusinessActionEvent::dispatch(
             Allowance::class,
             $allowance->id,

@@ -116,7 +116,7 @@
                         ).then((r) => {
                             console.log(r);
                             if (r.data.success) {
-                                $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
+                                $dispatch('showtoast', {message: 'Application Updated.', mode: 'success', });
                                 setTimeout(() => {
                                     $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
                                 }, 500);
@@ -246,13 +246,13 @@
                             <label class="label opacity-70">
                             <span class="label-text">From</span>
                             </label>
-                            <input name="fee_perid_from" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_from" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
+                            <input name="fee_perid_from" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_from" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" />
                         </div>
                         <div class="form-control w-full max-w-xs">
                             <label class="label opacity-70">
                             <span class="label-text">To</span>
                             </label>
-                            <input name="fee_perid_to" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_to" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
+                            <input name="fee_perid_to" type="text" placeholder="dd-mm-yyyy" x-model="fee_period_to" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" />
                         </div>
                     </fieldset>
                 </div>
@@ -268,7 +268,7 @@
                         <label class="label opacity-70">
                         <span class="label-text">Application Date</span>
                         </label>
-                        <input name="student_name" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                        <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
                     </div>
                 </div>
                 <fieldset class="flex flex-row p-2 my-2 py-4 space-x-2 border border-base-content border-opacity-10 rounded-md w-full">

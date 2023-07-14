@@ -116,7 +116,7 @@ class FeeCollectionService implements ModelViewConnector {
         $sum = 0;
         if ($fc != null) {
             $fc->receipt_date = AppHelper::formatDateForSave($data['date']);
-            $fc->notes = $data['notes'];
+            $fc->notes = $data['notes'] ?? '';
             FeeItem::where('fee_collection_id', $id)->delete();
             foreach ($data['fee_item'] as $fi) {
                 $fidata = [];
