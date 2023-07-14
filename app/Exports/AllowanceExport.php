@@ -6,45 +6,33 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class AllowanceExport implements FromArray, WithHeadings
 {
-    public function __construct(public $data)
-    {}
+    private $data;
+    private $columns;
+
+    public function __construct(array $data)
+    {
+        $this->data = $data['results'];
+        $this->columns = $data['columns'];
+    }
 
     public function array(): array
     {
         $arr = [];
-        foreach ($this->data as $fc) {
-            foreach ($fc->feeItems as $fi) {
-                $item = array(
-                    $fc->receipt_date,
-                    $fc->district->name,
-                    $fc->receipt_number,
-                    $fi->feeType->name,
-                    $fi->formatted_period_from,
-                    $fi->formatted_period_to,
-                    $fi->tenure,
-                    $fi->amount,
-                    $fc->total_amount,
-                    $fc->collectedBy->name
-                );
-                $arr[] = $item;
+        foreach ($this->data as $item) {
+            $temp = [];
+            foreach ($item as $key => $val) {
+                if (in_array($key, array_keys($this->columns))) {
+                    $temp[$key] = $val;
+                }
             }
+            $arr[] = $temp;
         }
         return $arr;
     }
 
     public function headings(): array
     {
-        return [
-            'Receipt Date',
-            'District',
-            'Receipt Number',
-            'Particulars',
-            'Period From',
-            'Period To',
-            'Remarksr',
-            'Item Amount',
-            'Total Amount',
-            'Collected By',
-        ];
+        // dd($this->columns);
+        return array_values($this->columns);
     }
 }

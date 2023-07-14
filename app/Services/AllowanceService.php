@@ -17,6 +17,10 @@ class AllowanceService
 {
     public function storeEducationSchemeApplication($data)
     {
+        $appln = EducationSchemeApplication::whereJsonContains('passed_exam_details->exam_reg_no', $data['passed_exam_details']['exam_reg_no'])->get()->first();
+        if ($appln != null) {
+            return false;
+        }
         $member = Member::find($data['member_id']);
         $applnData = collect($this->prepareForStoreValidation($data))->only([
             'member_id',
@@ -87,6 +91,89 @@ class AllowanceService
             null,
             $allowance,
             'Created Allowance with id: '.$allowance->id,
+            $member->district_id
+        );
+        return $allowance;
+    }
+
+    public function updateEducationSchemeApplication($id, $data)
+    {
+        /**
+         * @var Allowance
+         */
+        $allowance = Allowance::find($id);
+
+        /**
+         * @var EducationSchemeApplication
+         */
+        $esa = $allowance->allowanceable;
+        $member = Member::find($data['member_id']);
+        $applnData = collect($this->prepareForStoreValidation($data))->only([
+            'member_id',
+            'member_name',
+            'member_address',
+            'student_name',
+            // 'application_date',
+            'passed_exam_details',
+            'arrear_months_exdt',
+            'is_sc_st',
+            'marks_scored',
+            'total_marks',
+            'member_phone',
+            'member_aadhaar',
+            'member_bank_account',
+        ])->toArray();
+
+        $esa->update($applnData);
+        AppHelper::syncImageFromRequestData($esa, 'mark_list', $data);
+        AppHelper::syncImageFromRequestData($esa, 'tc', $data);
+        AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
+        AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
+        AppHelper::syncImageFromRequestData($esa, 'aadhaar_card', $data);
+        AppHelper::syncImageFromRequestData($esa, 'bank_passbook', $data);
+        AppHelper::syncImageFromRequestData($esa, 'union_certificate', $data);
+        AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
+        AppHelper::syncImageFromRequestData($esa, 'caste_certificate', $data);
+        AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
+
+        BusinessActionEvent::dispatch(
+            EducationSchemeApplication::class,
+            $esa->id,
+            'Updated',
+            auth()->user()->id,
+            null,
+            $esa,
+            'Updated EducationAllowanceApplication with id: '.$esa->id,
+            $member->district_id
+        );
+
+        if (isset($data['existing'])) {
+            foreach ($data['existing'] as $property => $ulid) {
+                $mi = MediaItem::where('ulid', $ulid)->get()->first();
+                $esa->attachMedia($mi, $property);
+            }
+        }
+
+        $alData = [
+            'member_id' => $data['member_id'],
+            'district_id' => $member->district_id,
+            'allowanceable_type' => EducationSchemeApplication::class,
+            'allowanceable_id' => $esa->id,
+            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_date' => AppHelper::formatDateForSave($data['application_date']),
+            'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
+            'created_by' => auth()->user()->id
+        ];
+        $allowance->update($alData);
+        AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_UPDATED, $allowance);
+        BusinessActionEvent::dispatch(
+            Allowance::class,
+            $allowance->id,
+            'Updated',
+            auth()->user()->id,
+            null,
+            $allowance,
+            'Updated Allowance with id: '.$allowance->id,
             $member->district_id
         );
         return $allowance;

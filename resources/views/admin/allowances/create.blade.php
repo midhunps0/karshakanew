@@ -112,10 +112,14 @@
                             }
                         ).then((r) => {
                             console.log(r);
-                            $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
-                            setTimeout(() => {
-                                $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
-                            }, 500);
+                            if (r.data.success) {
+                                $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
+                                setTimeout(() => {
+                                    $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                }, 500);
+                            } else {
+                                $dispatch('shownotice', {message: r.data.message, mode: 'error', redirectUrl: null, redirectRoute: null});
+                            }
                         }).catch((e) => {
                             console.log(e);
                         });

@@ -94,6 +94,7 @@
             if (this.status != null) {
                 p['status'] = this.status;
             }
+            p['cls'] = this.selectedColumns.join('|');
             return p;
         },
         fetchReport() {
@@ -103,7 +104,6 @@
             $dispatch('linkaction', {link: '{{route('allowances.fullreport')}}', route: 'allowances.report', params: this.getParams(), fresh: true, target: 'allowances_report', history: false})
         },
         initPrint(data) {
-            console.log(data);
             $dispatch('showreceiptsprint', {
                 receipts: data.receipts,
                 from: this.start,
@@ -127,32 +127,30 @@
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
     x-init="
-        downloadUrl = '{{route('allowances.report.download').'?'}}';
         @if (request()->get('datetype') != null)
             dateType = '{{request()->get('datetype')}}';
-            downloadUrl += 'datetype=' + dateType + '&';
         @endif
         @if (request()->get('created_by') != null)
             createdBy = '{{request()->get('created_by')}}';
-            downloadUrl += 'created_by=' + createdBy + '&';
         @endif
         @if (request()->get('status') != null)
             status = '{{request()->get('status')}}';
-            downloadUrl += 'status=' + status + '&';
         @endif
         start = '{{request()->get('start') ?? ''}}';
-        downloadUrl += 'start=' + start + '&';
         end = '{{request()->get('end') ?? ''}}';
-        downloadUrl += 'end=' + end + '&';
         @if (request()->get('page') != null)
             page = {{request()->get('page')}};
-            downloadUrl += 'page=' + page + '&';
         @endif
-        selectedColumns = allColumns.filter((c) => {
-            return c.selected == true;
-        }).map((s) => {
-            return s.no;
+
+        let c = '{{$cols}}';
+        selectedColumns = c.split('|').map((x) => {
+            return 1 * x;
         });
+        if (selectedColumns.length > 0) {
+            allColumns.forEach((ac) => {
+                ac.selected =selectedColumns.includes(ac.no);
+            });
+        }
         $watch('allColumns', (v) => {
             selectedColumns = allColumns.filter((c) => {
                 return c.selected == true;
@@ -160,6 +158,13 @@
                 return s.no;
             });
         });
+        downloadUrl = '{{route('allowances.report.download').'?'}}';
+        let ps = getParams();
+        let qArr = [];
+        Object.keys(ps).forEach((k) => {
+            qArr.push(k + '=' + ps[k]);
+        });
+        downloadUrl += qArr.join('&');
     "
     @contentupdate.window="
             if($event.detail.target == 'allowances_report') {
@@ -360,8 +365,6 @@
             fromdate = $event.detail.from;
             todate = $event.detail.to;
             status = $event.detail.status;
-            console.log('allowances');
-            console.log(allowances);
             showPrint = true;
             "
         class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 overflow-visible"

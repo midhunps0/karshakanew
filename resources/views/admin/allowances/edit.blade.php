@@ -53,6 +53,7 @@
                                 marks_scored: '',
                                 max_mark: '',
                                 points: '',
+                                grade: '',
                                 percentage: ''
                             }
                         );
@@ -99,7 +100,7 @@
                         console.log(el);
                         let formData = new FormData(el);
                         axios.post(
-                            '{{route('allowances.education.store')}}',
+                            '{{route('allowances.education.update', $allowance->id)}}',
                             formData,
                             {
                                 headers: {
@@ -114,24 +115,20 @@
                             }
                         ).then((r) => {
                             console.log(r);
-                            $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
-                            setTimeout(() => {
-                                $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
-                            }, 500);
+                            if (r.data.success) {
+                                $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
+                                setTimeout(() => {
+                                    $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                }, 500);
+                            } else {
+                                $dispatch('shownotice', {message: r.data.message, mode: 'error', redirectUrl: null, redirectRoute: null});
+                            }
                         }).catch((e) => {
                             console.log(e);
                         });
                     }
                 }"
                 x-init="
-                    member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
-                    member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
-                    membership_no = '{{$allowance->member->membership_no}}';
-                    fee_period_from = '{{$allowance->member->lastFeePaidPeriod()['from']}}';
-                    fee_period_to = '{{$allowance->member->lastFeePaidPeriod()['to']}}';
-                    mobile_no = '{{$allowance->member->mobile_no}}';
-                    aadhaar_no = '{{$allowance->member->aadhaar_no}}';
-                    application_date = '{{$today}}';
                     $watch('marks', (marks) => {
                         if (['SSLC', 'THSLC'].includes(passed_exam_details.exam_name)) {
                             let pointsSum = 0;
@@ -158,6 +155,48 @@
                             marks_total.points = '';
                         }
                     });
+                    member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
+                    member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
+                    membership_no = '{{$allowance->member->membership_no}}';
+                    fee_period_from = '{{$allowance->member->lastFeePaidPeriod()['from']}}';
+                    fee_period_to = '{{$allowance->member->lastFeePaidPeriod()['to']}}';
+                    mobile_no = '{{$allowance->member->mobile_no}}';
+                    aadhaar_no = '{{$allowance->member->aadhaar_no}}';
+                    application_date = '{{$allowance->application_date}}';
+                    arrears_months = '{{$allowance->allowanceable->arrear_months_exdt}}';
+                    passed_exam_details = {
+                        exam_name: '{{$allowance->allowanceable->passed_exam_details['exam_name']}}',
+                        exam_reg_no: '{{$allowance->allowanceable->passed_exam_details['exam_reg_no']}}',
+                        institution: '{{$allowance->allowanceable->passed_exam_details['institution']}}',
+                        affilated_board: '{{$allowance->allowanceable->passed_exam_details['affilated_board']}}',
+                        exam_start_date: '{{$allowance->allowanceable->passed_exam_details['exam_start_date']}}'
+                    };
+                    marks = [];
+                    @foreach ($allowance->allowanceable->marks_scored as $m)
+                        marks.push(
+                            {
+                                subject: '{{$m['subject'] ?? ''}}',
+                                marks_scored: '{{$m['marks_scored'] ?? ''}}',
+                                max_mark: '{{$m['max_mark'] ?? ''}}',
+                                percentage: '{{$m['percentage'] ?? ''}}',
+                                grade: '{{$m['grade'] ?? ''}}',
+                                points: '{{$m['points'] ?? ''}}',
+                            }
+                        );
+                    @endforeach
+                    console.log('marks');
+                    console.log(marks);
+                    marks_total = {
+                        total_scored: '{{$allowance->allowanceable->total_marks['total_scored'] ?? ''}}',
+                        total_max: '{{$allowance->allowanceable->total_marks['total_max'] ?? ''}}',
+                        percentage: '{{$allowance->allowanceable->total_marks['percentage'] ?? ''}}',
+                        points: '{{$allowance->allowanceable->total_marks['points'] ?? ''}}',
+                    };
+                    bank_name = '{{$allowance->allowanceable->member_bank_account['bank_name'] ?? ''}}';
+                    bank_branch = '{{$allowance->allowanceable->member_bank_account['bank_branch'] ?? ''}}';
+                    account_no = '{{$allowance->allowanceable->member_bank_account['account_no'] ?? ''}}';
+                    ifsc_code = '{{$allowance->allowanceable->member_bank_account['ifsc_code'] ?? ''}}';
+
                 "
                 action=""
                 @submit.prevent.stop="
@@ -165,6 +204,7 @@
                 "
                 id="education_scheme_form"
                 >
+                {{-- {{dd($allowance->allowanceable->marks_scored[0]['subject'])}} --}}
                 <input type="hidden" name="member_id" value="{{$allowance->member->id}}">
                 <input type="hidden" name="scheme_code" value="{{$allowance->allowanceable->scheme_code}}">
                 <div class="flex flex-row space-x-2">
@@ -238,7 +278,7 @@
                         <span class="label-text">Name of Exam</span>
                         </label>
                         {{-- <input name="passed_exam_details[exam_name]" type="text" x-model="passed_exam_details.exam_name" class="input input-bordered w-full max-w-xs input-sm" /> --}}
-                        <select name="passed_exam_details[exam_name]" x-model="passed_exam_details.exam_name" class="select select-sm select-bordered py-0" required>
+                        <select x-model="passed_exam_details.exam_name" name="passed_exam_details[exam_name]" class="select select-sm select-bordered py-0" required>
                             <option value="SSLC">SSLC</option>
                             <option value="THSLC">THSLC</option>
                             <option value="Plus2">Plus 2</option>
@@ -249,25 +289,25 @@
                         <label class="label opacity-70">
                         <span class="label-text">Register No.</span>
                         </label>
-                        <input name="passed_exam_details[exam_reg_no]" type="text" x-model="passed_exam_details.reg_no" class="input input-bordered w-full max-w-xs input-sm" />
+                        <input name="passed_exam_details[exam_reg_no]" type="text" x-model="passed_exam_details.exam_reg_no" class="input input-bordered w-full max-w-xs input-sm" />
                     </div>
                     <div class="form-control flex-grow">
                         <label class="label opacity-70">
                         <span class="label-text">Institution name & address</span>
                         </label>
-                        <textarea name="passed_exam_details[institution]" x-model="passed_exam_details.insitution" class="textarea textarea-sm textarea-bordered h-16 max-w-xs"></textarea>
+                        <textarea x-model="passed_exam_details.institution" name="passed_exam_details[institution]" class="textarea textarea-sm textarea-bordered h-16 max-w-xs"></textarea>
                     </div>
                     <div class="form-control w-1/5">
                         <label class="label opacity-70">
                         <span class="label-text">Affiliated Board</span>
                         </label>
-                        <input name="passed_exam_details[affilated_board]" type="text" x-model="passed_exam_details.affiliated_board" class="input input-bordered w-full max-w-xs input-sm" />
+                        <input name="passed_exam_details[affilated_board]" x-model="passed_exam_details.affilated_board" type="text" class="input input-bordered w-full max-w-xs input-sm" />
                     </div>
                     <div class="form-control w-1/6">
                         <label class="label opacity-70">
                         <span class="label-text">Exam Start Date</span>
                         </label>
-                        <input name="passed_exam_details[exam_start_date]" type="text" x-model="passed_exam_details.exam_start_date" placeholder="dd-mm-yyyy" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"/>
+                        <input name="passed_exam_details[exam_start_date]" x-model="passed_exam_details.exam_start_date" type="text" placeholder="dd-mm-yyyy" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"/>
                     </div>
                 </fieldset>
                 <div class="form-control w-1/3">
@@ -280,9 +320,15 @@
                     <label class="label opacity-70">
                     <span class="label-text">Whether belonging to SC/ST category?</span>
                     </label>
-                    <select name="is_sc_st" x-model="is_sc_st" class="select select-sm py-0 select-bordered w-24">
-                        <option value="No">No</option>
-                        <option value="Yes">Yes</option>
+                    <select name="is_sc_st" class="select select-sm py-0 select-bordered w-24">
+                        <option
+                        @if (!$allowance->allowanceable->is_sc_st)
+                            selected
+                        @endif value="No">No</option>
+                        <option
+                        @if ($allowance->allowanceable->is_sc_st)
+                            selected
+                        @endif value="Yes">Yes</option>
                     </select>
                 </div>
                 <div class="my-8">
@@ -423,18 +469,26 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'mark_list' => $allowance->allowanceable->mark_list
                         ]"/>
                     </div>
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
-                            'key' => 'tc',
-                            'authorised' => true,
-                            'label' => 'Transfer Certificate (TC)',
-                            'validations' => [
-                                'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
-                                'max_size' => '200 kb'
-                            ]
-                        ]"/>
+                                'key' => 'tc',
+                                'authorised' => true,
+                                'label' => 'Transfer Certificate (TC)',
+                                'validations' => [
+                                    'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
+                                    'max_size' => '200 kb'
+                                ],
+                            ]"
+                            :_current_values="[
+                                'tc' => $allowance->allowanceable->tc
+                            ]"
+                            {{-- :_old="['tc' => '{{$allowance->allowanceable->}}']" --}}
+                            />
                     </div>
                     @if ($allowance->member->getSingleMediaUlid('wb_passbook_front') == null)
                     <div class="w-1/3 p-4">
@@ -446,6 +500,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'wb_passbook_front' => $allowance->allowanceable->wb_passbook_front
                         ]"/>
                     </div>
                     @else
@@ -466,6 +523,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'wb_passbook_back' => $allowance->allowanceable->wb_passbook_back
                         ]"/>
                     </div>
                     @else
@@ -479,14 +539,18 @@
                     @if ($allowance->member->getSingleMediaUlid('aadhaar_card') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
-                            'key' => 'aadhaar_card',
-                            'authorised' => true,
-                            'label' => 'Aadhaar Card',
-                            'validations' => [
-                                'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
-                                'max_size' => '200 kb'
-                            ]
-                        ]"/>
+                                'key' => 'aadhaar_card',
+                                'authorised' => true,
+                                'label' => 'Aadhaar Card',
+                                'validations' => [
+                                    'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
+                                    'max_size' => '200 kb'
+                                ]
+                            ]"
+                            :_current_values="[
+                                'aadhaar_card' => $allowance->allowanceable->aadhaar_card
+                            ]"
+                        />
                     </div>
                     @else
                     <div class="w-1/3 p-4">
@@ -506,6 +570,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'bank_passbook' => $allowance->allowanceable->bank_passbook
                         ]"/>
                     </div>
                     @else
@@ -525,6 +592,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'union_certificate' => $allowance->allowanceable->union_certificate
                         ]"/>
                     </div>
                     <div class="w-1/3 p-4">
@@ -536,6 +606,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'ration_card' => $allowance->allowanceable->ration_card
                         ]"/>
                     </div>
                     <div class="w-1/3 p-4">
@@ -547,6 +620,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'caste_certificate' => $allowance->allowanceable->caste_certificate
                         ]"/>
                     </div>
                     <div class="w-1/3 p-4">
@@ -558,6 +634,9 @@
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
+                        ]"
+                        :_current_values="[
+                            'one_and_same_certificate' => $allowance->allowanceable->one_and_same_certificate
                         ]"/>
                     </div>
                 </div>

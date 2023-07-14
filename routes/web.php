@@ -107,6 +107,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
     Route::get('/allowances/education/edit/{id}', [AllowanceController::class, 'educationEdit'])->name('allowances.education.edit');
     Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');
+    Route::post('/allowances/education/update/{id}', [AllowanceController::class, 'educationUpdate'])->name('allowances.education.update');
     Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);

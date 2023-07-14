@@ -1677,11 +1677,21 @@ class MemberService implements ModelViewConnector {
             $val = curl_exec($ch);
 
             $result = json_decode($val);
-            // info($result);
-
+            //Exists in Kerala Agricultural Workers Welfare Fund Board
+            $status = $result->Status;
+            $message = $result->Message;
+            info($status);
+            info($message);
+            if (trim($status) == 'AVAILED' && trim($message) == 'Exists in Kerala Agricultural Workers Welfare Fund Board') {
+                info('working');
+                $status = 'NOT AVAILED';
+                $message = 'NA';
+            }
+            info($status);
+            info($message);
             return [
-                'status' => $result->Status,
-                'message' => $result->Message
+                'status' => $status,
+                'message' => $message
             ];
         }
     }

@@ -16,6 +16,7 @@ class AllowanceEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     static $ACTION_CREATED = 'created';
+    static $ACTION_UPDATED = 'updated';
     static $ACTION_APPROVED = 'approved';
     static $ACTION_DELETED = 'deleted';
     /**

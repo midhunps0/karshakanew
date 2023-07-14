@@ -75,7 +75,6 @@
         @endif --}}
     "
     >
-    {{$form['success_redirect_key']}}
     @if ($form['method'] != 'POST')
         @method($form['method'])
     @endif
