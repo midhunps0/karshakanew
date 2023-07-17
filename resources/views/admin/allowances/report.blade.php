@@ -195,10 +195,12 @@
                 code: '{{$s->code}}'
             });
         @endforeach
-        if (scheme != null) {
+        if (scheme != null && getSchemeCode() != '') {
+            if (allSchemeCols[getSchemeCode()] != undefined) {
             allColumns.push(
                 ...(allSchemeCols[getSchemeCode()])
             );
+            }
         }
         let c = '{{$cols}}';
         if (c.lenght > 0) {
