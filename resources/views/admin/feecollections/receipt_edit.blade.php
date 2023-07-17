@@ -366,10 +366,10 @@
                             <h3 class="text-md font-bold my-3 text-center underline text-warning"><span>Receipt Details</span>&nbsp;</h3>
                             <div class="flex flex-row justify-between mt-3 mb-6">
                                 <div>
-                                    @php
+                                    {{-- @php
                                         $now = Carbon\Carbon::now();
                                         $today = $now->format('Y-m-d');
-                                    @endphp
+                                    @endphp --}}
                                     <x-inputs.datepicker :element="[
                                         'key' => 'date',
                                         'start_year' => 1980,
@@ -379,8 +379,8 @@
                                         'label' => 'Date',
                                         'properties' => ['required' => true]
                                     ]"
-                                    :_old="['date' => $today]"
-                                    :selected_date="$today"
+                                    :_old="['date' => $receipt->receipt_date]"
+                                    :selected_date="$receipt->receipt_date"
                                     label_position="float"
                                     />
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}

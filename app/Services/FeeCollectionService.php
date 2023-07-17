@@ -135,6 +135,7 @@ class FeeCollectionService implements ModelViewConnector {
                 $sum += floatval($fi['amount']);
                 FeeItem::create($fidata);
             }
+            $fc->total_amount = $sum;
             $fc->save();
             $fc->refresh();
             BusinessActionEvent::dispatch(

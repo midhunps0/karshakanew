@@ -8,10 +8,11 @@ use Illuminate\Support\Str;
 use App\Models\WelfareScheme;
 use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
-use App\Events\ApplicationCreateEvent;
 use App\Events\BusinessActionEvent;
+use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\EducationSchemeApplication;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class AllowanceService
 {
@@ -255,6 +256,17 @@ class AllowanceService
         if (isset($data['status'])) {
             $statkey = 'STATUS_'.Str::upper($data['status']);
             $query->where('status', Allowance::$$statkey);
+        }
+        if (isset($data['scheme'])) {
+            $query->where('welfare_scheme_id', $data['scheme']);
+        }
+        if (isset($data['course'])) {
+            $query->whereHas(
+                'allowanceable',
+                function (Builder $query) use ($data) {
+                    $query->whereJsonContains('passed_exam_details->exam_name', $data['course']);
+                }
+            );
         }
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();

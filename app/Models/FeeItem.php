@@ -31,7 +31,7 @@ class FeeItem extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 $tdate = $this->period_from != null ? new \DateTime($this->period_from) : null;
-                return $tdate != null ? $tdate->format('d-m-Y') : null;
+                return $tdate != null ? $tdate->format('m-Y') : null;
             },
         );
     }
@@ -41,7 +41,7 @@ class FeeItem extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 $tdate = $this->period_to != null ? new \DateTime($this->period_to) : null;
-                return $tdate != null ? $tdate->format('d-m-Y') : null;
+                return $tdate != null ? $tdate->format('m-Y') : null;
             },
         );
     }

@@ -52,12 +52,15 @@ class AllowanceController extends SmartController
                     'page' => $page,
                     'datetype' => $this->request->input('datetype', 'receipt_date'),
                     'created_by' => $this->request->input('created_by', null),
-                    'status' => $this->request->input('status', null)
+                    'status' => $this->request->input('status', null),
+                    'scheme' => $this->request->input('scheme', null),
+                    'course' => $this->request->input('course', null),
                 ]);
             }
             $user = User::find(auth()->user()->id);
             $appUsers = User::userAccessControlled()->get();
-            return $this->buildResponse('admin.allowances.report', ['allowances' => $result, 'appUsers' => $appUsers, 'user' => $user, 'cols' => $this->request->input('cls')]);
+            $schemes = WelfareScheme::select(['id', 'name', 'code'])->get();
+            return $this->buildResponse('admin.allowances.report', ['allowances' => $result, 'appUsers' => $appUsers, 'user' => $user, 'cols' => $this->request->input('cls'), 'schemes' => $schemes]);
         } catch (Throwable $e) {
             info($e);
             dd($e);
@@ -81,7 +84,9 @@ class AllowanceController extends SmartController
                 'fullreport' => true,
                 'datetype' => $this->request->input('datetype', 'receipt_date'),
                 'datetype' => $this->request->input('datetype', 'receipt_date'),
-                'status' => $this->request->input('status', null)
+                'status' => $this->request->input('status', null),
+                'scheme' => $this->request->input('scheme', null),
+                'course' => $this->request->input('course', null),
             ]);
         }
         return response()->json([
@@ -125,22 +130,32 @@ class AllowanceController extends SmartController
             $temp['account_no'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['account_no'] : '';
             $temp['ifsc_code'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['ifsc_code'] : '';
             $temp['payment_date'] = $item->payment_date;
+            $temp['created_by'] = $item->createdBy->name;
+            $temp['district'] = $item->district->name;
+
+            if (isset($item->allowanceable->passed_exam_details)) {
+                $temp['course'] =isset($item->allowanceable) ? $item->allowanceable->passed_exam_details['exam_name'] : '';
+            }
+
             $formattedResults[] = $temp;
         }
         $allColumns = [
-            ['application_date' => 'Application Date'],
-            ['application_no' => 'Application No.'],
-            ['member_name' => 'Member Name'],
-            ['membership_no' => 'Membership NoApplication Date'],
-            ['scheme_name' => 'Scheme Name'],
-            ['status' => 'Status'],
-            ['sanctioned_amount' => 'Sanctioned Amount'],
-            ['sanctioned_date' => 'Sanctioned Date'],
-            ['payee_name' => 'Payee Name'],
-            ['bank_branch' => 'Bank & Branch'],
-            ['account_no' => 'Account No.'],
-            ['ifsc_code' => 'IFSC Code'],
-            ['payment_date' => 'Payment Date'],
+            0 => ['application_date' => 'Application Date'],
+            1 => ['application_no' => 'Application No.'],
+            2 => ['member_name' => 'Member Name'],
+            3 => ['membership_no' => 'Membership NoApplication Date'],
+            4 => ['scheme_name' => 'Scheme Name'],
+            5 => ['status' => 'Status'],
+            6 => ['sanctioned_amount' => 'Sanctioned Amount'],
+            7 => ['sanctioned_date' => 'Sanctioned Date'],
+            8 => ['payee_name' => 'Payee Name'],
+            9 => ['bank_branch' => 'Bank & Branch'],
+            10 => ['account_no' => 'Account No.'],
+            11 => ['ifsc_code' => 'IFSC Code'],
+            12 => ['payment_date' => 'Payment Date'],
+            13 => ['created_by' => 'Created By'],
+            14 => ['district' => 'District'],
+            101 => ['course' => 'Course'],
         ];
         $selectedCols = [];
         foreach (explode('|', $this->request->input('cls')) as $c) {

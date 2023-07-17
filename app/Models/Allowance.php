@@ -39,6 +39,16 @@ class Allowance extends Model
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
+    }
+
     public function welfareScheme()
     {
         return $this->belongsTo(WelfareScheme::class, 'welfare_scheme_id', 'id');

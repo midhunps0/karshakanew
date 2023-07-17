@@ -290,24 +290,33 @@
                                 <tr>
                                     <td>
                                         @if ($loop->first)
-                                            {{$fp->receipt_date}}
+                                            {{$fp->formatted_receipt_date}}
                                         @endif
                                     </td>
-                                    <td>@if ($loop->first)
-                                            @if ($fp->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))
+                                    <td>
+                                        @if ($loop->first)
+                                        <div class="flex flex-row justify-start items-center space-x-4">
+                                            <span>{{$fp->receipt_number}}</span>
+                                            <a href="" @click.prevent.stop="$dispatch('linkaction', {
+                                                link: '{{route('feecollections.show', $fp->id)}}', route: 'feecollections.show'
+                                            });">
+
+                                                <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-5" width="w-5" class="text-warning font-bold"/>
+                                            </a>
+                                            {{-- @if ($fp->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))
                                             <a href="" @click.prevent.stop="$dispatch('linkaction', {
                                                 link: '{{route('feecollections.edit', $fp->id)}}', route: 'feecollections.edit'
-                                            });" class="flex flex-row space-x-4 items-center">
-                                                <span>{{$fp->receipt_number}}</span>
-                                                <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4" class="text-warning font-bold"/>
+                                            });">
+
+                                                <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-5" width="w-5" class="text-warning font-bold"/>
                                             </a>
-                                            @else
-                                            <span>{{$fp->receipt_number}}</span>
-                                            @endif
-                                        @endif</td>
+                                            @endif --}}
+                                        </div>
+                                        @endif
+                                    </td>
                                     <td>{{$fi->feeType->name}}</td>
-                                    <td>{{$fi->period_from ?? '--'}}</td>
-                                    <td>{{$fi->period_to ?? '--'}}</td>
+                                    <td>{{$fi->formatted_period_from ?? '--'}}</td>
+                                    <td>{{$fi->formatted_period_to ?? '--'}}</td>
                                     <td>{{$fi->tenure ?? '--'}}</td>
                                     <td>{{$fi->amount ?? ''}}</td>
                                     <td>@if ($loop->first){{$fp->total_amount}}@endif</td>

@@ -5,8 +5,19 @@
         end: '',
         createdBy: null,
         status: null,
+        scheme: null,
+        course: null,
+        allSchemeCols: {
+            EDU: [{
+                no: 101,
+                title: 'Course',
+                selected: true,
+            }]
+        },
+        currSchemeCols: [],
         page: 1,
         dowloadUrl: '',
+        allSchemes: [],
         allColumns: [
             {
                 no: 0,
@@ -73,6 +84,18 @@
                 title: 'Payment Date',
                 selected: true,
             },
+            {
+                no: 13,
+                title: 'Created By',
+                selected: true,
+            },
+            @if (auth()->user()->hasPermissionTo('Allowance: View In Any District'))
+            {
+                no: 14,
+                title: 'District',
+                selected: true,
+            },
+            @endif
         ],
         selectedColumns: [],
         getParams() {
@@ -94,7 +117,14 @@
             if (this.status != null) {
                 p['status'] = this.status;
             }
-            p['cls'] = this.selectedColumns.join('|');
+            if (this.scheme != null) {
+                p['scheme'] = this.scheme;
+            }
+            if (this.course != null) {
+                p['course'] = this.course;
+            }
+            p['cls'] = this.selectedColumns.length > 0 ? this.selectedColumns.join('|') : '';
+
             return p;
         },
         fetchReport() {
@@ -123,10 +153,24 @@
                 }
             }
             {{-- el.value = newarr.join('-'); --}}
+        },
+        getSchemeCode(id = null) {
+            if (id == null) { id = this.scheme; }
+            let s = this.allSchemes.filter((a) => {
+                return a.id == id;
+            })[0];
+            return s != undefined && s != null ? s.code : '';
         }
     }"
     @pageaction="page = $event.detail.page; fetchReport();"
     x-init="
+        $watch('allColumns', (v) => {
+            selectedColumns = allColumns.filter((c) => {
+                return c.selected == true;
+            }).map((s) => {
+                return s.no;
+            });
+        });
         @if (request()->get('datetype') != null)
             dateType = '{{request()->get('datetype')}}';
         @endif
@@ -136,28 +180,42 @@
         @if (request()->get('status') != null)
             status = '{{request()->get('status')}}';
         @endif
+        @if (request()->get('scheme') != null)
+            scheme = '{{request()->get('scheme')}}';
+        @endif
         start = '{{request()->get('start') ?? ''}}';
         end = '{{request()->get('end') ?? ''}}';
         @if (request()->get('page') != null)
             page = {{request()->get('page')}};
         @endif
-
+        @foreach ($schemes as $s)
+            allSchemes.push({
+                id: {{$s->id}},
+                name: '{{$s->name}}',
+                code: '{{$s->code}}'
+            });
+        @endforeach
+        if (scheme != null) {
+            allColumns.push(
+                ...(allSchemeCols[getSchemeCode()])
+            );
+        }
         let c = '{{$cols}}';
-        selectedColumns = c.split('|').map((x) => {
-            return 1 * x;
-        });
+        if (c.lenght > 0) {
+            selectedColumns = c.split('|').map((x) => {
+                return 1 * x;
+            });
+        } else {
+            selectedColumns = allColumns.map((ac) => {
+                return ac.no;
+            });;
+        }
         if (selectedColumns.length > 0) {
             allColumns.forEach((ac) => {
                 ac.selected =selectedColumns.includes(ac.no);
             });
         }
-        $watch('allColumns', (v) => {
-            selectedColumns = allColumns.filter((c) => {
-                return c.selected == true;
-            }).map((s) => {
-                return s.no;
-            });
-        });
+
         downloadUrl = '{{route('allowances.report.download').'?'}}';
         let ps = getParams();
         let qArr = [];
@@ -189,18 +247,18 @@
                         <label class="label">
                           <span class="label-text">From</span>
                         </label>
-                        <input x-model="start" @change="formatDate($el, $event);" type="text" name="start" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"/>
+                        <input x-model="start" @change="formatDate($el, $event);" type="text" name="start" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                     <div class="form-control w-full max-w-xs">
                         <label class="label">
                           <span class="label-text">To</span>
                         </label>
-                        <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]"/>
+                        <input x-model="end" type="text" name="end" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                 </div>
                 <div class="flex flex-row space-x-4 items-end justify-start my-4 w-full">
-                    @if ($user->hasPermissionTo('User: View In Any District') ||
-                        $user->hasPermissionTo('User: View In Own District'))
+                    @if ($user->hasPermissionTo('Allowance: View In Any District') ||
+                        $user->hasPermissionTo('Allowance: View In Any District'))
                         <div class="form-control w-1/3 max-w-xs">
                             <label class="label">
                             <span class="label-text">Created By</span>
@@ -224,25 +282,50 @@
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
-                    <div x-data="{
-                            showList: false,
-                        }" class="form-control w-1/3 max-w-xs relative">
+                    <div class="form-control w-1/3 max-w-xs">
                         <label class="label">
-                        <span class="label-text">Columns</span>
+                        <span class="label-text">Schemes</span>
                         </label>
-                        <div class="w-full">
-                            <input type="text" class="input input-md input-bordered rounded-md w-full" :value="selectedColumns.length + ' of ' + allColumns.length + ' columns selected'" readonly @click.prevent.stop="showList = !showList;">
-                        </div>
-                        <div @click.outside="showList = false;" x-show="showList" class="absolute z-10 top-20 left-0 bg-base-200 p-3 rounded-md bordered max-h-60 overflow-y-scroll">
-                            <template x-for="c in allColumns">
-                                <button type="button" class="block w-full text-left px-3 py-2 border-b border-base-300 border-opacity-50">
-                                    <input type="checkbox" x-model="c.selected" class="checkbox checkbox-sm checkbox-primary">
-                                    <span x-text="c.title"></span>
-                                </button>
-                            </template>
-                        </div>
+                        <select class="select select-bordered flex-grow" x-model="scheme">
+                            <option value="">Any</option>
+                            @foreach ($schemes as $s)
+                                <option value="{{$s->id}}">{{$s->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+                <div class="flex flex-row space-x-4 items-end justify-start my-4 w-full">
+                    <div x-show="getSchemeCode() == 'EDU'" class="form-control w-1/3 max-w-xs">
+                        <label class="label">
+                        <span class="label-text">Courses</span>
+                        </label>
+                        <select class="select select-bordered flex-grow" x-model="course">
+                            <option value="">Any</option>
+                            <option value="SSLC">SSLC</option>
+                            <option value="THSLC">THSLC</option>
+                            <option value="Plus2">Plus 2</option>
+                            <option value="VHSE">VHSE</option>
+                        </select>
+                    </div>
+                </div>
+                <div x-data="{
+                    showList: false,
+                }" class="form-control w-1/3 max-w-xs relative">
+                <label class="label">
+                <span class="label-text">Columns</span>
+                </label>
+                <div class="w-full">
+                    <input type="text" class="input input-md input-bordered rounded-md w-full" :value="selectedColumns.length + ' of ' + allColumns.length + ' columns selected'" readonly @click.prevent.stop="showList = !showList;">
+                </div>
+                <div @click.outside="showList = false;" x-show="showList" class="absolute z-10 top-20 left-0 bg-base-200 p-3 rounded-md bordered max-h-60 overflow-y-scroll">
+                    <template x-for="c in allColumns">
+                        <button type="button" class="block w-full text-left px-3 py-2 border-b border-base-300 border-opacity-50">
+                            <input type="checkbox" x-model="c.selected" class="checkbox checkbox-sm checkbox-primary">
+                            <span x-text="c.title"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
                 <div class="flex flex-row w-full space-x-4 justify-start items-end my-4">
                     <div class="form-control w-full max-w-xs">
                         <button type="submit" class="btn btn-md btn-success">Get Report</button>
@@ -271,9 +354,13 @@
                                 <tr>
                                     <th x-show="selectedColumns.includes(0)" class="px-2">Appln. Date</th>
                                     <th x-show="selectedColumns.includes(1)" class="px-2">Appln. No.</th>
+                                    @if (auth()->user()->hasPermissionTo('Allowance: View In Any District'))
+                                    <th x-show="selectedColumns.includes(14)"  class="px-2">District</th>
+                                    @endif
                                     <th x-show="selectedColumns.includes(2)"  class="px-2">Member</th>
                                     <th x-show="selectedColumns.includes(3)"  class="px-2">Membership No.</th>
                                     <th x-show="selectedColumns.includes(4)"  class="px-2">Scheme Applied For</th>
+                                    <th x-show="getSchemeCode() == 'EDU' && selectedColumns.includes(101)" class="px-2">Course</th>
                                     <th x-show="selectedColumns.includes(5)"  class="px-2">Status</th>
                                     {{-- <th class="px-2">Applied Amount</th> --}}
                                     <th x-show="selectedColumns.includes(6)"  class="px-2">Sanctioned Amount</th>
@@ -283,6 +370,7 @@
                                     <th x-show="selectedColumns.includes(10)"  class="px-2">Account No.</th>
                                     <th x-show="selectedColumns.includes(11)" class="px-2">IFSC COde</th>
                                     <th x-show="selectedColumns.includes(12)" class="px-2">Payment Date</th>
+                                    <th x-show="selectedColumns.includes(13)" class="px-2">Created By</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -297,9 +385,13 @@
                                             </a>
                                             @endif
                                         </td>
+                                        @if (auth()->user()->hasPermissionTo('Allowance: View In Any District'))
+                                        <td x-show="selectedColumns.includes(14)"  class="px-2">{{$a->district->name}}</td>
+                                        @endif
                                         <td x-show="selectedColumns.includes(2)" class="px-2">{{$a->member->name}}</td>
                                         <td x-show="selectedColumns.includes(3)" class="px-2">{{$a->member->membership_no}}</td>
                                         <td x-show="selectedColumns.includes(4)" class="px-2">{{$a->welfareScheme->name}}</td>
+                                        <td x-show="getSchemeCode() == 'EDU' && selectedColumns.includes(101)" class="px-2">{{ isset($a->allowanceable) ? $a->allowanceable->passed_exam_details['exam_name'] : ''}}</td>
                                         <td x-show="selectedColumns.includes(5)" class="px-2
                                         @if ($a->status == 'Pending') text-warning @endif
                                         @if ($a->status == 'Approved') text-primary @endif
@@ -322,6 +414,7 @@
                                             {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}
                                         </td>
                                         <td x-show="selectedColumns.includes(12)" class="px-2">{{$a->payment_date}}</td>
+                                        <td x-show="selectedColumns.includes(13)" class="px-2">{{$a->createdBy->name}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

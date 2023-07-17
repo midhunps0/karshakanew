@@ -1494,7 +1494,10 @@ class MemberService implements ModelViewConnector {
                     $fiData['period_to'] = AppHelper::formatDateForSave(thedate: $item['period_to'], setTimeTo: 'end');
                 }
                 if (isset($item['period_from']) && isset($item['period_to'])) {
-                    $fiData['tenure'] = $item['period_from'] . ' to ' . $item['period_to'];
+                    $fiData['tenure'] = Carbon::createFromFormat('d-m-Y', $item['period_from'])
+                        ->format('m-Y')
+                        . ' to '
+                        . Carbon::createFromFormat('d-m-Y', $item['period_to'])->format('m-Y');
                 }
                 FeeItem::create($fiData);
             }
