@@ -236,7 +236,17 @@ class UserService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
+        $data['district_id'] = $data['district'];
+        unset($data['district']);
         $data['password'] = Hash::make($data['password']);
+
+        return $data;
+    }
+
+    public function processBeforeUpdate(array $data): array
+    {
+        $data['district_id'] = $data['district'];
+        unset($data['district']);
 
         return $data;
     }

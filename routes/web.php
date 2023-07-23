@@ -7,13 +7,15 @@ use Ynotz\EasyAdmin\Services\RouteHelper;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DistrictController;
-use App\Http\Controllers\AllowanceController;
+use App\Http\Controllers\Allowances\EducationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeeCollectionController;
 use App\Http\Controllers\Accounting\LedgerController;
 use App\Http\Controllers\Accounting\TransactionController;
 use App\Http\Controllers\Accounting\AccountGroupController;
 use App\Http\Controllers\Accounting\AccountsReportsController;
+use App\Http\Controllers\Allowances\AllowanceController;
+use App\Http\Controllers\Allowances\PostDeathController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,12 +105,21 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('allowances.fullreport');
     Route::get('allowances/report-dowload', [AllowanceController::class, 'download'])
         ->name('allowances.report.download');
-    Route::get('/allowances/show/{id}', [AllowanceController::class, 'show'])->name('allowances.show');
-    Route::get('/allowances/education/create', [AllowanceController::class, 'educationCreate'])->name('allowances.education.create');
-    Route::get('/allowances/education/edit/{id}', [AllowanceController::class, 'educationEdit'])->name('allowances.education.edit');
-    Route::post('/allowances/education/store', [AllowanceController::class, 'educationStore'])->name('allowances.education.store');
-    Route::post('/allowances/education/update/{id}', [AllowanceController::class, 'educationUpdate'])->name('allowances.education.update');
     Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
+
+
+    Route::get('/allowances/education/show/{id}', [EducationController::class, 'show'])->name('allowances.education.show');
+    Route::get('/allowances/education/create', [EducationController::class, 'create'])->name('allowances.education.create');
+    Route::get('/allowances/education/edit/{id}', [EducationController::class, 'edit'])->name('allowances.education.edit');
+    Route::post('/allowances/education/store', [EducationController::class, 'store'])->name('allowances.education.store');
+    Route::post('/allowances/education/update/{id}', [EducationController::class, 'update'])->name('allowances.education.update');
+
+    Route::get('/allowances/postdeath/show/{id}', [PostDeathController::class, 'show'])->name('allowances.postdeath.show');
+    Route::get('/allowances/postdeath/create', [PostDeathController::class, 'create'])->name('allowances.postdeath.create');
+    Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
+    Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
+    Route::post('/allowances/postdeath/update/{id}', [EducatioPostDeathControllernController::class, 'update'])->name('allowances.postdeath.update');
+
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);

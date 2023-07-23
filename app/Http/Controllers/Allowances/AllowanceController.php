@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Allowances;
 
 use Throwable;
 use App\Models\User;
@@ -16,7 +16,7 @@ use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class AllowanceController extends SmartController
 {
-    public function __construct(public  AllowanceService $allowanceService, Request $request){
+    public function __construct(public  AllowanceService $allowanceService, Request $request) {
         parent::__construct($request);
     }
 
@@ -169,16 +169,16 @@ class AllowanceController extends SmartController
         ), 'allowances.csv');
     }
 
-    public function show($id)
-    {
-        $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
-        if (auth()->user()->can('view', $application)) {
-            return $this->buildResponse('admin.allowances.show', ['application' => $application]);
-        } else {
-            return $this->buildResponse('admin.allowances.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
-        }
-    }
-
+    // public function show($id)
+    // {
+    //     $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
+    //     if (auth()->user()->can('view', $application)) {
+    //         return $this->buildResponse('admin.allowances.show', ['application' => $application]);
+    //     } else {
+    //         return $this->buildResponse('admin.allowances.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
+    //     }
+    // }
+/*
     public function educationCreate()
     {
         $memberId = $this->request->input('member_id', null);
@@ -235,7 +235,7 @@ class AllowanceController extends SmartController
             'application' => $result
         ]);
     }
-
+*/
     public function approve($id)
     {
         $result = $this->allowanceService->approve(

@@ -115,7 +115,7 @@
                             if (r.data.success) {
                                 $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
                                 setTimeout(() => {
-                                    $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                    $dispatch('linkaction', {link: '{{route('allowances.education.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
                                 }, 500);
                             } else {
                                 $dispatch('shownotice', {message: r.data.message, mode: 'error', redirectUrl: null, redirectRoute: null});

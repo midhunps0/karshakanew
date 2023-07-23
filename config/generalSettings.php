@@ -21,6 +21,10 @@
         'fee_types_with_tenure' => [
             2, 4
         ],
+        'allowances' => [
+            'education_assistance' => 'Education Assistance',
+            'death_exgracia' => 'Death Ex-Gratia'
+        ],
         'membership_fee_id' => 2,
         'default_payment_mode_id' => 1,
     ];

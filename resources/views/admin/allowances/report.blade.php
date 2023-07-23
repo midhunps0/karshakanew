@@ -377,12 +377,19 @@
                             </thead>
                             <tbody>
                                 @foreach ($allowances as $a)
+                                    @php
+                                        $showRoute = match($a->allowanceable_type) {
+                                            'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
+                                            'App\Models\EducationSchemeApplication' => 'allowances.education.show',
+                                            default => 'allowances.education.show'
+                                        };
+                                    @endphp
                                     <tr>
                                         <td x-show="selectedColumns.includes(0)" class="px-2">{{$a->application_date}}</td>
                                         <td x-show="selectedColumns.includes(1)" class="px-2">
                                             {{$a->application_no}}
                                             @if($a->allowanceable != null)
-                                            <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.show', $a->id)}}', route: 'allowances.show'})">
+                                            <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route($showRoute, $a->id)}}', route: '{{$showRoute}}'})">
                                                 <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-4" width="w-4"/>
                                             </a>
                                             @endif
@@ -390,10 +397,10 @@
                                         @if (auth()->user()->hasPermissionTo('Allowance: View In Any District'))
                                         <td x-show="selectedColumns.includes(14)"  class="px-2">{{$a->district->name}}</td>
                                         @endif
-                                        <td x-show="selectedColumns.includes(2)" class="px-2">{{$a->member->name}}</td>
+                                        <td x-show="selectedColumns.includes(2)" class="px-2">{{$a->member->display_name}}</td>
                                         <td x-show="selectedColumns.includes(3)" class="px-2">{{$a->member->membership_no}}</td>
                                         <td x-show="selectedColumns.includes(4)" class="px-2">{{$a->welfareScheme->name}}</td>
-                                        <td x-show="getSchemeCode() == 'EDU' && selectedColumns.includes(101)" class="px-2">{{ isset($a->allowanceable) ? $a->allowanceable->passed_exam_details['exam_name'] : ''}}</td>
+                                        <td x-show="getSchemeCode() == 'EDU' && selectedColumns.includes(101)" class="px-2">{{ isset($a->allowanceable) && $a->allowanceable_type == 'App\Models\EducationSchemeApplication' ? $a->allowanceable->passed_exam_details['exam_name'] : ''}}</td>
                                         <td x-show="selectedColumns.includes(5)" class="px-2
                                         @if ($a->status == 'Pending') text-warning @endif
                                         @if ($a->status == 'Approved') text-primary @endif
@@ -403,17 +410,20 @@
                                         {{-- <td class="text-right px-2">{{$a->applied_amount}}</td> --}}
                                         <td x-show="selectedColumns.includes(6)" class="text-right px-2">{{$a->sanctioned_amount}}</td>
                                         <td x-show="selectedColumns.includes(7)" class="px-2">{{$a->sanctioned_date}}</td>
+                                        @php
+                                            $bankAccount = $showRoute == 'allowances.postdeath.show' ? 'applicant_bank_details' : 'member_bank_account';
+                                        @endphp
                                         <td x-show="selectedColumns.includes(8)" class="text-left px-2">
-                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_name'] : '--'}}
+                                            {{$a->allowanceable ? $a->allowanceable->$bankAccount['bank_name'] : '--'}}
                                         </td>
                                         <td x-show="selectedColumns.includes(9)" class="px-2">
-                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['bank_branch'] : '--'}}
+                                            {{$a->allowanceable ? $a->allowanceable->$bankAccount['bank_branch'] : '--'}}
                                         </td>
                                         <td x-show="selectedColumns.includes(10)" class="px-2">
-                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['account_no'] : '--'}}
+                                            {{$a->allowanceable ? $a->allowanceable->$bankAccount['account_no'] : '--'}}
                                         </td>
                                         <td x-show="selectedColumns.includes(11)" class="px-2">
-                                            {{$a->allowanceable ? $a->allowanceable->member_bank_account['ifsc_code'] : '--'}}
+                                            {{$a->allowanceable ? $a->allowanceable->$bankAccount['ifsc_code'] : '--'}}
                                         </td>
                                         <td x-show="selectedColumns.includes(12)" class="px-2">{{$a->payment_date}}</td>
                                         <td x-show="selectedColumns.includes(13)" class="px-2">{{$a->createdBy->name}}</td>
