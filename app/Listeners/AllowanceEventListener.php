@@ -32,7 +32,7 @@ class AllowanceEventListener
                 $d->last_application_no = $n;
                 $dtstr = explode(' ', $event->allowance->created_at)[0];
                 $d->last_application_date = Carbon::createFromFormat(
-                    'd-m-Y',
+                    'Y-m-d',
                     $dtstr
                 );
                 $d->pending_applications = $d->pending_applications + 1;
