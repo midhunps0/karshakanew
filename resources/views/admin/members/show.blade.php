@@ -364,7 +364,7 @@
                                             <td class="px-2">
                                                 {{$a->application_no}}
                                                 @if($a->allowanceable != null)
-                                                <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.show', $a->id)}}', route: 'allowances.show'})">
+                                                <a href="" class="text-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route(App\Helpers\AppHelper::getShowRoute($a), $a->id)}}', route: '{{App\Helpers\AppHelper::getShowRoute($a)}}'})">
                                                     <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-4" width="w-4"/>
                                                 </a>
                                                 @endif

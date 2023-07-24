@@ -217,5 +217,14 @@ class AppHelper
         }
         return $thedate;
     }
+
+    public static function getShowRoute($a)
+    {
+        return match($a->allowanceable_type) {
+            'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
+            'App\Models\EducationSchemeApplication' => 'allowances.education.show',
+            default => 'allowances.education.show'
+        };
+    }
 }
 ?>

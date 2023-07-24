@@ -378,11 +378,12 @@
                             <tbody>
                                 @foreach ($allowances as $a)
                                     @php
-                                        $showRoute = match($a->allowanceable_type) {
-                                            'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
-                                            'App\Models\EducationSchemeApplication' => 'allowances.education.show',
-                                            default => 'allowances.education.show'
-                                        };
+                                        // $showRoute = match($a->allowanceable_type) {
+                                        //     'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
+                                        //     'App\Models\EducationSchemeApplication' => 'allowances.education.show',
+                                        //     default => 'allowances.education.show'
+                                        // };
+                                        $showRoute = App\Helpers\AppHelper::getShowRoute($a);
                                     @endphp
                                     <tr>
                                         <td x-show="selectedColumns.includes(0)" class="px-2">{{$a->application_date}}</td>
