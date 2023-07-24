@@ -48,6 +48,11 @@ class AccountGroup extends Model
         return isset($this->parentGroup);
     }
 
+    // public function scope(Type $args): void
+    // {
+    //     # code...
+    // }
+
     public function getParentChain()
     {
         $parents = [];

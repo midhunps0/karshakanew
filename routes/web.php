@@ -118,7 +118,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/postdeath/create', [PostDeathController::class, 'create'])->name('allowances.postdeath.create');
     Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
     Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
-    Route::post('/allowances/postdeath/update/{id}', [EducatioPostDeathControllernController::class, 'update'])->name('allowances.postdeath.update');
+    Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
 
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);

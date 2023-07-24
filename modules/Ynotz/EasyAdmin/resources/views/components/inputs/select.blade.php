@@ -329,8 +329,6 @@
                     selectedVals = [x['{{$options_id_key}}']];
                 @endif
             @endif
-                console.log(`selectedVals {{{$name}}}`);
-                console.log(selectedVals);
         @endif
         @if (isset($fetch_url))
             fetchUrl = '{{$fetch_url}}';
@@ -347,10 +345,10 @@
                 select_options.push({key: op, text: op });
             });
 
-        if (keyname == 'gender' || keyname == 'marital_status') {
+        {{-- if (keyname == 'gender' || keyname == 'marital_status') {
             console.log('select_options');
             console.log(select_options);
-        }
+        } --}}
         @elseif ($options_type == 'collection')
             {{-- ops.forEach((op) => {
                 select_options.push({key: op.{{$options_id_key}}, text: op.{{$options_text_key}} });
@@ -373,6 +371,8 @@
                 });
             @endif
         @endif
+        console.log('select_options: {{$name}}');
+        console.log(select_options);
         @if ($xerrors->has($name))
             ers = {{json_encode($xerrors->get($name))}};
             errors = ers.reduce((r, e) => {
@@ -439,6 +439,10 @@
             @endforeach
         @endforeach
         @endif
+        $watch('selectedVals', (v) => {
+            console.log('selectedVals');
+            console.log(v);
+        })
     "
     @if (isset($reset_on_events) || isset($update_on_events))
     @eaforminputevent.window="resetOnEvent($event.detail); updateOnEvent($event.detail);"
@@ -490,7 +494,7 @@
         <div class="w-full flex flex-col items-center">
             <div class="inline-block relative w-full">
                 <div class="flex flex-col items-center relative">
-                    <select @change="alert('hi')" @if(isset($model_key))x-model="{{$model_key}}" @endif tabindex="-1" id="select-{{$name}}" @if(isset($properties['multiple']) && $properties['multiple'])  x-model="selectedVals" name="{{ $name }}[]" @else x-model="selectedVals[0]" name="{{$name}}" @endif class="h-0 w-11/12 absolute -z-10 rounded-md left-1 top-4 overflow-hidden"
+                    <select @if(isset($model_key))x-model="{{$model_key}}" @endif tabindex="-1" id="select-{{$name}}" @if(isset($properties['multiple']) && $properties['multiple'])  x-model="selectedVals" name="{{ $name }}[]" @else x-model="selectedVals[0]" name="{{$name}}" @endif class="h-0 w-11/12 absolute -z-10 rounded-md left-1 top-4 overflow-hidden"
                         @foreach ($properties as $prop => $val)
                             @if (!is_bool($val))
                                 {{ $prop }}="{{ $val }}"
@@ -500,7 +504,7 @@
                         @endforeach @if(isset($properties['multiple']) && $properties['multiple'])  multiple @endif>
                             <option value="">{{$none_selected}}</option>
                         <template x-for="op in select_options">
-                            <option :value="op.key" x-text="op.text" :selected="isSelected(op.key)"></option>
+                            <option :value="op.key" x-text="op.text + ' : ' +op.key" :selected="isSelected(op.key)"></option>
                         </template>
                     </select>
                     <div x-on:click="open" @keypress="open()" class="w-full"

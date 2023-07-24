@@ -25,6 +25,7 @@ class LedgerController extends SmartController
     {
         parent::__construct($request);
         $this->connectorService = $ledgerService;
+        $this->showView = 'admin.accounts.ledger.show';
     }
 
     public function index(Request $request)
@@ -39,25 +40,25 @@ class LedgerController extends SmartController
         ]);
     }
 
-    public function show($id)
-    {
-        try {
-            $result = $this->connectorService->findOrFail($id);
-            return response()->json(
-                [
-                    'success' => true,
-                    'data' => $result
-                ]
-            );
-        } catch (\Throwable $e) {
-            return response()->json(
-                [
-                    'success' => false,
-                    'data' => null
-                ]
-            );
-        }
-    }
+    // public function show($id)
+    // {
+    //     try {
+    //         $result = $this->connectorService->findOrFail($id);
+    //         return response()->json(
+    //             [
+    //                 'success' => true,
+    //                 'data' => $result
+    //             ]
+    //         );
+    //     } catch (\Throwable $e) {
+    //         return response()->json(
+    //             [
+    //                 'success' => false,
+    //                 'data' => null
+    //             ]
+    //         );
+    //     }
+    // }
 
     // public function cashBankAccounts()
     // {
@@ -78,19 +79,19 @@ class LedgerController extends SmartController
     //         );
     //     }
     // }
-
+/*
     public function store(StoreLedgerAccountRequest $request)
     {
         $district_id = $request->input('district_id') ?: auth()->user()->district;
 
-        if (
-            Gate::denies(
+        if (Gate::denies(
             'create',
             [
                 LedgerAccount::class,
                 $district_id
-            ])
-            ) {
+            ]
+        )
+        ) {
             throw new UnauthorizedException('Unauthorized action', 404);
         }
         try {
@@ -144,4 +145,5 @@ class LedgerController extends SmartController
             ]
         );
     }
+    */
 }

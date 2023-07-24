@@ -115,7 +115,12 @@ trait IsModelViewConnector{
 
     public function show($id)
     {
-        $item = $this->modelClass::find($id);
+        if (count($this->showWith())) {
+            $item = $this->modelClass::with($this->showWith())
+                ->where($this->idKey, $id)->get()->first();
+        } else {
+            $item = $this->modelClass::find($id);
+        }
         $name = ucfirst(Str::lower($this->getModelShortName()));
         if (!$this->authoriseShow($item)) {
             throw new AuthorizationException('The user is not authorised to view '.$name.'.');
@@ -123,6 +128,11 @@ trait IsModelViewConnector{
         return [
             'item' => $item
         ];
+    }
+
+    public function showWith(): array
+    {
+        return [];
     }
 
     private function getQuery()

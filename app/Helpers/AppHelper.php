@@ -93,12 +93,12 @@ class AppHelper
     {
         $district = District::find($member->district_id);
         if ($district->last_application_date != null) {
-            $lastApplnMonth = Carbon::createFromFormat('Y-m-d', $district->last_application_date)->month;
+            $lastApplnYear = Carbon::createFromFormat('Y-m-d', $district->last_application_date)->year;
         } else {
-            $lastApplnMonth = Carbon::today()->month;
+            $lastApplnYear = Carbon::today()->year;
         }
-        $todayMonth = Carbon::today()->month;
-        if ($lastApplnMonth < $todayMonth) {
+        $todayYear = Carbon::today()->year;
+        if ($lastApplnYear < $todayYear) {
             $newApplnNumeric = 1;
         } else {
             $newApplnNumeric = $district->last_application_no + 1;
