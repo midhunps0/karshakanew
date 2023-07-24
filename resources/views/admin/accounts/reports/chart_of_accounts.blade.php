@@ -2,6 +2,7 @@
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Chart Of Accounts ({{$districtName}}) </span>&nbsp;</h3>
         <div>
+            @if ($districtId == 15)
             <form x-data="{
                 districtId: null,
                 doSubmit() {
@@ -29,6 +30,7 @@
                 </div>
                 <button type="submit" class="btn btn-success btn-sm">Get Chart</button>
             </form>
+            @endif
             @foreach ($accounts as $a)
                 <div class="font-bold text-success">{{$a->name_with_district}}</div>
                 @foreach ($a->subGroupsFamilyAccounts as $sgf)

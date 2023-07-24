@@ -23,13 +23,17 @@ class AccountsReportsController extends SmartController
 
     public function accountsChart()
     {
-        $districtId = $this->request->input('district_id');
+        $authDistrictId = auth()->user()->district_id;
+        $districtId = null;
+        if (auth()->user()->hasPermissionTo('Accounts Group: View In Any District')) {
+            $districtId = $this->request->input('district_id');
+        }
         $list = $this->groupRepo->accountsChart($districtId);
         return $this->buildResponse('admin.accounts.reports.chart_of_accounts', [
             'accounts' => $list,
             'districts' => District::all()->pluck('name', 'id'),
-            'districtId' => $districtId ?? 15,
-            'districtName' => District::find($districtId)->name
+            'districtId' => $districtId ?? $authDistrictId,
+            'districtName' => District::find($districtId ?? $authDistrictId)->name
         ]);
     }
 
