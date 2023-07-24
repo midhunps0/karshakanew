@@ -78,12 +78,10 @@ class AccountGroup extends Model
         return !$this->is_core_group;
     }
 
-    public function scopeUserDistrictConstrained(Builder $query)
+    public function scopeUserDistrictConstrained(Builder $query, $districtId = null)
     {
-        $districtId = auth()->user()->district_id;
-        if ($districtId != 15) {
-            $query->where('district_id', $districtId);
-        }
+        $districtId = $districtId ?? auth()->user()->district_id;
+        $query->where('district_id', $districtId);
         return $query;
     }
 }

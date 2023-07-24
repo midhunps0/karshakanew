@@ -18,7 +18,7 @@
         @foreach ($sgf->accounts as $sga)
             <div class="pl-10">
                 <a href="" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('accounts.account.statement')}}'+'?account_id='+{{$sga->id}}, route: 'accounts.account.statement'});" class="cursor-pointer">
-                    {{$sga->name}}
+                    {{$sga->name_with_district}}
                 </a>
             </div>
         @endforeach

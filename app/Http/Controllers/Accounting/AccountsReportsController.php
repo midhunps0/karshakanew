@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\Models\District;
+use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Helpers\AccountsHelper;
-use App\Helpers\AppHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Accounting\LedgerAccount;
 use App\Services\AccountGroupService;
+use App\Models\Accounting\LedgerAccount;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class AccountsReportsController extends SmartController
@@ -22,9 +23,13 @@ class AccountsReportsController extends SmartController
 
     public function accountsChart()
     {
-        $list = $this->groupRepo->accountsChart();
+        $districtId = $this->request->input('district_id');
+        $list = $this->groupRepo->accountsChart($districtId);
         return $this->buildResponse('admin.accounts.reports.chart_of_accounts', [
             'accounts' => $list,
+            'districts' => District::all()->pluck('name', 'id'),
+            'districtId' => $districtId ?? 15,
+            'districtName' => District::find($districtId)->name
         ]);
     }
 
