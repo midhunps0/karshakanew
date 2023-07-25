@@ -206,6 +206,14 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showJournal()
                     ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add Ledger Account',
+                        'route' => 'ledgeraccounts.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->createLedgerPermission()
+                    ],
                 ]
             ],
             // [
@@ -294,6 +302,10 @@ class SidebarService implements SidebarServiceInterface
     private function showTransaction()
     {
         return auth()->user()->hasPermissionTo('Journal: Create In Any District') || auth()->user()->hasPermissionTo('Journal: Create In Own District');
+    }
+    private function createLedgerPermission()
+    {
+        return auth()->user()->hasPermissionTo('Ledger Account: Create In Any District') || auth()->user()->hasPermissionTo('Ledger Account: Create In Own District');
     }
     // private function showTradeUnions()
     // {

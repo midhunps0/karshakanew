@@ -80,7 +80,7 @@ class LedgerAccountService implements ModelViewConnector
     public function getCreatePageData(): array
     {
         return [
-            'title' => 'Members',
+            'title' => '',
             'form' => FormHelper::makeForm(
                 title: 'Create Ledger Account',
                 id: 'form_members_create',
