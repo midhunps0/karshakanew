@@ -16,13 +16,14 @@ return new class extends Migration
             $table->foreignId('member_id')->constrained('members', 'id');
             $table->string('member_name');
             $table->string('member_address');
+            $table->string('member_reg_date');
             $table->float('arrear_months_mrgdt'); //no. of months of arears on marriage date
             $table->string('member_phone');
             $table->string('member_aadhaar');
             $table->json('member_bank_account');
-            $table->date('date_of_marriage');
-            $table->string('name_of_bride');
-            $table->string('relation'); //self or daugher
+            $table->date('marriage_date');
+            $table->string('bride_name');
+            $table->string('bride_relation'); //self or daughter
             $table->text('history');
             $table->timestamps();
         });

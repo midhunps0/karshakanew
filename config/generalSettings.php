@@ -23,7 +23,8 @@
         ],
         'allowances' => [
             'education_assistance' => 'Education Assistance',
-            'death_exgracia' => 'Death Ex-Gratia'
+            'death_exgracia' => 'Death Ex-Gratia',
+            'marriage' => 'Marriage Assistance'
         ],
         'membership_fee_id' => 2,
         'default_payment_mode_id' => 1,

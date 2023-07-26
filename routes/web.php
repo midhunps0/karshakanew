@@ -15,6 +15,7 @@ use App\Http\Controllers\Accounting\TransactionController;
 use App\Http\Controllers\Accounting\AccountGroupController;
 use App\Http\Controllers\Accounting\AccountsReportsController;
 use App\Http\Controllers\Allowances\AllowanceController;
+use App\Http\Controllers\Allowances\MarriageController;
 use App\Http\Controllers\Allowances\PostDeathController;
 
 /*
@@ -107,7 +108,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('allowances.report.download');
     Route::post('/allowances/approve/{id}', [AllowanceController::class, 'approve'])->name('allowances.approve');
 
-
     Route::get('/allowances/education/show/{id}', [EducationController::class, 'show'])->name('allowances.education.show');
     Route::get('/allowances/education/create', [EducationController::class, 'create'])->name('allowances.education.create');
     Route::get('/allowances/education/edit/{id}', [EducationController::class, 'edit'])->name('allowances.education.edit');
@@ -119,6 +119,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
     Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
     Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
+
+    // Route::get('/allowances/postdeath/show/{id}', [PostDeathController::class, 'show'])->name('allowances.postdeath.show');
+    Route::get('/allowances/marriage/create', [MarriageController::class, 'create'])->name('allowances.marriage.create');
+    // Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
+    // Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
+    // Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
 
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);

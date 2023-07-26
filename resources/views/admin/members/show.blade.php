@@ -396,7 +396,7 @@
                             <div x-show="show" @click.outside="show=false;" class="absolute top-10 left-auto flex flex-row items-start bg-base-200 border border-opacity-20 border-base-content rounded-md md:max-w-2/3 flex-wrap">
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Education Allowance</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.create')}}', route: 'allowances.postdeath.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Death Ex-Gracia</button>
-                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create'})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.marriage.create')}}', route: 'allowances.marriage.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
                             </div>
                         </div>
                     </div>
