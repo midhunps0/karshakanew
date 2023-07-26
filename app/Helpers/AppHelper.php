@@ -222,8 +222,8 @@ class AppHelper
     {
         return match($a->allowanceable_type) {
             'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
-            'App\Models\EducationSchemeApplication' => 'allowances.education.show',
-            default => 'allowances.education.show'
+            'App\Models\EducationSchemeApplication' => 'admin.allowances.show',
+            default => 'admin.allowances.show'
         };
     }
 }

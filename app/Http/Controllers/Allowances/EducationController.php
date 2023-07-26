@@ -24,9 +24,9 @@ class EducationController extends SmartController
     {
         $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
         if (auth()->user()->can('view', $application)) {
-            return $this->buildResponse('allowances.education.show', ['application' => $application]);
+            return $this->buildResponse('admin.allowances.show', ['application' => $application]);
         } else {
-            return $this->buildResponse('allowances.education.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
+            return $this->buildResponse('admin.allowances.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
         }
     }
 
