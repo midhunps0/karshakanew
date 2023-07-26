@@ -166,11 +166,11 @@
                     application_date = '{{$allowance->application_date}}';
                     arrears_months = '{{$allowance->allowanceable->arrear_months_exdt}}';
                     passed_exam_details = {
-                        exam_name: '{{$allowance->allowanceable->passed_exam_details['exam_name']}}',
-                        exam_reg_no: '{{$allowance->allowanceable->passed_exam_details['exam_reg_no']}}',
+                        exam_name: `{{$allowance->allowanceable->passed_exam_details['exam_name']}}`,
+                        exam_reg_no: `{{$allowance->allowanceable->passed_exam_details['exam_reg_no']}}`,
                        institution: `{{$allowance->allowanceable->passed_exam_details['institution']}}`,
-                        affilated_board: '{{$allowance->allowanceable->passed_exam_details['affilated_board']}}',
-                        exam_start_date: '{{$allowance->allowanceable->passed_exam_details['exam_start_date']}}'
+                        affilated_board: `{{$allowance->allowanceable->passed_exam_details['affilated_board']}}`,
+                        exam_start_date: `{{$allowance->allowanceable->passed_exam_details['exam_start_date']}}`
                     };
 
                     marks = [];
