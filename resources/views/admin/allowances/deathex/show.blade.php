@@ -245,7 +245,7 @@
                                 $dispatch('showtoast', {message: 'Application ' + apr, mode: smode, });
                                 $dispatch('applnapproved');
                                 {{-- setTimeout(() => {
-                                    $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                    $dispatch('linkaction', {link: '{{route('allowances.education.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
                                 }, 500); --}}
                             } else {
                                 $dispatch('shownotice', {message: 'Application ' + apr, mode: smode, });
@@ -323,7 +323,7 @@
                                     $dispatch('showtoast', {message: 'Application marked as paid', mode: 'success', });
                                     $dispatch('applnstatusupdated', {status: 'Paid'});
                                     {{-- setTimeout(() => {
-                                        $dispatch('linkaction', {link: '{{route('allowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.show'})
+                                        $dispatch('linkaction', {link: '{{route('allowances.education.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
                                     }, 500); --}}
                                 } else {
                                     $dispatch('shownotice', {message: 'Application updation failed', mode: 'error', });
