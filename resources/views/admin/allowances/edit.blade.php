@@ -155,6 +155,7 @@
                             marks_total.points = '';
                         }
                     });
+
                     member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
                     member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
                     membership_no = '{{$allowance->member->membership_no}}';
@@ -167,10 +168,11 @@
                     passed_exam_details = {
                         exam_name: '{{$allowance->allowanceable->passed_exam_details['exam_name']}}',
                         exam_reg_no: '{{$allowance->allowanceable->passed_exam_details['exam_reg_no']}}',
-                        institution: '{{$allowance->allowanceable->passed_exam_details['institution']}}',
+                       institution: `{{$allowance->allowanceable->passed_exam_details['institution']}}`,
                         affilated_board: '{{$allowance->allowanceable->passed_exam_details['affilated_board']}}',
                         exam_start_date: '{{$allowance->allowanceable->passed_exam_details['exam_start_date']}}'
                     };
+
                     marks = [];
                     @foreach ($allowance->allowanceable->marks_scored as $m)
                         marks.push(
