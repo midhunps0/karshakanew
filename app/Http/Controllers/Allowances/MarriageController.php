@@ -21,17 +21,29 @@ class MarriageController extends SmartController
     public function show($id)
     {
         $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
+
         if (auth()->user()->can('view', $application)) {
-            return $this->buildResponse('admin.allowances.deathex.show', ['application' => $application]);
+            return $this->buildResponse('admin.allowances.marriage.show', ['application' => $application]);
         } else {
-            return $this->buildResponse('admin.allowances.deathex.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
+            return $this->buildResponse('admin.allowances.marriage.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
         }
     }
 
     public function create()
     {
         $memberId = $this->request->input('member_id', null);
+
         $member = $memberId != null ? Member::with(['feePayments'])->where('id', $memberId)->get()->first() : null;
+
+        if (auth()->user()->cannot('update', $member)) {
+            return $this->buildResponse(
+                'admin.allowances.marriage.create',
+                [
+                    'member' => null,
+                ]);
+
+        }
+
         $schemeCode = WelfareScheme::where('name', config('generalSettings.allowances')['marriage'])->get()->first()->code;
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
@@ -48,7 +60,7 @@ class MarriageController extends SmartController
         $allowance = Allowance::find($id);
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
-            'admin.allowances.edit',
+            'admin.allowances.marriage.edit',
             [
                 'allowance' => $allowance,
                 'today' => $today

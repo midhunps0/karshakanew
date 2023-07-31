@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('member_address');
             $table->string('student_name');
             $table->json('passed_exam_details');
+            $table->date('fee_period_from');
+            $table->date('fee_period_to');
             $table->float('arrear_months_exdt'); //no. of months of arears on exam date
             $table->boolean('is_sc_st');
             $table->json('marks_scored')->nullable();

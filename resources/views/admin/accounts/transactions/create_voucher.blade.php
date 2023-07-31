@@ -255,12 +255,59 @@
                                     <template x-for="(dc, index) in debit_clients" :key="index">
                                         <tr>
                                             <td>
-                                                <select x-model="dc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
+                                                <div x-data="{
+                                                        account_id: '',
+                                                        showlist: false,
+                                                        accounts: [],
+                                                        txt: '',
+                                                        filteredAccounts: [],
+                                                        setAccount(id) {
+                                                            $refs['idbox'].value = id;
+                                                            this.txt = '';
+                                                            this.txt = this.accounts.filter((a) => {
+                                                                return a.id == id;
+                                                            })[0].name;
+                                                            this.showlist = false;
+                                                        }
+                                                    }"
+                                                    x-init="
+                                                        @foreach ($accounts as $a)
+                                                            accounts.push(
+                                                                {
+                                                                    id: {{$a->id}},
+                                                                    name: '{{$a->name}}',
+                                                                }
+                                                            );
+                                                        @endforeach
+                                                        console.log('accounts');
+                                                        console.log(accounts);
+                                                        $watch(
+                                                            'txt',
+                                                            (val) => {
+                                                                filteredAccounts = accounts.filter(
+                                                                    (a) => {
+                                                                        let x = val.length;
+                                                                        return a.name.substring(0, x).toLowerCase() == val.toLowerCase();
+                                                                    }
+                                                                );
+                                                            }
+                                                        );
+                                                    ">
+                                                    <input x-ref="idbox" type="hidden" x-model="dc.account_id">
+                                                    <input @keyup.prevent.stop="txt.length > 0 ? showlist = true : showlist = false;" x-model="txt" type="text" class="input input-sm input-bordered w-full">
+                                                    <div x-show="txt.length > 0 && showlist" class="border border-base-content border-opacity-20 rounded-md shadow-md max-h-60 overflow-y-scroll bg-base-200 absolute top-15 z-10">
+                                                        <template x-for="a in filteredAccounts">
+                                                            <div>
+                                                                <button @click.prevent.stop="setAccount(a.id);" class="p-2 hover:bg-base-300 w-full text-left border-b border-base-content border-opacity-5" x-text="a.name"></button>
+                                                            </div>
+                                                        </template>
+                                                </div>
+                                                {{-- <select x-model="dc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
                                                     <option value="">--Select--</option>
                                                     @foreach ($accounts as $a)
                                                         <option value="{{$a->id}}" :disabled="chosen_accounts.debits.includes({{$a->id}}) || chosen_accounts.credits.includes({{$a->id}})">{{$a->name}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> --}}
                                             </td>
                                             <td>
                                                 <input type="text" x-model="dc.amount" class="input input-sm input-bordered rounded" @keyup="validate('debit', index)">
@@ -307,12 +354,59 @@
                                     <template x-for="(cc, index) in credit_clients" :key="index">
                                         <tr>
                                             <td>
-                                                <select x-model="cc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
+                                                <div x-data="{
+                                                        account_id: '',
+                                                        showlist: false,
+                                                        accounts: [],
+                                                        txt: '',
+                                                        filteredAccounts: [],
+                                                        setAccount(id) {
+                                                            $refs['idbox'].value = id;
+                                                            this.txt = '';
+                                                            this.txt = this.accounts.filter((a) => {
+                                                                return a.id == id;
+                                                            })[0].name;
+                                                            this.showlist = false;
+                                                        }
+                                                    }"
+                                                    x-init="
+                                                        @foreach ($accounts as $a)
+                                                            accounts.push(
+                                                                {
+                                                                    id: {{$a->id}},
+                                                                    name: '{{$a->name}}',
+                                                                }
+                                                            );
+                                                        @endforeach
+                                                        console.log('accounts');
+                                                        console.log(accounts);
+                                                        $watch(
+                                                            'txt',
+                                                            (val) => {
+                                                                filteredAccounts = accounts.filter(
+                                                                    (a) => {
+                                                                        let x = val.length;
+                                                                        return a.name.substring(0, x).toLowerCase() == val.toLowerCase();
+                                                                    }
+                                                                );
+                                                            }
+                                                        );
+                                                    ">
+                                                    <input x-ref="idbox" type="hidden" x-model="cc.account_id">
+                                                    <input @keyup.prevent.stop="txt.length > 0 ? showlist = true : showlist = false;" x-model="txt" type="text" class="input input-sm input-bordered w-full">
+                                                    <div x-show="txt.length > 0 && showlist" class="border border-base-content border-opacity-20 rounded-md shadow-md max-h-60 overflow-y-scroll bg-base-200 absolute top-15 z-10">
+                                                        <template x-for="a in filteredAccounts">
+                                                            <div>
+                                                                <button @click.prevent.stop="setAccount(a.id);" class="p-2 hover:bg-base-300 w-full text-left border-b border-base-content border-opacity-5" x-text="a.name"></button>
+                                                            </div>
+                                                        </template>
+                                                </div>
+                                                {{-- <select x-model="cc.account_id" type="select" class="select select-sm min-w-72 py-0 select-bordered rounded">
                                                     <option value="">--Select--</option>
                                                     @foreach ($cashOrBank as $a)
                                                         <option value="{{$a->id}}" :disabled="chosen_accounts.debits.includes({{$a->id}}) || chosen_accounts.credits.includes({{$a->id}})">{{$a->name}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> --}}
                                             </td>
                                             <td>
                                                 <input type="text" x-model="cc.amount" class="input input-sm input-bordered rounded" @keyup="validate('credit', index)">

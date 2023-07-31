@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Ynotz\MediaManager\Traits\OwnsMedia;
 use Ynotz\MediaManager\Contracts\MediaOwner;
@@ -15,9 +16,6 @@ class MarriageAssistanceApplication extends Model implements MediaOwner
     protected $guarded = [];
 
     protected $casts = [
-        'passed_exam_details' => 'array',
-        'marks_scored' => 'array',
-        'total_marks' => 'array',
         'member_bank_account' => 'array',
     ];
 
@@ -158,6 +156,27 @@ class MarriageAssistanceApplication extends Model implements MediaOwner
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('marriage_certificate');
             },
+        );
+    }
+
+    protected function feePeriodFrom(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
+        );
+    }
+
+    protected function feePeriodTo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
+        );
+    }
+
+    protected function marriageDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
         );
     }
 }

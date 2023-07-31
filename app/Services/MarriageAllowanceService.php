@@ -13,56 +13,56 @@ use App\Events\ApplicationCreateEvent;
 use App\Models\DeathExgraciaApplication;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\EducationSchemeApplication;
+use App\Models\MarriageAssistanceApplication;
 use Illuminate\Contracts\Database\Query\Builder;
 
 class MarriageAllowanceService
 {
     public function store($data)
     {
-        // $appln = EducationSchemeApplication::whereJsonContains('passed_exam_details->exam_reg_no', $data['passed_exam_details']['exam_reg_no'])->get()->first();
-        // if ($appln != null) {
-        //     return false;
-        // }
         $member = Member::find($data['member_id']);
         $applnData = collect($this->prepareForStoreValidation($data))->only([
             'member_id',
             'member_name',
             'member_address',
-            'date_of_death',
-            'marital_status',
-            // 'application_date',
+            'member_aadhaar',
             'member_reg_date',
-            'applicant_name',
-            'applicant_address',
-            'applicant_phone',
-            'applicant_aadhaar',
-            'applicant_bank_details',
-            'applicant_relation',
-            'applicant_is_minor',
+            'fee_period_from',
+            'fee_period_to',
+            'arrear_months_mrgdt',
+            'member_phone',
+            'member_aadhaar',
+            'member_bank_account',
+            'marriage_date',
+            'bride_name',
+            'bride_relation',
+            'history'
         ])->toArray();
         $applnData['member_reg_date'] = AppHelper::formatDateForSave($member->reg_date);
-        $applnData['date_of_death'] = AppHelper::formatDateForSave($applnData['date_of_death']);
+        $applnData['marriage_date'] = AppHelper::formatDateForSave($applnData['marriage_date']);
+        $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
+        $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
         /**
          *
          */
-        $esa = DeathExgraciaApplication::create($applnData);
+        info('$applnData');
+        info($applnData);
+        $esa = MarriageAssistanceApplication::create($applnData);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
         AppHelper::syncImageFromRequestData($esa, 'aadhaar_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'bank_passbook', $data);
         AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'minor_age_proof', $data);
-        AppHelper::syncImageFromRequestData($esa, 'death_certificate', $data);
 
         BusinessActionEvent::dispatch(
-            DeathExgraciaApplication::class,
+            MarriageAssistanceApplication::class,
             $esa->id,
             'Created',
             auth()->user()->id,
             null,
             $esa,
-            'Created DeathExgraciaApplication with id: '.$esa->id,
+            'Created Marrriage Assistance Application with id: '.$esa->id,
             $member->district_id
         );
 
@@ -76,7 +76,7 @@ class MarriageAllowanceService
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
-            'allowanceable_type' => DeathExgraciaApplication::class,
+            'allowanceable_type' => MarriageAssistanceApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
@@ -106,7 +106,7 @@ class MarriageAllowanceService
         $allowance = Allowance::find($id);
 
         /**
-         * @var EducationSchemeApplication
+         * @var MarriageAssistanceApplication
          */
         $esa = $allowance->allowanceable;
         $member = Member::find($data['member_id']);
@@ -114,30 +114,28 @@ class MarriageAllowanceService
             'member_id',
             'member_name',
             'member_address',
-            'student_name',
-            // 'application_date',
-            'passed_exam_details',
-            'arrear_months_exdt',
-            'is_sc_st',
-            'marks_scored',
-            'total_marks',
+            'member_aadhaar',
+            'member_reg_date',
+            'fee_period_from',
+            'fee_period_to',
+            'arrear_months_mrgdt',
             'member_phone',
             'member_aadhaar',
             'member_bank_account',
+            'marriage_date',
+            'bride_name',
+            'bride_relation',
+            'history'
         ])->toArray();
 
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
-        AppHelper::syncImageFromRequestData($esa, 'mark_list', $data);
-        AppHelper::syncImageFromRequestData($esa, 'tc', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
         AppHelper::syncImageFromRequestData($esa, 'aadhaar_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'bank_passbook', $data);
-        AppHelper::syncImageFromRequestData($esa, 'union_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
-        AppHelper::syncImageFromRequestData($esa, 'caste_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
 
         BusinessActionEvent::dispatch(

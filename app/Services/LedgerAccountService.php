@@ -226,11 +226,15 @@ class LedgerAccountService implements ModelViewConnector
             'district_id' => ['required', 'integer'],
             'group_id' => ['required', 'integer'],
             'name' => ['required', 'string'],
-            'description' => ['sometimes', 'string'],
+            'description' => ['sometimes', 'nullable'],
             'opening_balance' => ['sometimes', 'nullable'],
             'opening_bal_type' => ['sometimes', 'nullable'],
             'cashorbank' => ['sometimes', 'boolean'],
         ];
+
+        if(!empty($this->description) ) {
+            $rules['description'] = 'string';
+        }
 
         if(!empty($this->opening_balance) ) {
             $rules['opening_balance'] = 'numeric';

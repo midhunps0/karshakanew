@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Ynotz\MediaManager\Traits\OwnsMedia;
 use Ynotz\MediaManager\Contracts\MediaOwner;
@@ -172,6 +173,20 @@ class EducationSchemeApplication extends Model implements MediaOwner
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('one_and_same_cert');
             },
+        );
+    }
+
+    protected function feePeriodFrom(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
+        );
+    }
+
+    protected function feePeriodTo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
         );
     }
 }

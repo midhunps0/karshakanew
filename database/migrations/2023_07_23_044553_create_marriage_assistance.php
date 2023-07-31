@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('marriage_assistance_applications', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('member_id')->constrained('members', 'id');
             $table->string('member_name');
+            $table->id();
             $table->string('member_address');
             $table->string('member_reg_date');
+            $table->date('fee_period_from');
+            $table->date('fee_period_to');
             $table->float('arrear_months_mrgdt'); //no. of months of arears on marriage date
             $table->string('member_phone');
             $table->string('member_aadhaar');
@@ -24,7 +26,7 @@ return new class extends Migration
             $table->date('marriage_date');
             $table->string('bride_name');
             $table->string('bride_relation'); //self or daughter
-            $table->text('history');
+            $table->text('history')->nullable();
             $table->timestamps();
         });
     }

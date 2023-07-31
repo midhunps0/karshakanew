@@ -223,6 +223,7 @@ class AppHelper
         return match($a->allowanceable_type) {
             'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
             'App\Models\EducationSchemeApplication' => 'allowances.education.show',
+            'App\Models\MarriageAssistanceApplication' => 'allowances.marriage.show',
             default => 'allowances.education.show'
         };
     }

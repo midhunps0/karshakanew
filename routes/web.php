@@ -120,11 +120,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
     Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
 
-    // Route::get('/allowances/postdeath/show/{id}', [PostDeathController::class, 'show'])->name('allowances.postdeath.show');
+    Route::get('/allowances/marriage/show/{id}', [MarriageController::class, 'show'])->name('allowances.marriage.show');
     Route::get('/allowances/marriage/create', [MarriageController::class, 'create'])->name('allowances.marriage.create');
-    // Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
-    // Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
-    // Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
+    Route::get('/allowances/marriage/edit/{id}', [MarriageController::class, 'edit'])->name('allowances.marriage.edit');
+    Route::post('/allowances/marriage/store', [MarriageController::class, 'store'])->name('allowances.marriage.store');
+    Route::post('/allowances/marriage/update/{id}', [MarriageController::class, 'update'])->name('allowances.marriage.update');
 
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);

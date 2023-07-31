@@ -2,7 +2,7 @@
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
         <div class="text-right p-4 flex flex-row justify-between">
-            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.edit', $application->id)}}'});" >Edit</a>
+            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.marriage.edit', $application->id)}}'});" >Edit</a>
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
         @if (isset($error))
@@ -71,10 +71,10 @@
                         <tbody>
 
                             <tr>
-                                <td>{{$application->allowanceable->applicant_bank_details['account_no']}}</td>
-                                <td>{{$application->allowanceable->applicant_bank_details['bank_name']}}</td>
-                                <td>{{$application->allowanceable->applicant_bank_details['bank_branch']}}</td>
-                                <td>{{$application->allowanceable->applicant_bank_details['ifsc_code']}}</td>
+                                <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
+                                <td>{{$application->allowanceable->member_bank_account['bank_name']}}</td>
+                                <td>{{$application->allowanceable->member_bank_account['bank_branch']}}</td>
+                                <td>{{$application->allowanceable->member_bank_account['ifsc_code']}}</td>
                             </tr>
                         </tbody>
                     </table>

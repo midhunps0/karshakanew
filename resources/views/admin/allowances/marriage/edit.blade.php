@@ -1,10 +1,9 @@
 <x-easyadmin::partials.adminpanel>
-    <div>
+    <div class="p=3">
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Marriage Assistance Application</span>&nbsp;</h3>
         <div class="text-right p-4">
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
-        @if ($member != null)
         <div>
             <form x-data="{
                     member_name: '',
@@ -26,11 +25,11 @@
                     ifsc_code: '',
                     history: '',
                     doSubmit() {
-                        let el = document.getElementById('dex_form');
+                        let el = document.getElementById('mrg_form');
                         console.log(el);
                         let formData = new FormData(el);
                         axios.post(
-                            '{{route('allowances.marriage.store')}}',
+                            '{{route('allowances.marriage.update', $allowance->id)}}',
                             formData,
                             {
                                 headers: {
@@ -53,24 +52,28 @@
                     }
                 }"
                 x-init="
-                    member_name = '{{\App\Helpers\AppHelper::jssafe($member->display_name)}}';
-                    member_address = `{{$member->current_address != '' ? $member->current_address : $member->current_address_mal}}`;
-                    membership_no = '{{$member->membership_no}}';
-                    member_reg_date = '{{$member->reg_date}}';
-                    member_phone = '{{$member->mobile_no}}';
-                    member_aadhaar = '{{$member->aadhaar_no}}';
+                    member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
+                    member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
+                    membership_no = '{{$allowance->member->membership_no}}';
+                    member_reg_date = '{{$allowance->member->reg_date}}';
+                    member_phone = '{{$allowance->member->mobile_no}}';
+                    member_aadhaar = '{{$allowance->member->aadhaar_no}}';
                     application_date = '{{$today}}';
-                    fee_period_from = '{{$member->lastFeePaidPeriod()['from']}}';
-                    fee_period_to = '{{$member->lastFeePaidPeriod()['to']}}';
+                    marriage_date = '{{$allowance->allowanceable->marriage_date}}';
+                    bride_name = '{{$allowance->allowanceable->bride_name}}';
+                    bride_relation = '{{$allowance->allowanceable->bride_relation}}';
+                    fee_period_from = '{{$allowance->allowanceable->fee_period_from}}';
+                    fee_period_to = '{{$allowance->allowanceable->fee_period_to}}';
+                    arrear_months = {{$allowance->allowanceable->arrear_months_mrgdt}};
                 "
                 action=""
                 @submit.prevent.stop="
                     doSubmit();
                 "
-                id="dex_form"
+                id="mrg_form"
                 >
-                <input type="hidden" name="member_id" value="{{$member->id}}">
-                <input type="hidden" name="scheme_code" value="{{$scheme_code}}">
+                <input type="hidden" name="member_id" value="{{$allowance->member->id}}">
+                <input type="hidden" name="scheme_code" value="{{$allowance->welfareScheme->code}}">
                 <div class="flex flex-row space-x-2">
                     <div class="form-control w-1/4 max-w-xs">
                         <label class="label opacity-70">
@@ -198,7 +201,7 @@
                     </div>
                 </fieldset>
                 <div class="flex flex-row flex-wrap">
-                    @if ($member->getSingleMediaUlid('wb_passbook_front') == null)
+                    @if ($allowance->member->getSingleMediaUlid('wb_passbook_front') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'wb_passbook_front',
@@ -213,12 +216,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[wb_passbook_front]'"
-                        value="{{$member->getSingleMediaUlid('wb_passbook_front')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('wb_passbook_front')}}">
                         <label class="label opacity-70">Welfare Board Passbook (Front)</label>
-                        <img class="w-28" src="{{$member->wb_passbook_front['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->wb_passbook_front['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('wb_passbook_back') == null)
+                    @if ($allowance->member->getSingleMediaUlid('wb_passbook_back') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'wb_passbook_back',
@@ -233,12 +236,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[wb_passbook_back]'"
-                        value="{{$member->getSingleMediaUlid('wb_passbook_back')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('wb_passbook_back')}}">
                         <label class="label opacity-70">Welfare Board Passbook (Back)</label>
-                        <img class="w-28" src="{{$member->wb_passbook_back['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->wb_passbook_back['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('aadhaar_card') == null)
+                    @if ($allowance->member->getSingleMediaUlid('aadhaar_card') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'aadhaar_card',
@@ -253,12 +256,12 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[aadhaar_card]'"
-                        value="{{$member->getSingleMediaUlid('aadhaar_card')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('aadhaar_card')}}">
                         <label class="label opacity-70">Aadhaar Card</label>
-                        <img class="w-28" src="{{$member->aadhaar_card['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->aadhaar_card['path']}}" alt="">
                     </div>
                     @endif
-                    @if ($member->getSingleMediaUlid('bank_passbook') == null)
+                    @if ($allowance->member->getSingleMediaUlid('bank_passbook') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'bank_passbook',
@@ -273,9 +276,9 @@
                     @else
                     <div class="w-1/3 p-4">
                         <input type="hidden" :name="'existing[bank_passbook]'"
-                        value="{{$member->getSingleMediaUlid('bank_passbook')}}">
+                        value="{{$allowance->member->getSingleMediaUlid('bank_passbook')}}">
                         <label class="label opacity-70">Bank Passbook Front Page</label>
-                        <img class="w-28" src="{{$member->bank_passbook['path']}}" alt="">
+                        <img class="w-28" src="{{$allowance->member->bank_passbook['path']}}" alt="">
                     </div>
                     @endif
                     <div class="w-1/3 p-4">
@@ -328,10 +331,8 @@
                 </div>
             </form>
         </div>
-        @else
         <div class="text-error text-center font-bold">
             You are not authorised to create allowances for this member.
         </div>
-        @endif
     </div>
 </x-easyadmin::partials.adminpanel>

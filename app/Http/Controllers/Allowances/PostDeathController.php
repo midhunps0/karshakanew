@@ -48,7 +48,7 @@ class PostDeathController extends SmartController
         $allowance = Allowance::find($id);
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
-            'admin.allowances.edit',
+            'admin.allowances.deathex.edit',
             [
                 'allowance' => $allowance,
                 'today' => $today

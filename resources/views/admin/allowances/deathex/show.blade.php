@@ -2,7 +2,7 @@
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
         <div class="text-right p-4 flex flex-row justify-between">
-            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.edit', $application->id)}}'});" >Edit</a>
+            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.edit', $application->id)}}'});" >Edit</a>
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
         @if (isset($error))

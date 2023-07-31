@@ -291,6 +291,11 @@
                 let x = this.selectedVals.filter((s) => {
                     return parseInt(key) == parseInt(s);
                 });
+                if (x.length == 0) {
+                    x = this.selectedVals.filter((s) => {
+                        return key == s;
+                    });
+                }
                 return x.length > 0;
             }
 

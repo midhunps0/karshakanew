@@ -28,6 +28,8 @@ class AllowanceService
             'member_name',
             'member_address',
             'student_name',
+            'fee_period_from',
+            'fee_period_to',
             // 'application_date',
             'passed_exam_details',
             'arrear_months_exdt',
@@ -39,6 +41,8 @@ class AllowanceService
             'member_bank_account',
         ])->toArray();
 
+        $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
+        $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
         /**
          * @var EducationSchemeApplication
          */
@@ -222,7 +226,7 @@ class AllowanceService
                 'sanctioned_amount' => $a->sanctioned_amount,
                 'payment_date' => $a->payment_date
             ];
-        } catch (\Throwable $e) {
+            } catch (\Throwable $e) {
             return [
                 'success' => false
             ];
