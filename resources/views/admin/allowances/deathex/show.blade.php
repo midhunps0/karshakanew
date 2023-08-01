@@ -1,6 +1,6 @@
 <x-easyadmin::partials.adminpanel>
     <div>
-        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
+        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Death Exgracia Application</span>&nbsp;</h3>
         <div class="text-right p-4 flex flex-row justify-between">
             <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.edit', $application->id)}}'});" >Edit</a>
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
@@ -19,6 +19,7 @@
             </div>
             <div class="my-2 p-2"><span class="font-bold opacity-60">Membership No.:</span>&nbsp;<span>{{$application->member->membership_no}}</span></div>
             <div class="my-2 p-2"><span class="font-bold opacity-60">Aadhaar No.:</span>&nbsp;<span>{{$application->member->aadhaar_no}}</span></div>
+            <div class="my-2 p-2"><span class="font-bold opacity-60">Date of death:</span>&nbsp;<span>{{$application->allowanceable->date_of_death}}</span></div>
         </div>
         <h4 class="my-4 text-center text-2xl underline mt-8"><span class="font-bold opacity-80">Application Details:</span></h4>
         @if (isset($application->allowanceable))

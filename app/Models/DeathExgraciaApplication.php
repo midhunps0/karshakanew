@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Ynotz\MediaManager\Traits\OwnsMedia;
 use Ynotz\MediaManager\Contracts\MediaOwner;
@@ -143,6 +144,13 @@ class DeathExgraciaApplication extends Model implements MediaOwner
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('minor_age_proof');
             },
+        );
+    }
+
+    protected function dateOfDeath(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
         );
     }
 }

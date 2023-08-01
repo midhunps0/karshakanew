@@ -28,7 +28,7 @@
                         console.log(el);
                         let formData = new FormData(el);
                         axios.post(
-                            '{{route('allowances.postdeath.store')}}',
+                            `{{route('allowances.postdeath.store')}}`,
                             formData,
                             {
                                 headers: {
@@ -38,9 +38,9 @@
                         ).then((r) => {
                             console.log(r);
                             if (r.data.success) {
-                                $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
+                                $dispatch('showtoast', {message: 'Application Updated.', mode: 'success', });
                                 setTimeout(() => {
-                                    $dispatch('linkaction', {link: '{{route('allowances.postdeath.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.postdeath.show'})
+                                    $dispatch('linkaction', {link: `{{route('allowances.postdeath.show', '_X_')}}`.replace('_X_', r.data.application.id), route: 'allowances.postdeath.show'})
                                 }, 500);
                             } else {
                                 $dispatch('shownotice', {message: r.data.message, mode: 'error', redirectUrl: null, redirectRoute: null});
@@ -51,10 +51,22 @@
                     }
                 }"
                 x-init="
-                    member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
+                    member_name = `{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}`;
                     member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
-                    membership_no = '{{$allowance->member->membership_no}}';
-                    application_date = '{{$today}}';
+                    membership_no = `{{$allowance->member->membership_no}}`;
+                    date_of_death = `{{$allowance->allowanceable->date_of_death}}`;
+                    marital_status = `{{$allowance->allowanceable->marital_status}}`;
+                    application_date = `{{$today}}`;
+                    applicant_name = `{{$allowance->allowanceable->applicant_name}}`;
+                    applicant_address = `{{$allowance->allowanceable->applicant_address}}`;
+                    applicant_phone = `{{$allowance->allowanceable->applicant_phone}}`;
+                    applicant_aadhaar = `{{$allowance->allowanceable->applicant_aadhaar}}`;
+                    applicant_relation = `{{$allowance->allowanceable->applicant_relation}}`;
+                    applicant_is_minor = `{{$allowance->allowanceable->applicant_is_minor}}`;
+                    bank_name = `{{$allowance->allowanceable->applicant_bank_details['bank_name']}}`;
+                    bank_branch = `{{$allowance->allowanceable->applicant_bank_details['bank_branch']}}`;
+                    account_no = `{{$allowance->allowanceable->applicant_bank_details['account_no']}}`;
+                    ifsc_code = `{{$allowance->allowanceable->applicant_bank_details['ifsc_code']}}`;
                 "
                 action=""
                 @submit.prevent.stop="
@@ -125,7 +137,7 @@
                         <label class="label opacity-70">
                         <span class="label-text">Mobile No.</span>
                         </label>
-                        <input name="applicant_phone" type="text" x-model="applicant_mobile_no" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
+                        <input name="applicant_phone" type="text" x-model="applicant_phone" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
                     </div>
                     <div class="form-control w-1/4">
                         <label class="label opacity-70">

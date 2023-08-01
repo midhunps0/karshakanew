@@ -315,8 +315,8 @@
                                         @endif
                                     </td>
                                     <td>{{$fi->feeType->name}}</td>
-                                    <td>{{$fi->formatted_period_from ?? '--'}}</td>
-                                    <td>{{$fi->formatted_period_to ?? '--'}}</td>
+                                    <td>{{$fi->my_period_from ?? '--'}}</td>
+                                    <td>{{$fi->my_period_to ?? '--'}}</td>
                                     <td>{{$fi->tenure ?? '--'}}</td>
                                     <td>{{$fi->amount ?? ''}}</td>
                                     <td>@if ($loop->first){{$fp->total_amount}}@endif</td>

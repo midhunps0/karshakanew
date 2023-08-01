@@ -9,7 +9,7 @@
             <div class="p-2 my-4">District: <span class="font-bold">{{$model['item']->district->name}}</span></div>
             <div class="p-2 my-4">Opening Balance: Rs. <span class="font-bold">{{$model['item']->opening_balance}}</span></div>
             <div class="p-2 my-4">Opening Balance Type: <span class="font-bold">{{$model['item']->opening_bal_type}}</span></div>
-            <div class="p-2 my-4">Is Bank/Cash Account?: <span class="font-bold">{{$model['item']->cashorbank}}</span></div>
+            <div class="p-2 my-4">Is Bank/Cash Account?: <span class="font-bold">{{$model['item']->iscashorbank}}</span></div>
         </div>
     </div>
 </x-easyadmin::partials.adminpanel>

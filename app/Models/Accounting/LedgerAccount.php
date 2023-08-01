@@ -84,4 +84,11 @@ class LedgerAccount extends Model
             get: fn ($value) => '('.$this->district->short_code.') '.$this->name,
         );
     }
+
+    protected function iscashorbank(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value == 1 ? 'Yes' : 'No'
+        );
+    }
 }
