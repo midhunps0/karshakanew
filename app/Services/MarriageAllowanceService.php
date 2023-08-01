@@ -128,6 +128,10 @@ class MarriageAllowanceService
             'history'
         ])->toArray();
 
+        $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
+        $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
+        $applnData['marriage_date'] = AppHelper::formatDateForSave($applnData['marriage_date']);
+
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -139,13 +143,13 @@ class MarriageAllowanceService
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
 
         BusinessActionEvent::dispatch(
-            EducationSchemeApplication::class,
+            MarriageAssistanceApplication::class,
             $esa->id,
             'Updated',
             auth()->user()->id,
             null,
             $esa,
-            'Updated EducationAllowanceApplication with id: '.$esa->id,
+            'Updated MarriageAssistanceApplication with id: '.$esa->id,
             $member->district_id
         );
 
@@ -159,7 +163,7 @@ class MarriageAllowanceService
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
-            'allowanceable_type' => EducationSchemeApplication::class,
+            'allowanceable_type' => MarriageAssistanceApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => $allowance->application_no,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),

@@ -1337,7 +1337,7 @@ class MemberService implements ModelViewConnector {
         return $data;
     }
 
-    public function processBeforeUpdate(array $data): array
+    public function processBeforeUpdate(array $data, $id = null): array
     {
         if (filter_var($data['copy_address'], FILTER_VALIDATE_BOOLEAN)) {
             $data['permanent_address'] = $data['current_address'];
@@ -1346,16 +1346,22 @@ class MemberService implements ModelViewConnector {
         }
 
         /**
+         * @var Member
+         */
+        $member = Member::find($id);
+        /**
          * @var User
          * */
         $user = User::find(auth()->user()->id);
 
-        if ($user->hasPermissionTo('Member: Approve In Own District')  && !in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+        if ($user->can('approve', $member)  && !in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
             $data['approved_by'] = $user->id;
             $data['approved_at'] = Carbon::createFromTimestamp(time())->format('Y-m-d H:i:s');
-        } elseif ($user->hasPermissionTo('Member: Approve In Own District')  && in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+        } elseif ($user->can('approve', $member)  && in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
             $data['approved_by'] = null;
             $data['approved_at'] = null;
+        } elseif ($user->cannot('approve', $member)) {
+            info('User unatuthoried to approve member');
         } else {
             info('unknown approval status!');
         }

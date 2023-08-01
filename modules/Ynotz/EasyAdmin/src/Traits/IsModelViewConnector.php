@@ -291,7 +291,7 @@ trait IsModelViewConnector{
 
     public function update($id, array $data)
     {
-        $data = $this->processBeforeUpdate($data);
+        $data = $this->processBeforeUpdate($data, $id);
         info('data');
         info($data);
         $instance = $this->modelClass::find($id);
@@ -701,7 +701,7 @@ trait IsModelViewConnector{
         return $data;
     }
 
-    public function processBeforeUpdate(array $data): array
+    public function processBeforeUpdate(array $data, $id = null): array
     {
         return $data;
     }

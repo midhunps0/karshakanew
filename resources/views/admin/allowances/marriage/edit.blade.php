@@ -39,7 +39,7 @@
                         ).then((r) => {
                             console.log(r);
                             if (r.data.success) {
-                                $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
+                                $dispatch('showtoast', {message: 'Application Updated.', mode: 'success', });
                                 setTimeout(() => {
                                     $dispatch('linkaction', {link: '{{route('allowances.marriage.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.marriage.show'})
                                 }, 500);
@@ -60,11 +60,16 @@
                     member_aadhaar = '{{$allowance->member->aadhaar_no}}';
                     application_date = '{{$today}}';
                     marriage_date = '{{$allowance->allowanceable->marriage_date}}';
-                    bride_name = '{{$allowance->allowanceable->bride_name}}';
+                    bride_name = `{{$allowance->allowanceable->bride_name}}`;
                     bride_relation = '{{$allowance->allowanceable->bride_relation}}';
                     fee_period_from = '{{$allowance->allowanceable->fee_period_from}}';
                     fee_period_to = '{{$allowance->allowanceable->fee_period_to}}';
                     arrear_months = {{$allowance->allowanceable->arrear_months_mrgdt}};
+                    history = `{{$allowance->allowanceable->history}}`;
+                    bank_name = `{{$allowance->allowanceable->member_bank_account['bank_name']}}`;
+                    bank_branch = `{{$allowance->allowanceable->member_bank_account['bank_branch']}}`;
+                    account_no = `{{$allowance->allowanceable->member_bank_account['account_no']}}`;
+                    ifsc_code = `{{$allowance->allowanceable->member_bank_account['ifsc_code']}}`;
                 "
                 action=""
                 @submit.prevent.stop="
@@ -164,7 +169,7 @@
                     <label class="label opacity-70">
                     <span class="label-text">Arrears in Annual Subscription On Marriage Date (No. of months, if any)</span>
                     </label>
-                    <input name="arrear_months_mrgdt" type="number" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
+                    <input name="arrear_months_mrgdt" type="number" x-model="arrear_months" class="input input-bordered w-full max-w-xs input-sm" required/>
                 </div>
                 <div class="form-control w-1/3">
                     <label class="label opacity-70">

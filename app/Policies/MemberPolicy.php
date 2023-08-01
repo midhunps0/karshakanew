@@ -71,11 +71,11 @@ class MemberPolicy
     /**
      * Determine whether the user can approve an allowance application
      */
-    public function approve(User $user, Allowance $allowance): bool
+    public function approve(User $user, Member $member): bool
     {
-        return $user->hasPermissionTo('Allowance: Approve In Any District') ||
-            ($user->hasPermissionTo('Allowance: Approve In Own District') &&
-                $user->district_id == $allowance->district_id);
+        return $user->hasPermissionTo('Member: Approve In Any District') ||
+            ($user->hasPermissionTo('Member: Approve In Own District') &&
+                $user->district_id == $member->district_id);
     }
 
     /**

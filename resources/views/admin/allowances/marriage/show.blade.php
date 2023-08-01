@@ -32,30 +32,36 @@
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Address:</span>&nbsp;<span>{{$application->allowanceable->member_address}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Aadhaar No.:</span>&nbsp;<span>{{$application->allowanceable->member_aadhaar}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Phone No.:</span>&nbsp;<span>{{$application->allowanceable->member_phone}}</span></div>
-
+            </div>
+            <div class="flex flex-row flex-wrap">
+                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Last Fee Paid From:</span>&nbsp;<span>{{$application->allowanceable->fee_period_from}}</span></div>
+                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Last Fee Paid To:</span>&nbsp;<span>{{$application->allowanceable->fee_period_to}}</span></div>
+                {{-- <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Aadhaar No.:</span>&nbsp;<span>{{$application->allowanceable->member_aadhaar}}</span></div>
+                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Phone No.:</span>&nbsp;<span>{{$application->allowanceable->member_phone}}</span></div> --}}
             </div>
             <div>
-                <h4 class="my-4"><span class="font-bold opacity-60">Applicant Details:</span></h4>
+                <h4 class="my-4"><span class="font-bold opacity-60">Marriage Details:</span></h4>
                 <div class="border border-base-content border-opacity-20 rounded-md">
                     <table class="table table-compact w-full">
                         <thead>
                             <tr>
-                                <td class="opacity-60">Name</td>
-                                <td class="opacity-60">Address</td>
-                                <td class="opacity-60">Mobile No.</td>
-                                <td class="opacity-60">Aadhaar No.</td>
+                                <td class="opacity-60">Marriage Date</td>
+                                <td class="opacity-60">Bride's Name</td>
+                                <td class="opacity-60">Relation to member</td>
                             </tr>
                         </thead>
                         <tbody>
 
                             <tr>
-                                <td>{{$application->allowanceable->applicant_name}}</td>
-                                <td>{{$application->allowanceable->applicant_address}}</td>
-                                <td>{{$application->allowanceable->applicant_phone}}</td>
-                                <td>{{$application->allowanceable->applicant_aadhaar}}</td>
+                                <td>{{$application->allowanceable->marriage_date}}</td>
+                                <td>{{$application->allowanceable->bride_name}}</td>
+                                <td>{{$application->allowanceable->bride_relation}}</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="flex flex-row flex-wrap my-8">
+                    <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Arrears in annual subscription on date of marriage:</span>&nbsp;<span>{{$application->allowanceable->arrear_months_mrgdt}}</span></div>
                 </div>
                 <h4 class="my-4"><span class="font-bold opacity-60">Bank Details:</span></h4>
                 <div class="border border-base-content border-opacity-20 rounded-md">
@@ -63,8 +69,8 @@
                         <thead>
                             <tr>
                                 <td class="opacity-60">Account No.</td>
-                                <td class="opacity-60">Bank Name</td>
-                                <td class="opacity-60">Bank Branch</td>
+                                <td class="opacity-60">Payee Name</td>
+                                <td class="opacity-60">Bank & Branch</td>
                                 <td class="opacity-60">IFSC Code</td>
                             </tr>
                         </thead>

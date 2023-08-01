@@ -31,8 +31,6 @@
             <div class="flex flex-row flex-wrap">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Name:</span>&nbsp;<span>{{$application->allowanceable->member_name}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Address:</span>&nbsp;<span>{{$application->allowanceable->member_address}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Aadhaar No.:</span>&nbsp;<span>{{$application->allowanceable->member_aadhaar}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Phone No.:</span>&nbsp;<span>{{$application->allowanceable->member_phone}}</span></div>
 
             </div>
             <div>
