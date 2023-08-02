@@ -75,7 +75,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             <tr>
                                 <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
                                 <td>{{$application->allowanceable->member_bank_account['bank_name']}}</td>

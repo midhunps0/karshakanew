@@ -1353,15 +1353,14 @@ class MemberService implements ModelViewConnector {
          * @var User
          * */
         $user = User::find(auth()->user()->id);
-
-        if ($user->can('approve', $member)  && !in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+        if ($user->cannot('approve', $member)) {
+            info('User unatuthoried to approve member');
+        } elseif (!in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
             $data['approved_by'] = $user->id;
             $data['approved_at'] = Carbon::createFromTimestamp(time())->format('Y-m-d H:i:s');
-        } elseif ($user->can('approve', $member)  && in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
+        } elseif (in_array($data['is_approved'], [0, false, 'false', 'no', 'False', 'No'])) {
             $data['approved_by'] = null;
             $data['approved_at'] = null;
-        } elseif ($user->cannot('approve', $member)) {
-            info('User unatuthoried to approve member');
         } else {
             info('unknown approval status!');
         }
@@ -1680,24 +1679,23 @@ class MemberService implements ModelViewConnector {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            // Timeout in seconds
-            // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
             $val = curl_exec($ch);
 
             $result = json_decode($val);
             //Exists in Kerala Agricultural Workers Welfare Fund Board
             $status = $result->Status;
             $message = $result->Message;
-            info($status);
-            info($message);
+
             if (trim($status) == 'AVAILED' && trim($message) == 'Exists in Kerala Agricultural Workers Welfare Fund Board') {
-                info('working');
-                $status = 'NOT AVAILED';
-                $message = 'NA';
+                $member = Member::where('aadhaar_no', $aadhaarNo)->get()->first();
+                if ($member == null) {
+                    $status = 'NOT AVAILED';
+                    $message = 'NA';
+                } else {
+                    $status = 'AVAILED';
+                    $message = 'Cannot add member with this aadhaar number. Aadhaar number already present in database. Search and edit the member instead.';
+                }
             }
-            info($status);
-            info($message);
             return [
                 'status' => $status,
                 'message' => $message

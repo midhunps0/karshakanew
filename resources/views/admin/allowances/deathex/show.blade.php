@@ -31,7 +31,6 @@
             <div class="flex flex-row flex-wrap">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Name:</span>&nbsp;<span>{{$application->allowanceable->member_name}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Address:</span>&nbsp;<span>{{$application->allowanceable->member_address}}</span></div>
-
             </div>
             <div>
                 <h4 class="my-4"><span class="font-bold opacity-60">Applicant Details:</span></h4>

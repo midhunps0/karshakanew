@@ -397,6 +397,7 @@
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Education Allowance</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.create')}}', route: 'allowances.postdeath.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Death Ex-Gracia</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.marriage.create')}}', route: 'allowances.marriage.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.maternity.create')}}', route: 'allowances.maternity.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Maternity Allowance</button>
                             </div>
                         </div>
                     </div>

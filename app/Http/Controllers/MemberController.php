@@ -38,10 +38,8 @@ class MemberController extends SmartController
         try {
             return $this->buildResponse($view, $data);
         } catch (AuthorizationException $e) {
-            info($e);
             return $this->buildResponse($this->unauthorisedView);
         } catch (Throwable $e) {
-            info($e);
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         }
     }
@@ -103,7 +101,6 @@ class MemberController extends SmartController
                 $this->connectorService->verifyAadhaar($aadhaarNo)
             );
         } catch (AuthorizationException $e) {
-            info($e);
             return response()->json(
                 [
                     'status' => 'error',

@@ -16,6 +16,7 @@ use App\Http\Controllers\Accounting\AccountGroupController;
 use App\Http\Controllers\Accounting\AccountsReportsController;
 use App\Http\Controllers\Allowances\AllowanceController;
 use App\Http\Controllers\Allowances\MarriageController;
+use App\Http\Controllers\Allowances\MaternityController;
 use App\Http\Controllers\Allowances\PostDeathController;
 
 /*
@@ -126,6 +127,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::post('/allowances/marriage/store', [MarriageController::class, 'store'])->name('allowances.marriage.store');
     Route::post('/allowances/marriage/update/{id}', [MarriageController::class, 'update'])->name('allowances.marriage.update');
 
+    Route::get('/allowances/maternity/show/{id}', [MaternityController::class, 'show'])->name('allowances.maternity.show');
+    Route::get('/allowances/maternity/create', [MaternityController::class, 'create'])->name('allowances.maternity.create');
+    Route::get('/allowances/maternity/edit/{id}', [MaternityController::class, 'edit'])->name('allowances.maternity.edit');
+    Route::post('/allowances/maternity/store', [MaternityController::class, 'store'])->name('allowances.maternity.store');
+    Route::post('/allowances/maternity/update/{id}', [MaternityController::class, 'update'])->name('allowances.maternity.update');
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);
@@ -137,6 +143,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         modelName: "LedgerAccount",
         controller: 'App\Http\Controllers\Accounting\LedgerController'
     );
+
     /*
     Route::post('/ledger-create', [LedgerController::class, 'create']);
     Route::post('/ledger-store', [LedgerController::class, 'store']);
