@@ -127,7 +127,7 @@ class AllowanceController extends SmartController
             $temp['sanctioned_date'] = $item->sanctioned_date;
             $temp['payee_name'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_name'] : '';
             $temp['bank_branch'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_branch'] : '';
-            $temp['account_no'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['account_no'] : '';
+            $temp['account_no'] = $item->allowanceable != null ? strval($item->allowanceable->member_bank_account['account_no']) . " " : '';
             $temp['ifsc_code'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['ifsc_code'] : '';
             $temp['payment_date'] = $item->payment_date;
             $temp['created_by'] = $item->createdBy->name;
