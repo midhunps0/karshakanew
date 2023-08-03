@@ -159,10 +159,10 @@
                     member_name = '{{\App\Helpers\AppHelper::jssafe($allowance->member->display_name)}}';
                     member_address = `{{$allowance->member->current_address != '' ? $allowance->member->current_address : $allowance->member->current_address_mal}}`;
                     membership_no = '{{$allowance->member->membership_no}}';
-                    fee_period_from = '{{$allowance->member->lastFeePaidPeriod()['from']}}';
-                    fee_period_to = '{{$allowance->member->lastFeePaidPeriod()['to']}}';
-                    mobile_no = '{{$allowance->member->mobile_no}}';
-                    aadhaar_no = '{{$allowance->member->aadhaar_no}}';
+                    fee_period_from = '{{$allowance->allowanceable->fee_period_from}}';
+                    fee_period_to = '{{$allowance->allowanceable->fee_period_from}}';
+                    mobile_no = '{{$allowance->allowanceable->member_phone}}';
+                    aadhaar_no = '{{$allowance->allowanceable->member_aadhaar}}';
                     application_date = '{{$allowance->application_date}}';
                     arrears_months = '{{$allowance->allowanceable->arrear_months_exdt}}';
                     passed_exam_details = {

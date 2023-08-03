@@ -17,9 +17,8 @@
                     fee_period_to: '',
                     application_date: '',
                     arrears_months: null,
-                    marriage_date: null,
-                    bride_name: null,
-                    bride_relation: null,
+                    delivery_date: null,
+                    relation: null,
                     bank_name: '',
                     bank_branch: '',
                     account_no: '',
@@ -30,7 +29,7 @@
                         console.log(el);
                         let formData = new FormData(el);
                         axios.post(
-                            '{{route('allowances.marriage.store')}}',
+                            '{{route('allowances.maternity.store')}}',
                             formData,
                             {
                                 headers: {
@@ -136,39 +135,41 @@
                     </div>
                 </div>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
-                    <legend>Marriage Details</legend>
                     <div class="form-control w-1/4 max-w-xs">
                         <label class="label opacity-70">
-                        <span class="label-text">Date</span>
+                        <span class="label-text">Date of delivery</span>
                         </label>
-                        <input name="marriage_date" type="text" x-model="marriage_date" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy" required/>
-                    </div>
-                    <div class="form-control w-1/4">
-                        <label class="label opacity-70">
-                        <span class="label-text">Name of bride</span>
-                        </label>
-                        <input name="bride_name" type="text" x-model="bride_name" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
+                        <input name="marriage_date" type="text" x-model="delivery_date" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy" required/>
                     </div>
                     <div class="form-control w-1/4">
                         <label class="label opacity-70">
                         <span class="label-text">Relation to member</span>
                         </label>
-                        <input name="bride_relation" type="text" x-model="bride_relation" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
+                        <select name="bride_relation" x-model="relation" class="select select-sm py-0 select-bordered w-full max-w-xs">
+                            <option value="daughter">Daughter</option>
+                            <option value="self">Self</option>
+                          </select>
                     </div>
                 </fieldset>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
-                <div class="form-control w-1/3">
-                    <label class="label opacity-70">
-                    <span class="label-text">Arrears in Annual Subscription On Marriage Date (No. of months, if any)</span>
-                    </label>
-                    <input name="arrear_months_mrgdt" type="number" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
-                </div>
-                <div class="form-control w-1/3">
-                    <label class="label opacity-70">
-                    <span class="label-text">Has availed the marriage allowance earlier? If yes, provide the details here.</span>
-                    </label>
-                    <textarea name="history" x-model="history" class="textarea textarea-sm textarea-bordered h-24 max-w-xs"></textarea>
-                </div>
+                    <div class="form-control w-1/3">
+                        <label class="label opacity-70">
+                        <span class="label-text">Arrears in Annual Subscription On Delivery Date (No. of months, if any)</span>
+                        </label>
+                        <input name="arrear_months_dlry" type="number" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
+                    </div>
+                    <div class="form-control w-1/3">
+                        <label class="label opacity-70">
+                        <span class="label-text">Delivery Count</span>
+                        </label>
+                        <input name="delivery_count" type="number" x-model="delivery_count" class="input input-bordered w-full max-w-xs input-sm" required/>
+                    </div>
+                    <div class="form-control w-1/3">
+                        <label class="label opacity-70">
+                        <span class="label-text">Has availed the maternity allowance earlier? If yes,how many times?</span>
+                        </label>
+                        <input name="previous_count" type="number" x-model="previous_count" class="input input-bordered w-full max-w-xs input-sm"/>
+                    </div>
                 </fieldset>
                 <fieldset class="my-8 p-2 flex flex-row space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
                     <legend>Bank Details</legend>
@@ -278,6 +279,7 @@
                         <img class="w-28" src="{{$member->bank_passbook['path']}}" alt="">
                     </div>
                     @endif
+                    @if ($member->getSingleMediaUlid('ration_card') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'ration_card',
@@ -289,6 +291,15 @@
                             ]
                         ]"/>
                     </div>
+                    @else
+                    <div class="w-1/3 p-4">
+                        <input type="hidden" :name="'existing[ration_card]'"
+                        value="{{$member->getSingleMediaUlid('ration_card')}}">
+                        <label class="label opacity-70">Ration Card</label>
+                        <img class="w-28" src="{{$member->ration_card['path']}}" alt="">
+                    </div>
+                    @endif
+                    @if ($member->getSingleMediaUlid('one_and_same_certificate') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
                             'key' => 'one_and_same_certificate',
@@ -300,28 +311,34 @@
                             ]
                         ]"/>
                     </div>
+                    @else
+                    <div class="w-1/3 p-4">
+                        <input type="hidden" :name="'existing[one_and_same_certificate]'"
+                        value="{{$member->getSingleMediaUlid('one_and_same_certificate')}}">
+                        <label class="label opacity-70">One and same certificate</label>
+                        <img class="w-28" src="{{$member->ration_card['path']}}" alt="">
+                    </div>
+                    @endif
+                    @if ($member->getSingleMediaUlid('birth_certificate') == null)
                     <div class="w-1/3 p-4">
                         <x-easyadmin::inputs.imageuploader :element="[
-                            'key' => 'death_certificate',
+                            'key' => 'birth_certificate',
                             'authorised' => true,
-                            'label' => 'Death certificate',
+                            'label' => 'Birth certificate of the baby',
                             'validations' => [
                                 'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
                                 'max_size' => '200 kb'
                             ]
                         ]"/>
                     </div>
+                    @else
                     <div class="w-1/3 p-4">
-                        <x-easyadmin::inputs.imageuploader :element="[
-                            'key' => 'minor_age_proof',
-                            'authorised' => true,
-                            'label' => 'Age Proof (if minor)',
-                            'validations' => [
-                                'mime_types' => ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'],
-                                'max_size' => '200 kb'
-                            ]
-                        ]"/>
+                        <input type="hidden" :name="'existing[birth_certificate]'"
+                        value="{{$member->getSingleMediaUlid('birth_certificate')}}">
+                        <label class="label opacity-70">Birth certificate</label>
+                        <img class="w-28" src="{{$member->birth_certificate['path']}}" alt="">
                     </div>
+                    @endif
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-sm btn-primary min-w-24">Submit</button>

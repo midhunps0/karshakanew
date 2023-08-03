@@ -30,14 +30,13 @@ class MaternityAssistanceService
             'member_reg_date',
             'fee_period_from',
             'fee_period_to',
-            'arrear_months_mrgdt',
+            'arrear_months_dlry',
             'member_phone',
             'member_aadhaar',
             'member_bank_account',
-            'marriage_date',
-            'bride_name',
-            'bride_relation',
-            'history'
+            'delivery_date',
+            'relation',
+            'history_count'
         ])->toArray();
         $applnData['member_reg_date'] = AppHelper::formatDateForSave($member->reg_date);
         $applnData['marriage_date'] = AppHelper::formatDateForSave($applnData['marriage_date']);
