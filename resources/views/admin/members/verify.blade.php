@@ -13,8 +13,12 @@
                         '{{route('members.verify_aadhaar', '_X_')}}'.replace('_X_', this.aadhaarNo)
                     ).then((r) => {
                         if (r.data.status == 'NOT AVAILED') {
+                            let l = this.url+'?an='+this.aadhaarNo;
+                            if (r.data.message = 'Old data' || true) {
+                                l += '&ol=1';
+                            }
                             $dispatch('linkaction', {
-                                link: this.url+'?an='+this.aadhaarNo,
+                                link: l,
                                 route: 'members.create'
                             });
                         } else {

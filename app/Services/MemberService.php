@@ -28,12 +28,14 @@ use Ynotz\EasyAdmin\Services\SectionDivider;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Ynotz\MediaManager\Services\EAInputMediaValidator;
 
 class MemberService implements ModelViewConnector {
     use IsModelViewConnector;
 
     private $indexTable;
+    private $request;
 
     protected $mediaFields = [
         'aadhaar_card',
@@ -45,8 +47,9 @@ class MemberService implements ModelViewConnector {
     ];
 
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->modelClass = '\\App\\Models\\Member';
         $this->indexTable = new IndexTable();
         $this->searchesMap = [
@@ -300,6 +303,7 @@ class MemberService implements ModelViewConnector {
     public function getStoreValidationRules(): array
     {
         return [
+            'membership_no' => ['sometimes'],
             'name' => ['required',],
             'name_mal' => ['sometimes',],
             'dob' => ['required',],
@@ -366,7 +370,18 @@ class MemberService implements ModelViewConnector {
         $talukoptions = isset($member) ? Taluk::inDistrict($member->district_office_id)->get() : [];
         $villageoptions = isset($member) ? Village::inTaluk($member->taluk_id)->get() : [];
         $user = User::find(auth()->user()->id);
+
+        $old = $this->request->input('ol');
+
         return [
+            'membership_no_create' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'membership_no',
+                label: 'Membership No.',
+                properties: ['required' => true],
+                show: $old == 1,
+                formTypes: ['create']
+            ),
             'name' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'name',
@@ -762,6 +777,13 @@ class MemberService implements ModelViewConnector {
         $layout = (new ColumnLayout())
             ->addElements(
                 [
+                    (new RowLayout(width: '1/4'))->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('membership_no_create'),
+                        ]
+                    ),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(
@@ -1309,7 +1331,7 @@ class MemberService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        $data['membership_no'] = AppHelper::getMembershipNumber(
+        $data['membership_no'] = $data['membership_no'] ?? AppHelper::getMembershipNumber(
             $data['districtOffice'],
             $data['taluk'],
             $data['village']
@@ -1690,7 +1712,7 @@ class MemberService implements ModelViewConnector {
                 $member = Member::where('aadhaar_no', $aadhaarNo)->get()->first();
                 if ($member == null) {
                     $status = 'NOT AVAILED';
-                    $message = 'NA';
+                    $message = 'Old data';
                 } else {
                     $status = 'AVAILED';
                     $message = 'Cannot add member with this aadhaar number. Aadhaar number already present in database. Search and edit the member instead.';
