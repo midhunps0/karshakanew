@@ -777,13 +777,13 @@ class MemberService implements ModelViewConnector {
         $layout = (new ColumnLayout())
             ->addElements(
                 [
-                    (new RowLayout(width: '1/4'))->addElements(
-                        [
-                            (new ColumnLayout(
-                                width: '1/4'
-                            ))->addInputSlot('membership_no_create'),
-                        ]
-                    ),
+                    // (new RowLayout(width: '1/4'))->addElements(
+                    //     [
+                    //         (new ColumnLayout(
+                    //             width: '1/4'
+                    //         ))->addInputSlot('membership_no_create'),
+                    //     ]
+                    // ),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(
