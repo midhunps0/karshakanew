@@ -166,7 +166,7 @@ class AllowanceController extends SmartController
         }
         return Excel::download(new AllowanceExport(
             ['results' => $formattedResults, 'columns' => $selectedCols]
-        ), 'allowances.xlsx');
+        ), 'allowances.csv');
     }
 
     // public function show($id)
