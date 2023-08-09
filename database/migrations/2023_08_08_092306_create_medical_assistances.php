@@ -11,22 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('maternity_assistances', function (Blueprint $table) {
+        Schema::create('medical_assistances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('member_id')->constrained('members', 'id');
             $table->string('member_name');
             $table->string('member_address');
             $table->string('member_reg_no');
             $table->string('member_reg_date');
-            $table->date('fee_period_from');
-            $table->date('fee_period_to');
-            $table->date('delivery_date');
-            $table->integer('delivery_count');
-            $table->float('arrear_months_dlrydt'); //no. of months of arears on marriage date
-            $table->integer('previous_availed_counts')->default(0);
             $table->string('member_phone');
             $table->string('member_aadhaar');
             $table->json('member_bank_account');
+            $table->date('fee_period_from');
+            $table->date('fee_period_to');
+            $table->json('medical_bills');
+            $table->double('bills_total')->default(0);
+            $table->string('hospital_name_address');
+            $table->string('patient_mode'); //out/in patient
+            $table->date('treatment_period_from');
+            $table->date('treatment_period_to');
+            $table->float('arrear_months');
+            $table->boolean('has_availed')->default(false);
+            $table->text('history')->nullable();
             $table->timestamps();
         });
     }
@@ -36,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('maternity_assistances');
+        Schema::dropIfExists('medical_assistances');
     }
 };

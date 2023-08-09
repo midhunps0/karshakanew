@@ -379,8 +379,8 @@
                                         'label' => 'Date',
                                         'properties' => ['required' => true]
                                     ]"
-                                    :_old="['date' => $receipt->receipt_date]"
-                                    :selected_date="$receipt->receipt_date"
+                                    :_old="['date' => $receipt->formatted_receipt_date]"
+                                    :selected_date="$receipt->formatted_receipt_date"
                                     label_position="float"
                                     />
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}
@@ -470,7 +470,7 @@
                     </div>
                     <div>
                         <span class="text-warning">Date.:</span>
-                        <span x-text="receipt.receipt_date"></span>
+                        <span x-text="receipt.formatted_receipt_date"></span>
                     </div>
                 </div>
                 <div>

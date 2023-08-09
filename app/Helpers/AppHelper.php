@@ -194,7 +194,7 @@ class AppHelper
     {
         if (isset($data[$property])) {
             $instance->deleteAllMedia($property);
-            $instance->addOneMediaFromEAInput($property, $data[$property]);
+            $instance->addMediaFromEAInput($property, $data[$property]);
         }
     }
 
@@ -224,6 +224,7 @@ class AppHelper
             'App\Models\DeathExgraciaApplication' => 'allowances.postdeath.show',
             'App\Models\EducationSchemeApplication' => 'allowances.education.show',
             'App\Models\MarriageAssistanceApplication' => 'allowances.marriage.show',
+            'App\Models\MaternityAssistanceApplication' => 'allowances.maternity.show',
             default => 'allowances.education.show'
         };
     }

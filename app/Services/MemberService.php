@@ -374,14 +374,24 @@ class MemberService implements ModelViewConnector {
         $old = $this->request->input('ol');
 
         return [
-            'membership_no_create' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'membership_no',
-                label: 'Membership No.',
-                properties: ['required' => true],
-                show: $old == 1,
-                formTypes: ['create']
-            ),
+            // 'membership_no_create' => FormHelper::makeInput(
+            //     inputType: 'text',
+            //     key: 'membership_no',
+            //     label: 'Membership No.',
+            //     properties: ['required' => true],
+            //     show: $old == 1,
+            //     formTypes: ['create']
+            // ),
+            'membership_no_create' => [
+                'item_type' => 'input',
+                'input_type' => 'inputs.membership-no',
+                'key' => 'membership_no',
+                'label' => 'Membership No.',
+                'show' => $old == 1,
+                'form_types' => ['create'],
+                'properties' => ['required' => true],
+                'authorised' => true
+            ],
             'name' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'name',
@@ -529,14 +539,14 @@ class MemberService implements ModelViewConnector {
             'district' => FormHelper::makeSelect(
                 key: 'district',
                 label: 'District',
-                options: District::all()->pluck('name', 'id'),
+                options: District::userAccessControlled()->get()->pluck('name', 'id'),
                 options_type: 'key_value',
                 properties: ['required' => true],
             ),
             'districtOffice' => FormHelper::makeSelect(
                 key: 'districtOffice',
                 label: 'District Office',
-                options: District::all()->pluck('name', 'id'),
+                options: District::userAccessControlled()->get()->pluck('name', 'id'),
                 options_type: 'key_value',
                 properties: ['required' => true],
                 fireInputEvent: true
@@ -777,13 +787,13 @@ class MemberService implements ModelViewConnector {
         $layout = (new ColumnLayout())
             ->addElements(
                 [
-                    // (new RowLayout(width: '1/4'))->addElements(
-                    //     [
-                    //         (new ColumnLayout(
-                    //             width: '1/4'
-                    //         ))->addInputSlot('membership_no_create'),
-                    //     ]
-                    // ),
+                    (new RowLayout(width: '1/4'))->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/4'
+                            ))->addInputSlot('membership_no_create'),
+                        ]
+                    ),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(

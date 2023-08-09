@@ -17,6 +17,7 @@ use App\Http\Controllers\Accounting\AccountsReportsController;
 use App\Http\Controllers\Allowances\AllowanceController;
 use App\Http\Controllers\Allowances\MarriageController;
 use App\Http\Controllers\Allowances\MaternityController;
+use App\Http\Controllers\Allowances\MedicalController;
 use App\Http\Controllers\Allowances\PostDeathController;
 
 /*
@@ -132,6 +133,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/maternity/edit/{id}', [MaternityController::class, 'edit'])->name('allowances.maternity.edit');
     Route::post('/allowances/maternity/store', [MaternityController::class, 'store'])->name('allowances.maternity.store');
     Route::post('/allowances/maternity/update/{id}', [MaternityController::class, 'update'])->name('allowances.maternity.update');
+
+    Route::get('/allowances/medical/show/{id}', [MedicalController::class, 'show'])->name('allowances.medical.show');
+    Route::get('/allowances/medical/create', [MedicalController::class, 'create'])->name('allowances.medical.create');
+    Route::get('/allowances/medical/edit/{id}', [MedicalController::class, 'edit'])->name('allowances.medical.edit');
+    Route::post('/allowances/medical/store', [MedicalController::class, 'store'])->name('allowances.medical.store');
+    Route::post('/allowances/medical/update/{id}', [MedicalController::class, 'update'])->name('allowances.medical.update');
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);

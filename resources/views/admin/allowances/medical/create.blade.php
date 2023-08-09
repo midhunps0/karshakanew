@@ -1,6 +1,6 @@
 <x-easyadmin::partials.adminpanel>
     <div>
-        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Maternity Assistance Application</span>&nbsp;</h3>
+        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Medical Assistance Application</span>&nbsp;</h3>
         <div class="text-right p-4">
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
@@ -12,25 +12,52 @@
                     member_aadhaar: '',
                     member_address: '',
                     membership_no: '',
+                    member_reg_no: '',
                     member_reg_date: '',
                     fee_period_from: '',
                     fee_period_to: '',
                     application_date: '',
-                    arrears_months: null,
-                    delivery_date: null,
-                    delivery_count: null,
-                    relation: null,
+                    arrear_months: null,
                     bank_name: '',
                     bank_branch: '',
                     account_no: '',
                     ifsc_code: '',
                     history: '',
+                    medical_bills: [
+                        {
+                            no: '',
+                            date: '',
+                            shop: '',
+                            amount: 0
+                        }
+                    ],
+                    bills_total: 0,
+                    hospital_name_address: '',
+                    patient_mode: '',
+                    treatment_period_from: '',
+                    treatment_period_to: '',
+                    has_availed: null,
+                    addBill() {
+                        this.medical_bills.push(
+                            {
+                                no: '',
+                                date: '',
+                                shop: '',
+                                amount: 0
+                            }
+                        );
+                    },
+                    removeBill(i) {
+                        this.medical_bills = this.medical_bills.filter((b, x) => {
+                            return i != x;
+                        });
+                    },
                     doSubmit() {
-                        let el = document.getElementById('dex_form');
+                        let el = document.getElementById('med_form');
                         console.log(el);
                         let formData = new FormData(el);
                         axios.post(
-                            '{{route('allowances.maternity.store')}}',
+                            '{{route('allowances.medical.store')}}',
                             formData,
                             {
                                 headers: {
@@ -42,7 +69,7 @@
                             if (r.data.success) {
                                 $dispatch('showtoast', {message: 'Application Created.', mode: 'success', });
                                 setTimeout(() => {
-                                    $dispatch('linkaction', {link: '{{route('allowances.maternity.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.maternity.show'})
+                                    $dispatch('linkaction', {link: '{{route('allowances.medical.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.medical.show'})
                                 }, 500);
                             } else {
                                 $dispatch('shownotice', {message: r.data.message, mode: 'error', redirectUrl: null, redirectRoute: null});
@@ -62,12 +89,17 @@
                     application_date = '{{$today}}';
                     fee_period_from = '{{$member->lastFeePaidPeriod()['from']}}';
                     fee_period_to = '{{$member->lastFeePaidPeriod()['to']}}';
+                    $watch('medical_bills', (bills) => {
+                        bills_total = bills.reduce((sum, b) => {
+                            return sum * 1 + b.amount * 1;
+                        }, 0);
+                    });
                 "
                 action=""
                 @submit.prevent.stop="
                     doSubmit();
                 "
-                id="dex_form"
+                id="med_form"
                 >
                 <input type="hidden" name="member_id" value="{{$member->id}}">
                 <input type="hidden" name="scheme_code" value="{{$scheme_code}}">
@@ -136,30 +168,109 @@
                     </div>
                 </div>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
-                    <div class="form-control w-1/4 max-w-xs">
+                    <legend>Medical Bills</legend>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Bill No.</th>
+                                <th>Date</th>
+                                <th>Shop/Lab</th>
+                                <th>Amount</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(b, i) in medical_bills">
+                                <tr>
+                                    <td>
+                                        <input :name="'medical_bills['+i+'][no]'" class="input input-sm input-bordered" type="text" x-model="b.no">
+                                    </td>
+                                    <td>
+                                        <input :name="'medical_bills['+i+'][date]'" class="input input-sm input-bordered" type="text" x-model="b.date">
+                                    </td>
+                                    <td>
+                                        <input :name="'medical_bills['+i+'][shop]'" class="input input-sm input-bordered" type="text" x-model="b.shop">
+                                    </td>
+                                    <td>
+                                        <input :name="'medical_bills['+i+'][amount]'" class="input input-sm input-bordered" type="text" x-model="b.amount">
+                                    </td>
+                                    <td>
+                                        <button x-show="medical_bills.length > 1" class="btn btn-xs btn-error"  @click.prevent.stop="removeBill(i);">
+                                            <x-easyadmin::display.icon   icon="easyadmin::icons.minus"
+                                            height="h-4" width="w-4"/>
+                                        </button>
+                                        <button x-show="i == medical_bills.length - 1" class="btn btn-xs btn-warning" @click.prevent.stop="addBill();">
+                                            <x-easyadmin::display.icon   icon="easyadmin::icons.plus"
+                                            height="h-4" width="w-4"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr class="rounded-b-md">
+                                <td class="bg-base-200" colspan="3" class="text-center">Total</td>
+                                <td class="bg-base-200">
+                                    <input name="'bills_total" class="input input-sm input-bordered" type="text" x-model="bills_total" readonly>
+                                </td>
+                                <td class="bg-base-200"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <fieldset class="my-8 p-2 flex flex-row flex-wrap border border-base-content border-opacity-10 rounded-md w-full">
+                    <legend>Treatment Details</legend>
+                    <div class="form-control w-1/2 m-0">
                         <label class="label opacity-70">
-                        <span class="label-text">Date of delivery</span>
+                        <span class="label-text">Hospital</span>
                         </label>
-                        <input name="delivery_date" type="text" x-model="delivery_date" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy" required/>
+                        <input name="hospital_name_address" x-model="hospital_name_address" type="text" x-model="hospital_name_address" class="input input-bordered w-full max-w-xs input-sm" />
                     </div>
-                    <div class="form-control w-1/4">
+                    <div class="form-control w-1/2 m-0">
                         <label class="label opacity-70">
-                        <span class="label-text">Relation to member</span>
+                        <span class="label-text">Type of consultation</span>
                         </label>
-                        <select name="bride_relation" x-model="relation" class="select select-sm py-0 select-bordered w-full max-w-xs">
-                            <option value="daughter">Daughter</option>
-                            <option value="self">Self</option>
-                          </select>
+                        <select name="patient_mode" x-model="patient_mode" class="select select-sm py-0 select-bordered max-w-xs">
+                            <option value="Out Patient">Out Patient</option>
+                            <option value="In Patient">In Patient</option>
+                        </select>
+                    </div>
+                    <div class="form-control w-1/2">
+                        <label class="label opacity-70">
+                        <span class="label-text">Treatment Period From</span>
+                        </label>
+                        <input name="treatment_period_from" type="text" placeholder="dd-mm-yyyy" x-model="treatment_period_from" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70" required/>
+                    </div>
+                    <div class="form-control w-1/2">
+                        <label class="label opacity-70">
+                        <span class="label-text">Treatment Period To</span>
+                        </label>
+                        <input name="treatment_period_to" type="text" placeholder="dd-mm-yyyy" x-model="treatment_period_to" class="input input-bordered w-full max-w-xs input-sm read-only:bg-base-200 read-only:bg-opacity-70"  pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
                     </div>
                 </fieldset>
-                <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
+                <fieldset class="my-8 p-2 flex flex-row flex-wrap border border-base-content border-opacity-10 rounded-md w-full items-end">
+                    <legend>Medical assistance data</legend>
                     <div class="form-control w-1/3">
                         <label class="label opacity-70">
                         <span class="label-text">Arrears in Annual Subscription On Delivery Date (No. of months, if any)</span>
                         </label>
-                        <input name="arrear_months_dlrydt" type="number" x-model="arrears_months" class="input input-bordered w-full max-w-xs input-sm" required/>
+                        <input name="arrear_months" type="number" x-model="arrear_months" class="input input-bordered w-full max-w-xs input-sm" required/>
+                    </div>
+                    <div class="form-control w-1/3 m-0">
+                        <label class="label opacity-70">
+                        <span class="label-text">Has availed medical assistance earlier?</span>
+                        </label>
+                        <select name="has_availed" x-model="has_availed" class="select select-sm py-0 select-bordered max-w-xs">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
                     </div>
                     <div class="form-control w-1/3">
+                        <label class="label opacity-70">
+                        <span class="label-text">Details of assistance, </span>
+                        </label>
+                        <textarea class="textarea textarea-xs textarea-bordered" x-model="history" name="history" class="w-full"></textarea>
+                    </div>
+                    {{-- <div class="form-control w-1/3">
                         <label class="label opacity-70">
                         <span class="label-text">Delivery Count</span>
                         </label>
@@ -170,7 +281,7 @@
                         <span class="label-text">Has availed the maternity allowance earlier? If yes,how many times?</span>
                         </label>
                         <input name="previous_count" type="number" x-model="previous_count" class="input input-bordered w-full max-w-xs input-sm"/>
-                    </div>
+                    </div> --}}
                 </fieldset>
                 <fieldset class="my-8 p-2 flex flex-row space-x-2 border border-base-content border-opacity-10 rounded-md w-full">
                     <legend>Bank Details</legend>
