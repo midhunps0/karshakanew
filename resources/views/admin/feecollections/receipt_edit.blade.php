@@ -240,9 +240,11 @@
             doSubmit() {
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
+                {{-- console.log('this date: '+this.date);
                 let date = Date.parse(this.date);
+                console.log('submit date: ' + date); --}}
                 fd.append('_method', 'PUT');
-                fd.append('date', date.toString('dd-MM-yyyy'));
+                fd.append('date', this.date);
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
                     if (f.tenure != null && f.tenure != '') {
@@ -365,6 +367,7 @@
                         <div>
                             <h3 class="text-md font-bold my-3 text-center underline text-warning"><span>Receipt Details</span>&nbsp;</h3>
                             <div class="flex flex-row justify-between mt-3 mb-6">
+                                {{-- {{dd($receipt->formatted_receipt_date, $receipt->receipt_date)}} --}}
                                 <div>
                                     {{-- @php
                                         $now = Carbon\Carbon::now();
@@ -379,8 +382,8 @@
                                         'label' => 'Date',
                                         'properties' => ['required' => true]
                                     ]"
-                                    :_old="['date' => $receipt->formatted_receipt_date]"
-                                    :selected_date="$receipt->formatted_receipt_date"
+                                    :_old="['date' => $receipt->receipt_date]"
+                                    :selected_date="$receipt->receipt_date"
                                     label_position="float"
                                     />
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}

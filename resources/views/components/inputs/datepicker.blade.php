@@ -102,7 +102,9 @@
                 initDate() {
                     let today;
                     if (this.selectedDate) {
+                        console.log('ts: ' + this.selectedDate);
                         today = new Date(Date.parse(this.selectedDate));
+                        console.log(today);
                     } else {
                         today = new Date();
                     }
@@ -135,6 +137,7 @@
                     let formattedYear = date.getFullYear();
                     if (this.dateFormat === 'DD-MM-YYYY') {
                         return `${formattedDate}-${formattedMonthInNumber}-${formattedYear}`; // 02-04-2021
+                        {{-- console.log(this.) --}}
                     }
                     if (this.dateFormat === 'YYYY-MM-DD') {
                         return `${formattedYear}-${formattedMonthInNumber}-${formattedDate}`; // 2021-04-02
@@ -526,8 +529,6 @@
                         {{-- </div> --}}
                     </div>
                 </div>
-
-
                 <x:easyadmin::partials.errortext />
             </div>
         </div>
