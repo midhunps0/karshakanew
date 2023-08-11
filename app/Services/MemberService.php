@@ -310,7 +310,7 @@ class MemberService implements ModelViewConnector {
             'gender' => ['required',],
             'marital_status' => ['required',],
             'mobile_no' => ['required',],
-            'aadhaar_no' => ['required',],
+            'aadhaar_no' => ['required','unique:members,aadhaar_no'],
             'parent_guardian' => ['required',],
             'guardian_relationship' => ['required',],
             'current_address' => ['required_if:copy_address,false',],
@@ -361,6 +361,7 @@ class MemberService implements ModelViewConnector {
         $rules = $this->getStoreValidationRules();
         $rules['is_approved'] = ['sometimes'];
         $rules['membership_no'] = ['required'];
+        $rules['aadhaar_no'] = ['required', Rule::unique('members')->ignore($id)];
         $rules['reg_date'] = ['required', 'date_format:"d-m-Y"'];
         return $rules;
     }

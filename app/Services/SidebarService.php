@@ -41,26 +41,18 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'Search Receipts',
-                'route' => 'feecollections.search',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.search',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Search Applications',
-                'route' => 'allowances.search',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.search',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
                 'title' => 'Add Member',
                 'route' => 'members.create',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Search Receipts',
+                'route' => 'feecollections.search',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.search',
                 'show' => true
             ],
             [
@@ -85,6 +77,14 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'feecollections.old.create',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Search Applications',
+                'route' => 'allowances.search',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.search',
                 'show' => true
             ],
             // [
