@@ -1,8 +1,8 @@
 <x-easyadmin::partials.adminpanel>
     <div>
-        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Medical Allowance Application</span>&nbsp;</h3>
+        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Super Annuation Application</span>&nbsp;</h3>
         <div class="text-right p-4 flex flex-row justify-between">
-            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.medical.edit', $application->id)}}'});" >Edit</a>
+            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.edit', $application->id)}}'});" >Edit</a>
             <a href="" class="btn btn-sm" @click.prevent.stop="history.back();" >Back</a>
         </div>
         @if (isset($error))
@@ -35,61 +35,33 @@
                 <div class="my-2 p-y2 w-1/3"><span class="font-bold opacity-60">Membership No.:<br/></span>&nbsp;<span>{{$application->allowanceable->member_reg_no}}</span></div>
                 <div class="my-2 p-y2 w-1/3"><span class="font-bold opacity-60">Member's Reg. Date:<br/></span>&nbsp;<span>{{$application->allowanceable->member_reg_date}}</span></div>
             </div>
+            <div class="flex flex-row flex-wrap">
+                <div class="my-2 p-y2 w-1/3"><span class="font-bold opacity-60">Member's Date Of Birth:<br/></span>&nbsp;<span>{{$application->allowanceable->member_dob}}</span></div>
+                <div class="my-2 p-y2 w-1/3"><span class="font-bold opacity-60">Member's Age:<br/></span>&nbsp;<span>{{$application->allowanceable->member_age}}</span></div>
+            </div>
             <div class="flex flex-row flex-wrap mt-3">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Last Fee Paid From:</span>&nbsp;<span>{{$application->allowanceable->fee_period_from}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Last Fee Paid To:</span>&nbsp;<span>{{$application->allowanceable->fee_period_to}}</span></div>
                 {{-- <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Aadhaar No.:</span>&nbsp;<span>{{$application->allowanceable->member_aadhaar}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Phone No.:</span>&nbsp;<span>{{$application->allowanceable->member_phone}}</span></div> --}}
             </div>
-            <div class="flex flex-row flex-wrap my-3">
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Treatment Period From:</span>&nbsp;<span>{{$application->allowanceable->treatment_period_from}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Treatment Period To</span>&nbsp;<span>{{$application->allowanceable->treatment_period_to}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Type Of Consultation</span>&nbsp;<span>{{$application->allowanceable->patient_mode}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Arrears during treatment period (No. of months):</span>&nbsp;<span>{{$application->allowanceable->arrear_months}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Hospital:</span>&nbsp;<span>{{$application->allowanceable->hospital}}</span></div>
-                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Details of previous assistances availed (if any)</span>&nbsp;<span>{{$application->allowanceable->history}}</span></div>
-                {{-- <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">No. of times previously allowance was previously availed</span>&nbsp;<span>{{$application->allowanceable->previous_availed_counts}}</span></div> --}}
-            </div>
             <div class="mt-12">
-                <h4 class="my-4"><span class="font-bold opacity-60">Medical Bills:</span></h4>
-                <div class="border border-base-content border-opacity-20 rounded-md">
-                    <table class="table table-compact w-full">
-                        <thead>
-                            <tr>
-                                <td class="opacity-60">Bill No.</td>
-                                <td class="opacity-60">Date</td>
-                                <td class="opacity-60">Shop/Lab</td>
-                                <td class="opacity-60">Amount</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($application->allowanceable->medical_bills as $b)
-                                <tr>
-                                    <td>{{$b['no']}}</td>
-                                    <td>{{$b['date']}}</td>
-                                    <td>{{$b['shop']}}</td>
-                                    <td>{{$b['amount']}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
                 <h4 class="mt-12 mb-4"><span class="font-bold opacity-60">Bank Details:</span></h4>
                 <div class="border border-base-content border-opacity-20 rounded-md">
                     <table class="table table-compact w-full">
                         <thead>
                             <tr>
-                                <td class="opacity-60">Account No.</td>
                                 <td class="opacity-60">Payee Name</td>
                                 <td class="opacity-60">Bank & Branch</td>
+                                <td class="opacity-60">Account No.</td>
                                 <td class="opacity-60">IFSC Code</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
                                 <td>{{$application->allowanceable->member_bank_account['bank_name']}}</td>
                                 <td>{{$application->allowanceable->member_bank_account['bank_branch']}}</td>
+                                <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
                                 <td>{{$application->allowanceable->member_bank_account['ifsc_code']}}</td>
                             </tr>
                         </tbody>

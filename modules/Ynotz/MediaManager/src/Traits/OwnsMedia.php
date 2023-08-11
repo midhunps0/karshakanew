@@ -194,7 +194,8 @@ trait OwnsMedia
 
         foreach ($this->getAllMedia($property) as $media) {
             $arr[] = [
-                $media->filepath => $media->ulid
+                'path' => $media->filepath,
+                 'ulid' => $media->ulid
             ];
         }
 

@@ -11,10 +11,10 @@ use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
-use App\Models\MedicalAssistanceApplication;
+use App\Models\SuperAnnuationApplication;
 use Illuminate\Contracts\Database\Query\Builder;
 
-class MedicalAssistanceService
+class SuperAnnuationService
 {
     public function store($data)
     {
@@ -27,33 +27,23 @@ class MedicalAssistanceService
             'member_reg_date',
             'member_phone',
             'member_aadhaar',
+            'member_dob',
+            'member_age',
             'member_bank_account',
             'fee_period_from',
             'fee_period_to',
-            'medical_bills',
-            'bills_total',
-            'hospital_name_address',
-            'patient_mode',
-            'treatment_period_from',
-            'treatment_period_to',
             'arrear_months',
-            'has_availed',
-            'history',
         ])->toArray();
         $applnData['member_reg_no'] = $member->membership_no;
         $applnData['member_reg_date'] = $member->reg_date;
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
-        $applnData['treatment_period_from'] = AppHelper::formatDateForSave($applnData['treatment_period_from']);
-        $applnData['treatment_period_to'] = AppHelper::formatDateForSave($applnData['treatment_period_to']);
-        $applnData['has_availed'] = Str::lower($applnData['has_availed']) == 'yes';
-        $applnData['bills_total'] = floatval($applnData['bills_total']);
-        info($applnData);
+        $applnData['member_dob'] = AppHelper::formatDateForSave($applnData['member_dob']);
 
         /**
-         * @var MedicalAssistanceApplication
+         * @var SuperAnnuationApplication
          */
-        $esa = MedicalAssistanceApplication::create($applnData);
+        $esa = SuperAnnuationApplication::create($applnData);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
         AppHelper::syncImageFromRequestData($esa, 'aadhaar_card', $data);
@@ -61,18 +51,15 @@ class MedicalAssistanceService
         AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'union_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'doctors_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'op_card_discharge_summary', $data);
-        AppHelper::syncImageFromRequestData($esa, 'medical_bills_proofs', $data);
 
         BusinessActionEvent::dispatch(
-            MedicalAssistanceApplication::class,
+            SuperAnnuationApplication::class,
             $esa->id,
             'Created',
             auth()->user()->id,
             null,
             $esa,
-            'Created Medical Assistance Application with id: '.$esa->id,
+            'Created SuperAnnuationApplication with id: '.$esa->id,
             $member->district_id
         );
 
@@ -86,7 +73,7 @@ class MedicalAssistanceService
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
-            'allowanceable_type' => MedicalAssistanceApplication::class,
+            'allowanceable_type' => SuperAnnuationApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
@@ -116,38 +103,31 @@ class MedicalAssistanceService
         $allowance = Allowance::find($id);
 
         /**
-         * @var MedicalAssistanceApplication
+         * @var SuperAnnuationApplication
          */
         $esa = $allowance->allowanceable;
         $member = $allowance->member;
         $applnData = collect($this->prepareForStoreValidation($data))->only([
+            'member_id',
             'member_name',
             'member_address',
             'member_reg_no',
             'member_reg_date',
             'member_phone',
             'member_aadhaar',
+            'member_dob',
+            'member_age',
             'member_bank_account',
             'fee_period_from',
             'fee_period_to',
-            'medical_bills',
-            'bills_total',
-            'hospital_name_address',
-            'patient_mode',
-            'treatment_period_from',
-            'treatment_period_to',
             'arrear_months',
-            'has_availed',
-            'history',
         ])->toArray();
 
         $applnData['member_reg_no'] = $member->membership_no;
         $applnData['member_reg_date'] = $member->reg_date;
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
-        $applnData['treatment_period_from'] = AppHelper::formatDateForSave($applnData['treatment_period_from']);
-        $applnData['treatment_period_to'] = AppHelper::formatDateForSave($applnData['treatment_period_to']);
-        $applnData['has_availed'] = Str::lower($applnData['has_availed']) == 'yes';
+        $applnData['member_dob'] = AppHelper::formatDateForSave($applnData['member_dob']);
 
         $esa->update($applnData);
         $esa->save();
@@ -159,18 +139,15 @@ class MedicalAssistanceService
         AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'union_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'doctors_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'op_card_discharge_summary', $data);
-        AppHelper::syncImageFromRequestData($esa, 'medical_bills_proofs', $data);
 
         BusinessActionEvent::dispatch(
-            MedicalAssistanceApplication::class,
+            SuperAnnuationApplication::class,
             $esa->id,
             'Updated',
             auth()->user()->id,
             null,
             $esa,
-            'Updated MedicalAssistanceApplication with id: '.$esa->id,
+            'Updated SuperAnnuationApplication with id: '.$esa->id,
             $member->district_id
         );
 
@@ -184,7 +161,7 @@ class MedicalAssistanceService
         $alData = [
             'member_id' => $member->id,
             'district_id' => $member->district_id,
-            'allowanceable_type' => MedicalAssistanceApplication::class,
+            'allowanceable_type' => SuperAnnuationApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => $allowance->application_no,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),

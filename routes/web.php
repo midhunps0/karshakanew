@@ -19,6 +19,7 @@ use App\Http\Controllers\Allowances\MarriageController;
 use App\Http\Controllers\Allowances\MaternityController;
 use App\Http\Controllers\Allowances\MedicalController;
 use App\Http\Controllers\Allowances\PostDeathController;
+use App\Http\Controllers\Allowances\SuperAnnuationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -139,6 +140,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/medical/edit/{id}', [MedicalController::class, 'edit'])->name('allowances.medical.edit');
     Route::post('/allowances/medical/store', [MedicalController::class, 'store'])->name('allowances.medical.store');
     Route::post('/allowances/medical/update/{id}', [MedicalController::class, 'update'])->name('allowances.medical.update');
+
+    Route::get('/allowances/super-annuation/show/{id}', [SuperAnnuationController::class, 'show'])->name('allowances.super_annuation.show');
+    Route::get('/allowances/super-annuation/create', [SuperAnnuationController::class, 'create'])->name('allowances.super_annuation.create');
+    Route::get('/allowances/super-annuation/edit/{id}', [SuperAnnuationController::class, 'edit'])->name('allowances.super_annuation.edit');
+    Route::post('/allowances/super-annuation/store', [SuperAnnuationController::class, 'store'])->name('allowances.super_annuation.store');
+    Route::post('/allowances/super-annuation/update/{id}', [SuperAnnuationController::class, 'update'])->name('allowances.super_annuation.update');
 
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);

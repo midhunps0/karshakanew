@@ -25,6 +25,8 @@
             'death_exgracia' => 'Death Ex-Gratia',
             'marriage' => 'Marriage Assistance',
             'maternity' => 'Maternity Assistance',
+            'medical' => 'Medical Assistance',
+            'super_annuation' => 'Super Annuation',
         ],
         'membership_fee_id' => 2,
         'default_payment_mode_id' => 1,

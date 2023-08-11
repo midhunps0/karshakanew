@@ -9,17 +9,16 @@ use Ynotz\MediaManager\Contracts\MediaOwner;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class MedicalAssistanceApplication extends Model implements MediaOwner
+class SuperAnnuationApplication extends Model implements MediaOwner
 {
     use HasFactory, OwnsMedia;
 
-    protected $table = "medical_assistances";
+    protected $table = "super_annuations";
 
     protected $guarded = [];
 
     protected $casts = [
-        'member_bank_account' => 'array',
-        'medical_bills' => 'array'
+        'member_bank_account' => 'array'
     ];
 
     protected $appends = [
@@ -30,9 +29,6 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
         'union_certificate',
         'ration_card',
         'one_and_same_cert',
-        'medical_bills_proofs',
-        'doctors_certificate',
-        'op_card_discharge_summary',
     ];
 
     public function allowanceApplication()
@@ -70,18 +66,6 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
             'oneAndSameCert' => [
                 'disk' => 'local',
                 'folder' => 'public/images/applications/education/one_and_same_cert'
-            ],
-            'medical_bills_proofs' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/medical_bills_proofs'
-            ],
-            'doctors_certificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/doctors_certificate'
-            ],
-            'op_card_discharge_summary' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/op_card_discharge_summary'
             ],
         ];
     }
@@ -149,33 +133,6 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
         );
     }
 
-    protected function medicalBillsProofs(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                return $this->getAllMedia('medical_bills_proofs');
-            },
-        );
-    }
-
-    protected function doctorsCertificate(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                return $this->getSingleMediaForDisplay('doctors_certificate');
-            },
-        );
-    }
-
-    protected function opCardDischargeSummary(): Attribute
-    {
-        return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                return $this->getSingleMediaForDisplay('op_card_discharge_summary');
-            },
-        );
-    }
-
     protected function feePeriodFrom(): Attribute
     {
         return Attribute::make(
@@ -190,18 +147,10 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
         );
     }
 
-    protected function treatmentPeriodFrom(): Attribute
+    protected function memberDob(): Attribute
     {
         return Attribute::make(
             get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
         );
     }
-
-    protected function treatmentPeriodTo(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value != null ? Carbon::createFromFormat('Y-m-d', $value)->format('d-m-Y') : '',
-        );
-    }
-
 }

@@ -225,6 +225,8 @@ class AppHelper
             'App\Models\EducationSchemeApplication' => 'allowances.education.show',
             'App\Models\MarriageAssistanceApplication' => 'allowances.marriage.show',
             'App\Models\MaternityAssistanceApplication' => 'allowances.maternity.show',
+            'App\Models\MedicalAssistanceApplication' => 'allowances.medical.show',
+            'App\Models\SuperAnnuationApplication' => 'allowances.super_annuation.show',
             default => 'allowances.education.show'
         };
     }

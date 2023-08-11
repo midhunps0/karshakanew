@@ -8,13 +8,13 @@ use App\Models\Member;
 use App\Models\Allowance;
 use Illuminate\Http\Request;
 use App\Models\WelfareScheme;
-use App\Services\MedicalAssistanceService;
+use App\Services\SuperAnnuationService;
 use Illuminate\Support\Carbon;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
-class MedicalController extends SmartController
+class SuperAnnuationController extends SmartController
 {
-    public function __construct(public  MedicalAssistanceService $allowanceService, Request $request) {
+    public function __construct(public  SuperAnnuationService $allowanceService, Request $request) {
         parent::__construct($request);
     }
 
@@ -23,9 +23,9 @@ class MedicalController extends SmartController
         $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
 
         if (auth()->user()->can('view', $application)) {
-            return $this->buildResponse('admin.allowances.medical.show', ['application' => $application]);
+            return $this->buildResponse('admin.allowances.super_annuation.show', ['application' => $application]);
         } else {
-            return $this->buildResponse('admin.allowances.medical.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
+            return $this->buildResponse('admin.allowances.super_annuation.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
         }
     }
 
@@ -37,17 +37,17 @@ class MedicalController extends SmartController
 
         if (auth()->user()->cannot('update', $member)) {
             return $this->buildResponse(
-                'admin.allowances.medical.create',
+                'admin.allowances.super_annuation.create',
                 [
                     'member' => null,
                 ]);
         }
 
-        $schemeCode = WelfareScheme::where('name', config('generalSettings.allowances')['medical'])->get()->first()->code;
+        $schemeCode = WelfareScheme::where('name', config('generalSettings.allowances')['super_annuation'])->get()->first()->code;
         $today = Carbon::today()->format('d-m-Y');
 
         return $this->buildResponse(
-            'admin.allowances.medical.create',
+            'admin.allowances.super_annuation.create',
             [
                 'member' => $member,
                 'scheme_code' => $schemeCode,
@@ -60,7 +60,7 @@ class MedicalController extends SmartController
         $allowance = Allowance::find($id);
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
-            'admin.allowances.medical.edit',
+            'admin.allowances.super_annuation.edit',
             [
                 'allowance' => $allowance,
                 'today' => $today

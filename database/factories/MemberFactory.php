@@ -101,12 +101,12 @@ class MemberFactory extends Factory
                     $remaining = $n - 1;
                 }
                 $y = rand(1, 2);
-                Allowance::factory($y)->create(
-                    [
-                        'member_id' => $m->id,
-                        'created_by' => User::all()->random()->id
-                    ]
-                );
+                // Allowance::factory($y)->create(
+                //     [
+                //         'member_id' => $m->id,
+                //         'created_by' => User::all()->random()->id
+                //     ]
+                // );
             }
         );
     }

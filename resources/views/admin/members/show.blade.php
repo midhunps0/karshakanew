@@ -393,12 +393,13 @@
                             <button class="btn btn-sm" @click.prevent.stop="show=true;">
                                 New Application
                             </button>
-                            <div x-show="show" @click.outside="show=false;" class="absolute top-10 left-auto flex flex-row items-start bg-base-200 border border-opacity-20 border-base-content rounded-md md:max-w-7/12 flex-wrap justify-center">
+                            <div x-show="show" @click.outside="show=false;" class="absolute top-10 left-auto flex flex-row items-start bg-base-200 border border-opacity-20 border-base-content rounded-md md:max-w-2/3 flex-wrap justify-center">
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Education Allowance</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.create')}}', route: 'allowances.postdeath.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Death Ex-Gracia</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.marriage.create')}}', route: 'allowances.marriage.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.maternity.create')}}', route: 'allowances.maternity.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Maternity Allowance</button>
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.medical.create')}}', route: 'allowances.medical.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Medical Allowance</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.create')}}', route: 'allowances.super_annuation.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Super Annuation</button>
                             </div>
                         </div>
                     </div>

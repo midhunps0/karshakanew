@@ -272,6 +272,7 @@ class AllowanceService
                 }
             );
         }
+        $query->orderBy('created_at', 'desc');
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
