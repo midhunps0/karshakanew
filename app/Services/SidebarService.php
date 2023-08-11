@@ -41,14 +41,6 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'Add Member',
-                'route' => 'members.create',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
                 'title' => 'Search Receipts',
                 'route' => 'feecollections.search',
                 'route_params' => [],
@@ -57,7 +49,23 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'New Receipt',
+                'title' => 'Search Applications',
+                'route' => 'allowances.search',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.search',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Add Member',
+                'route' => 'members.create',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Add New Receipt',
                 'route' => 'feecollections.create',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
@@ -65,16 +73,16 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'Enter Old Receipt',
-                'route' => 'feecollections.old.create',
+                'title' => 'Add Receipts - Bulk',
+                'route' => 'feecollections.bulk.create',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
                 'show' => true
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'Bulk Receipts',
-                'route' => 'feecollections.bulk.create',
+                'title' => 'Add Old Receipt',
+                'route' => 'feecollections.old.create',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
                 'show' => true

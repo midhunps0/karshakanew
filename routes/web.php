@@ -147,6 +147,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::post('/allowances/super-annuation/store', [SuperAnnuationController::class, 'store'])->name('allowances.super_annuation.store');
     Route::post('/allowances/super-annuation/update/{id}', [SuperAnnuationController::class, 'update'])->name('allowances.super_annuation.update');
 
+    Route::get('/allowances/search', [AllowanceController::class, 'search'])->name('allowances.search');
+    Route::post('/allowances/search', [AllowanceController::class, 'getAllowance'])->name('allowances.search');
+
     Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);
     Route::post('/account-group-create', [AccountGroupController::class, 'store']);

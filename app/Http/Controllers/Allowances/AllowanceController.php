@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\WelfareScheme;
 use Illuminate\Support\Carbon;
 use App\Exports\AllowanceExport;
+use App\Helpers\AppHelper;
 use App\Services\AllowanceService;
 use Maatwebsite\Excel\Facades\Excel;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -23,6 +24,47 @@ class AllowanceController extends SmartController
     public function index()
     {
         return $this->buildResponse('admin.allowances.index');
+    }
+
+    public function search()
+    {
+        return $this->buildResponse('admin.allowances.search');
+    }
+
+    public function getAllowance()
+    {
+        try{
+            info('req');
+            info($this->request->input('application_no'));
+            $allowance = Allowance::where('application_no', $this->request->input('application_no'))
+                ->get()->first();
+            info('allowance');
+            info($allowance);
+            $link = '';
+            $route = '';
+
+            if ($allowance != null) {
+                $route = AppHelper::getShowRoute($allowance);
+                info('route');
+                info($route);
+                $link = route($route, $allowance->id);
+            }
+            info(2);
+            return response()->json(
+                [
+                    'success' => $allowance != null,
+                    'link' => $link,
+                    'route' => $route
+                ]
+            );
+        }
+        catch (Throwable $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                ]
+            );
+        }
     }
 
     public function pending()
