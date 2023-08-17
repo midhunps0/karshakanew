@@ -41,7 +41,8 @@ class Member extends Model
         'one_and_same_cert',
         'is_approved',
         'display_name',
-        'display_current_address'
+        'display_current_address',
+        'is_age_over'
     ];
 
     public function district()
@@ -191,6 +192,21 @@ class Member extends Model
             ],
         ];
     }
+
+    protected function isAgeOver(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->dob == null) {
+                    return false;
+                }
+                $today = Carbon::today();
+                $theDob = Carbon::createFromFormat('d-m-Y', $this->dob);
+                return $today->diffInYears($theDob) > 60;
+            },
+        );
+    }
+
     protected function isApproved(): Attribute
     {
         return Attribute::make(

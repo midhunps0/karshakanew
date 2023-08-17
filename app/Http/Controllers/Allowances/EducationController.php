@@ -49,6 +49,17 @@ class EducationController extends SmartController
     {
         $allowance = Allowance::find($id);
         $today = Carbon::today()->format('d-m-Y');
+
+        if (!$allowance->is_editable_by_status) {
+            return $this->buildResponse(
+                'admin.error',
+                [
+                    'title' => 'Un-allowed action',
+                    'message' => 'The application was already processed. Further editing not allowed.'
+                ]
+            );
+        }
+
         return $this->buildResponse(
             'admin.allowances.edit',
             [

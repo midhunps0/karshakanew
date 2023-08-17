@@ -43,7 +43,8 @@
                             membership_no: m.membership_no,
                             aadhaar_no: m.aadhaar_no,
                             taluk: m.taluk.name,
-                            village: m.village.name
+                            village: m.village.name,
+                            receipt_allowed: m.aadhaar_no != null && m.is_approved && !m.is_age_over
                         }
                     });
                 } else {
@@ -114,22 +115,24 @@ x-init="
             </tr>
             <template x-for="m in suggestions">
                 <tr
-                    @keypress.prevent.stop="console.log($event);  if ($event.code == 'Enter') { selectMember(m.id);}"
-                    class="focus:text-warning focus:cursor-pointer hover:text-warning hover:cursor-pointer">
-                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.membership_no"></span></td>
+                    @keypress.prevent.stop="if ($event.code == 'Enter' && m.receipt_allowed) { selectMember(m.id);}"
+                    class="focus:text-warning focus:cursor-pointer hover:text-warning hover:cursor-pointer"
+                    >
+                    <td class="p-2 text-base-content !text-opacity-70" :class="m.receipt_allowed ? '' : 'line-through  text-error opacity-50'"><span x-text="m.membership_no"></span></td>
                     {{-- <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.name"></span></td> --}}
-                    <td class="p-2 text-base-content !text-opacity-70">
+                    <td class="p-2 text-base-content !text-opacity-70" :class="m.receipt_allowed ? '' : 'line-through  text-error opacity-50'">
                         <span x-text="m.name"></span>
                         <span x-show="m.name != null && m.name.length > 0">/</span>
                         <span x-text="m.name_mal"></span>
                     </td>
-                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.aadhaar_no"></span></td>
-                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.taluk"></span></td>
-                    <td class="p-2 text-base-content !text-opacity-70"><span x-text="m.village"></span></td>
-                    <td class="p-2 text-base-content !text-opacity-70">
-                        <button class="btn btn-xs btn-warning" @click.prevent.stop="selectMember(m.id);"  @keyup="if ($event.key == 'Escape') {showlist = false;}">
+                    <td class="p-2 text-base-content !text-opacity-70" :class="m.receipt_allowed ? '' : 'line-through  text-error opacity-50'"><span x-text="m.aadhaar_no"></span></td>
+                    <td class="p-2 text-base-content !text-opacity-70" :class="m.receipt_allowed ? '' : 'line-through  text-error opacity-50'"><span x-text="m.taluk"></span></td>
+                    <td class="p-2 text-base-content !text-opacity-70" :class="m.receipt_allowed ? '' : 'line-through  text-error opacity-50'"><span x-text="m.village"></span></td>
+                    <td class="p-2 text-base-content !text-opacity-70" >
+                        <button x-show="m.receipt_allowed" class="btn btn-xs btn-warning" @click.prevent.stop="selectMember(m.id);"  @keyup="if ($event.key == 'Escape') {showlist = false;}">
                             <x-easyadmin::display.icon icon="easyadmin::icons.plus" height="h-4" width="w-4"/>
                         </button>
+                        <span x-show="!m.receipt_allowed" class="text-xs text-error">Disallowed</span>
                     </td>
                 </tr>
             </template>

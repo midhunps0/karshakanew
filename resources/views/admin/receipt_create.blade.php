@@ -52,7 +52,6 @@
                 });
             },
             fetchMember(id = null) {
-                console.log('id: '+id);
                 if(id == null) { id = this.member.id; }
                 axios.get(
                     '{{route('members.fetch', '_X_')}}'.replace('_X_', id)
@@ -242,6 +241,12 @@
             close() {
                 $dispatch('linkaction', {link: '{{route('feecollections.create')}}', route: 'feecollections.create'});
             },
+            receiptAllowed() {
+                return this.member != null &&
+                    this.member.aadhaar_no != null &&
+                    this.member.is_approved &&
+                    !this.member.is_age_over;
+            },
             doSubmit() {
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
@@ -291,6 +296,14 @@
                         class="btn btn-sm btn-warning">Edit <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/></a>
                 </div>
             </div>
+            <div x-show="member!=null && member.is_age_over" class="p-4 text-center text-error">
+                Receipt creation not allowed for this memeber.<br/>
+                Member is over 60 years of age.
+            </div>
+            <div x-show="member!=null && (!member.is_approved)" class="p-4 text-center text-error">
+                Receipt creation not allowed for this memeber.<br/>
+                Member has not been approved.
+            </div>
             <div x-show="member != null && member.aadhaar_no == null" class="text-center font-bold bg-error bg-opacity-30 text-base-content rounded-md p-2 mt-2">
                 Aadhaar number not verified. Cannot create receipt for unverified members.
             </div>
@@ -327,7 +340,7 @@
             console.log(typesWithTenure);
             "
             >
-            <div x-show="member != null && member.aadhaar_no != null && showform" class="">
+            <div x-show="receiptAllowed() && showform" class="">
                 <div class="my-4">
                     <div class="p-4 border border-base-content border-opacity-20 rounded-md bg-base-200">
                         <div>

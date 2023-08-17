@@ -34,6 +34,10 @@ class Allowance extends Model
 
     protected $guarded = [];
 
+    protected $appends = [
+        'editable_by_status'
+    ];
+
     public function member()
     {
         return $this->belongsTo(Member::class, 'member_id', 'id');
@@ -90,6 +94,16 @@ class Allowance extends Model
                 }
                 return $str;
             },
+        );
+    }
+
+    public function editableByStatus(): Attribute
+    {
+
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return in_array($this->status, ['Pending', 'Old - Unknown']);
+            }
         );
     }
 
