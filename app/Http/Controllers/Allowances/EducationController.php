@@ -49,8 +49,7 @@ class EducationController extends SmartController
     {
         $allowance = Allowance::find($id);
         $today = Carbon::today()->format('d-m-Y');
-
-        if (!$allowance->is_editable_by_status) {
+        if (!$allowance->editable_by_status) {
             return $this->buildResponse(
                 'admin.error',
                 [

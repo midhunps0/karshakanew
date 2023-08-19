@@ -287,7 +287,7 @@
                     }
                 }
             "
-            @datepicker.window="console.log($event);date = $event.detail.value;"
+            @datepicker.window="date = $event.detail.value;"
             @selectmember.window="fetchMember($event.detail.id);"
             class="p-1" action=""
             id="{{$form['id']}}"
