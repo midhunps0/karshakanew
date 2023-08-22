@@ -394,6 +394,8 @@
                             @else
                             placeholder="{{$placeholder ?? ''}}"
                             @endif
+                            @keyup.prevent.stop=""
+                            @keypress.prevent.stop=""
                             x-on:click="calendarFromDate(); setPosition(); showDatepicker = true;" x-model="datepickerValue"
                             x-on:keydown.escape="showDatepicker = false;"
                             class="peer w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm bg-base-100 text-base-content font-medium input input-bordered"
