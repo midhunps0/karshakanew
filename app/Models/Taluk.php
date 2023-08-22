@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Village;
 use App\Models\AuditLog;
+use App\Models\District;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Database\Eloquent\Builder;

@@ -224,38 +224,54 @@ class SidebarService implements SidebarServiceInterface
                     ],
                 ]
             ],
-            // [
-            //     'type' => 'menu_group',
-            //     'title' => 'App Settings',
-            //     'icon' => 'easyadmin::icons.gear',
-            //     'show' => $this->showRoles(),
-            //     'menu_items' => [
-            //         [
-            //             'type' => 'menu_item',
-            //             'title' => 'Districts',
-            //             'route' => 'districts.index',
-            //             'route_params' => [],
-            //             'icon' => 'easyadmin::icons.users',
-            //             'show' => $this->showRoles()
-            //         ],
-            //         [
-            //             'type' => 'menu_item',
-            //             'title' => 'All Trade Unions',
-            //             'route' => 'tradeunions.index',
-            //             'route_params' => [],
-            //             'icon' => 'easyadmin::icons.users',
-            //             'show' => (new TradeUnionService())->authoriseIndex()
-            //         ],
-            //         [
-            //             'type' => 'menu_item',
-            //             'title' => 'Add Trade Union',
-            //             'route' => 'tradeunions.create',
-            //             'route_params' => [],
-            //             'icon' => 'easyadmin::icons.users',
-            //             'show' => (new TradeUnionService())->authoriseCreate()
-            //         ],
-            //     ]
-            // ],
+            [
+                'type' => 'menu_group',
+                'title' => 'App Settings',
+                'icon' => 'easyadmin::icons.gear',
+                'show' => $this->showRoles(),
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Districts',
+                        'route' => 'districts.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->manageDistrictsPermission()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Taluks',
+                        'route' => 'taluks.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->manageTaluksPermission()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Villages',
+                        'route' => 'villages.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->manageVillagesPermission()
+                    ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'All Trade Unions',
+                    //     'route' => 'tradeunions.index',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => (new TradeUnionService())->authoriseIndex()
+                    // ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'Add Trade Union',
+                    //     'route' => 'tradeunions.create',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => (new TradeUnionService())->authoriseCreate()
+                    // ],
+                ]
+            ],
 
             // [
             //     'type' => 'menu_section',
@@ -319,5 +335,17 @@ class SidebarService implements SidebarServiceInterface
     // {
     //     return (new TradeUnionService())->authoriseIndex();
     // }
+    public function manageDistrictsPermission()
+    {
+        return auth()->user()->hasPermissionTo('District: Create');
+    }
+    public function manageTaluksPermission()
+    {
+        return auth()->user()->hasPermissionTo('Taluk: Create In Any District') || auth()->user()->hasPermissionTo('Taluk: Create In Own District');
+    }
+    public function manageVillagesPermission()
+    {
+        return auth()->user()->hasPermissionTo('Village: Create In Any District') || auth()->user()->hasPermissionTo('Village: Create In Own District');
+    }
 }
 ?>

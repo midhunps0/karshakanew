@@ -10,13 +10,13 @@ use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 
-class TalukService implements ModelViewConnector {
+class VillageService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
 
     public function __construct()
     {
-        $this->modelClass = Taluk::class;
+        $this->modelClass = Village::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = false;
         $this->exportsEnabled = false;
@@ -25,7 +25,7 @@ class TalukService implements ModelViewConnector {
     protected function relations(): array
     {
         return [
-            'district' => [
+            'taluk' => [
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
@@ -35,7 +35,7 @@ class TalukService implements ModelViewConnector {
 
     protected function getPageTitle(): string
     {
-        return 'Taluks';
+        return 'Villages';
     }
 
     private function getQuery()
@@ -44,9 +44,10 @@ class TalukService implements ModelViewConnector {
             ->userAccessControlled()
             ->with(
                 [
-                    'district' => function ($query) {
+                    'taluk' => function ($query) {
                         $query->select('id', 'name');
-                    }
+                    },
+
                 ]
             );
     }
@@ -57,8 +58,11 @@ class TalukService implements ModelViewConnector {
             title: 'name',
             sort: ['key' => 'name']
         )->addHeaderColumn(
+            title: 'taluk',
+            sort: ['key' => 'taluk_id']
+        )->addHeaderColumn(
             title: 'district',
-            sort: ['key' => 'district_id']
+            // sort: ['key' => 'district_id']
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -70,7 +74,10 @@ class TalukService implements ModelViewConnector {
             fields: ['name'],
         )->addColumn(
             fields: ['name'],
-            relation: 'district'
+            relation: 'taluk'
+        )->addColumn(
+            fields: ['district'],
+            // relation: 'district'
         )->addActionColumn(
             editRoute: $this->getEditRoute(),
             // deleteRoute: $this->getDestroyRoute()
@@ -88,12 +95,12 @@ class TalukService implements ModelViewConnector {
     public function getCreatePageData(): array
     {
         return [
-            'title' => 'Create Taluk',
+            'title' => 'Create Village',
             'form' => FormHelper::makeForm(
-                title: 'Create Taluk',
-                id: 'form_taluks_create',
-                action_route: 'taluks.store',
-                success_redirect_route: 'taluks.index',
+                title: 'Create Village',
+                id: 'form_villages_create',
+                action_route: 'villages.store',
+                success_redirect_route: 'villages.index',
                 items: $this->getCreateFormElements(),
                 label_position: 'side'
             )
@@ -103,14 +110,14 @@ class TalukService implements ModelViewConnector {
     public function getEditPageData($id): array
     {
         return [
-            'title' => 'Taluks',
-            '_old' => ($this->modelClass)::with(['district'])->where('id', $id)->get()->first(),
+            'title' => 'Villages',
+            '_old' => ($this->modelClass)::find($id),
             'form' => FormHelper::makeEditForm(
-                title: 'Edit Taluk',
-                id: 'form_taluks_create',
-                action_route: 'taluks.update',
+                title: 'Edit Village',
+                id: 'form_villages_create',
+                action_route: 'villages.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'taluks.index',
+                success_redirect_route: 'villages.index',
                 items: $this->getEditFormElements(),
                 label_position: 'side'
             )
@@ -134,9 +141,9 @@ class TalukService implements ModelViewConnector {
                 properties: ['required' => true,],
             ),
             FormHelper::makeSelect(
-                key: 'district',
-                label: 'District',
-                options: District::userAccessControlled()->get(),
+                key: 'taluk',
+                label: 'Taluk',
+                options: Taluk::userAccessControlled()->get(),
                 options_type: 'collection',
                 options_id_key: 'id',
                 options_text_key: 'name',
@@ -162,15 +169,15 @@ class TalukService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        $data['district_id'] = $data['district'];
-        unset($data['district']);
+        $data['taluk_id'] = $data['taluk'];
+        unset($data['taluk']);
         return $data;
     }
 
     public function processBeforeUpdte(array $data): array
     {
-        $data['district_id'] = $data['district'];
-        unset($data['district']);
+        $data['taluk_id'] = $data['taluk'];
+        unset($data['taluk']);
         return $data;
     }
 
@@ -183,7 +190,7 @@ class TalukService implements ModelViewConnector {
             auth()->user()->id,
             null,
             $instance,
-            'Created Taluk: '.$instance->name.', id: '.$instance->id,
+            'Created Village: '.$instance->name.', id: '.$instance->id,
         );
     }
 
@@ -196,7 +203,7 @@ class TalukService implements ModelViewConnector {
             auth()->user()->id,
             $oldInstance,
             $instance,
-            'Updated Taluk: '.$instance->name.', id: '.$instance->id,
+            'Updated Village: '.$instance->name.', id: '.$instance->id,
         );
     }
 }

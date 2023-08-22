@@ -17,7 +17,7 @@ class DistrictController extends SmartController
     public function __construct(public DistrictService $connectorService, Request $request){
         parent::__construct($request);
         // $this->itemName = 'districts';
-        // $this->indexView = 'easyadmin::admin.indexpanel';
+        $this->indexView = 'admin.index';
         // $this->createView = 'accesscontrol::roles.create';
         // $this->editView = 'accesscontrol::roles.edit';
     }

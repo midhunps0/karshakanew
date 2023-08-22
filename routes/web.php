@@ -55,6 +55,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/taluks/{id}/villages', [TalukController::class, 'getVillages'])
         ->name('taluks.villages');
     RouteHelper::getEasyRoutes(modelName: "District");
+    RouteHelper::getEasyRoutes(modelName: "Taluk");
+    RouteHelper::getEasyRoutes(modelName: "Village");
     Route::post('/members/verify/{aadhaarNo}', [MemberController::class, 'verifyAadhaar'])
         ->name('members.verify_aadhaar');
     Route::get('/members/search', [MemberController::class, 'search'])

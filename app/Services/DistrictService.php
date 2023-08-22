@@ -17,6 +17,8 @@ class DistrictService implements ModelViewConnector {
     {
         $this->modelClass = District::class;
         $this->indexTable = new IndexTable();
+        $this->selectionEnabled = false;
+        $this->exportsEnabled = false;
     }
     protected function getPageTitle(): string
     {
@@ -112,12 +114,12 @@ class DistrictService implements ModelViewConnector {
             //         'multiple' => false
             //     ],
             // ),
-            FormHelper::makeCheckbox(
-                key: 'verified',
-                label: 'Is verified?',
-                toggle: true,
-                displayText: ['Yes', 'No']
-            )
+            // FormHelper::makeCheckbox(
+            //     key: 'verified',
+            //     label: 'Is verified?',
+            //     toggle: true,
+            //     displayText: ['Yes', 'No']
+            // )
         ];
     }
 

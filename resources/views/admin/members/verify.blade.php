@@ -33,6 +33,9 @@
             "
             x-init="
             url='{{route('members.create')}}';
+            $watch('aadhaarNo', (v) => {
+                aadhaarNo = v.replace(' ', '');
+            });
             "
             class="border border-base-content border-opacity-20 rounded-md py-12 shadow-md md:w-10/12 m-auto"
             @submit.prevent.stop="doSubmit()"
