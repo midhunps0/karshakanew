@@ -58,6 +58,7 @@ class MemberService implements ModelViewConnector {
             'village' => 'village_id'
         ];
         $this->selectionEnabled = false;
+        $this->exportsEnabled = false;
     }
     protected function getPageTitle(): string
     {
@@ -83,7 +84,7 @@ class MemberService implements ModelViewConnector {
             // ],
             // sort: ['key' => 'membership_no']
         )->addHeaderColumn(
-            title: 'Aadhaar No.',
+            title: 'Address',
             // search: [
             //     'key' => 'aadhaar_no',
             //     'condition' => 'st',

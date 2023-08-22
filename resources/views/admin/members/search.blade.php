@@ -12,7 +12,8 @@
                 memNumTaluk: null,
                 memNumVillage: null,
                 memNumStr: null,
-                search_by: 'Search Phrase',
+                search_by: 'Membership No.',
+                {{-- search_by: 'Search Phrase', --}}
                 search_phrase: '',
                 search_condition: 'is',
                 taluks: [],
@@ -134,7 +135,9 @@
                         } else {
                             searchStr = this.search_string;
                         }
-                        querystr += 'adv_search[]='+this.getSearchBy()+'::'+this.search_condition+'::' + searchStr;
+                        if (searchStr != '') {
+                            querystr += 'adv_search[]='+this.getSearchBy()+'::'+this.search_condition+'::' + searchStr;
+                        }
                     }
 
                     if (querystr != '') {
@@ -200,7 +203,7 @@
                         <span class="label-text">What to search by?</span>
                     </label>
                     <select x-model="search_by" class="select select-md select-bordered">
-                        <option selected value="Search Phrase">None</option>
+                        <option value="Search Phrase">None</option>
                         <option value="Aadhaar No.">Aadhaar No.</option>
                         <option value="Membership No.">Membership No.</option>
                         <option value="Name">Name</option>
