@@ -241,10 +241,11 @@
             doSubmit() {
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
-                let date = Date.parse(this.date);
+                {{-- let date = Date.parse(this.date); --}}
                 fd.append('book_number', this.bookNo);
                 fd.append('receipt_number', this.receiptNo);
-                fd.append('date', date.toString('dd-MM-yyyy'));
+                fd.append('date', this.date);
+                {{-- fd.append('date', date.toString('dd-MM-yyyy')); --}}
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
                     if (f.from != null && f.to != null) {
@@ -448,7 +449,7 @@
                     </div>
                     <div>
                         <span class="text-warning">Date.:</span>
-                        <span x-text="receipt.receipt_date"></span>
+                        <span x-text="receipt.formatted_receipt_date"></span>
                     </div>
                 </div>
                 <div>
