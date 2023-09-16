@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\District;
+use App\Models\MemberTransfer;
 use Illuminate\Http\Request;
 use App\Services\MemberService;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -29,6 +30,9 @@ class DashboardController extends SmartController
             $data['show_pending_applications'] = true;
         }
 
+        if($user->hasPermissionTo('Member Transfer: Edit In Own District')) {
+            $data['transfer_requests'] = MemberTransfer::requestsReceived()->count();
+        }
         return $this->buildResponse('dashboard', $data);
     }
 }

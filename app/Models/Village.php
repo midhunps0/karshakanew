@@ -66,8 +66,10 @@ class Village extends Model
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);
+        $district = District::find($authUser->district_id);
+
         if (!$authUser->hasPermissionTo('Village: View In Any District')) {
-            $query->where('district_id', $authUser->district_id);
+            $query->whereIn('taluk_id', $district->taluks->pluck('id'));
         }
         return $query;
     }

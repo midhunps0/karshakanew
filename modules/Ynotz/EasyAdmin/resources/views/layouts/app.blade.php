@@ -34,6 +34,7 @@ currentroute=$event.detail.currentroute;"
                     {{ $slot }}
                 @endfragment
             </main>
+            <div class="text-xs text-center pt-1 pb-2">Software developed by Equity Equations Pvt. Ltd. Version V1.01</div>
         </div>
         <x-easyadmin::display.notice />
         <x-easyadmin::display.toast />

@@ -8,8 +8,9 @@ use App\Models\Member;
 use App\Models\Allowance;
 use Illuminate\Http\Request;
 use App\Models\WelfareScheme;
-use App\Services\MarriageAllowanceService;
 use Illuminate\Support\Carbon;
+use App\Services\MarriageAllowanceService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class MarriageController extends SmartController
@@ -44,7 +45,12 @@ class MarriageController extends SmartController
 
         }
 
-        $schemeCode = WelfareScheme::where('name', config('generalSettings.allowances')['marriage'])->get()->first()->code;
+        $scheme = WelfareScheme::where('name', config('generalSettings.allowances')['marriage'])->get()->first();
+        if (!$scheme->is_enabled) {
+            throw new AuthorizationException("Unable to perform the action. Attempt to create application for a disabled scheme");
+        }
+        $schemeCode = $scheme->code;
+
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
             'admin.allowances.marriage.create',

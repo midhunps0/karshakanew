@@ -657,6 +657,11 @@ trait IsModelViewConnector{
         return [];
     }
 
+    public function getEditPageData(): array
+    {
+        return [];
+    }
+
     public function getStoreValidationRules(): array
     {
         return $this->storeValidationRules ?? [];

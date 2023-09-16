@@ -20,6 +20,7 @@ use App\Http\Controllers\Allowances\MaternityController;
 use App\Http\Controllers\Allowances\MedicalController;
 use App\Http\Controllers\Allowances\PostDeathController;
 use App\Http\Controllers\Allowances\SuperAnnuationController;
+use App\Http\Controllers\MemberTransferController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         [MemberController::class, 'storeOldFeesCollection']
     )->name('members.old_fees.store');
     RouteHelper::getEasyRoutes(modelName: "Member");
+    Route::get('/members/transfer/requests', [MemberTransferController::class, 'transferRequests'])
+        ->name('members.transfer_requests');
+    Route::get('/members/transfer/{id}', [MemberTransferController::class, 'transferForm'])
+        ->name('members.transfer.create');
+    Route::get('/members/transfer/edit/{id}', [MemberTransferController::class, 'transferEditForm'])
+        ->name('members.transfer.edit');
+    Route::post('/members/transfer/approve/{id}', [MemberTransferController::class, 'approve'])
+        ->name('members.transfer.approve');
+    RouteHelper::getEasyRoutes(modelName: "MemberTransfer");
     RouteHelper::getEasyRoutes(modelName: "User");
     RouteHelper::getEasyRoutes(modelName: "Role");
     RouteHelper::getEasyRoutes(modelName: "Permission");
@@ -161,6 +171,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     RouteHelper::getEasyRoutes(
         modelName: "LedgerAccount",
         controller: 'App\Http\Controllers\Accounting\LedgerController'
+    );
+
+    RouteHelper::getEasyRoutes(
+        modelName: "WelfareScheme"
     );
 
     /*

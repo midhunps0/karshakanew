@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\WelfareScheme;
 use Illuminate\Support\Carbon;
 use App\Services\PostDeathAllowanceService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class PostDeathController extends SmartController
@@ -32,7 +33,13 @@ class PostDeathController extends SmartController
     {
         $memberId = $this->request->input('member_id', null);
         $member = $memberId != null ? Member::with(['feePayments'])->where('id', $memberId)->get()->first() : null;
-        $schemeCode = WelfareScheme::where('name', config('generalSettings.allowances')['death_exgracia'])->get()->first()->code;
+
+        $scheme = WelfareScheme::where('name', config('generalSettings.allowances')['death_exgracia'])->get()->first();
+        if (!$scheme->is_enabled) {
+            throw new AuthorizationException("Unable to perform the action. Attempt to create application for a disabled scheme");
+        }
+        $schemeCode = $scheme->code;
+
         $today = Carbon::today()->format('d-m-Y');
         return $this->buildResponse(
             'admin.allowances.deathex.create',

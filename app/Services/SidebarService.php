@@ -87,6 +87,17 @@ class SidebarService implements SidebarServiceInterface
                 'icon' => 'easyadmin::icons.search',
                 'show' => true
             ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Transfer Requests',
+                'route' => 'members.transfer_requests',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => auth()->user()->hasAnyPermission([
+                    'Member Transfer: Edit In Any District',
+                    'Member Transfer: Edit In Own District',
+                ])
+            ],
             // [
             //     'type' => 'menu_group',
             //     'title' => 'Applications',
@@ -254,6 +265,14 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->manageVillagesPermission()
                     ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Welfare Schemes',
+                        'route' => 'welfareschemes.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->manageSchemesPermission()
+                    ],
                     // [
                     //     'type' => 'menu_item',
                     //     'title' => 'All Trade Unions',
@@ -346,6 +365,10 @@ class SidebarService implements SidebarServiceInterface
     public function manageVillagesPermission()
     {
         return auth()->user()->hasPermissionTo('Village: Create In Any District') || auth()->user()->hasPermissionTo('Village: Create In Own District');
+    }
+    public function manageSchemesPermission()
+    {
+        return auth()->user()->hasPermissionTo('Welfare Scheme: View');
     }
 }
 ?>

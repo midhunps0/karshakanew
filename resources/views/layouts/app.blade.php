@@ -32,6 +32,7 @@
             <main>
                 {{ $slot }}
             </main>
+            <div class="text-sm text-center">Software developed by Equity Equations Pvt. Ltd. Version V1.01</div>
         </div>
     </body>
 </html>

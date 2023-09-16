@@ -11,6 +11,7 @@ use Ynotz\EasyAdmin\Traits\HasMVConnector;
 use App\Http\Requests\FeesCollectionStoreRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Requests\OldFeesCollectionStoreRequest;
+use App\Models\WelfareScheme;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class MemberController extends SmartController
@@ -49,7 +50,18 @@ class MemberController extends SmartController
         $view = 'admin.members.show';
         try {
             $member = $this->connectorService->show($id);
-            return $this->buildResponse($view, ['member' => $member]);
+            $schemes = WelfareScheme::all();
+            $enabledSchemes = [];
+            foreach ($schemes as $s) {
+                $enabledSchemes[$s->code] = $s->is_enabled;
+            }
+            return $this->buildResponse(
+                $view,
+                [
+                    'member' => $member,
+                    'enabledSchemes' => $enabledSchemes
+                ]
+            );
         } catch (AuthorizationException $e) {
             info($e);
             return $this->buildResponse($this->unauthorisedView);
@@ -198,4 +210,12 @@ class MemberController extends SmartController
         $result = $memberService->unapprovedMembers($this->request->all());
         return $this->buildResponse('admin.members.unapproved', ['members' => $result]);
     }
+
+    // public function transferForm($id)
+    // {
+    //     return $this->buildResponse(
+    //         'admin.members.transfer',
+    //         $this->connectorService->getTransferFormData($id)
+    //     );
+    // }
 }

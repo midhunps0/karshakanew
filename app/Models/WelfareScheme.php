@@ -16,4 +16,9 @@ class WelfareScheme extends Model
     {
         return $this->morphMany(AuditLog::class, 'auditable');
     }
+
+    public function scopeIsEnabled($query)
+    {
+        $query->where('is_nabled', true);
+    }
 }

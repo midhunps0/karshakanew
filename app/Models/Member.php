@@ -148,6 +148,21 @@ class Member extends Model
         return $this->hasMany(Allowance::class, 'member_id', 'id');
     }
 
+    public function transferRequest()
+    {
+        return $this->hasOne(MemberTransfer::class, 'member_id', 'id');
+    }
+
+    public function isTransferPending(): Attribute
+    {
+        return Attribute::make(
+            get: function ($val) {
+                return $this->transferRequest != null &&
+                    $this->transferRequest->processedby_id == null;
+            }
+        );
+    }
+
     public function scopeUserAccessControlled(Builder $query)
     {
         $authUser = User::find(auth()->user()->id);
