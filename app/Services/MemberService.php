@@ -304,7 +304,7 @@ class MemberService implements ModelViewConnector {
     public function getStoreValidationRules(): array
     {
         return [
-            'membership_no' => ['sometimes'],
+            'membership_no' => ['sometimes','unique:members,membership_no'],
             'name' => ['required',],
             'name_mal' => ['sometimes',],
             'dob' => ['required',],
