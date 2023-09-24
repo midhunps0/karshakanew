@@ -14,7 +14,7 @@
                     ).then((r) => {
                         if (r.data.status == 'NOT AVAILED') {
                             let l = this.url+'?an='+this.aadhaarNo;
-                            if (r.data.message = 'Old data') {
+                            if (r.data.message == 'Old data') {
                                 l += '&ol=1';
                             }
                             $dispatch('linkaction', {

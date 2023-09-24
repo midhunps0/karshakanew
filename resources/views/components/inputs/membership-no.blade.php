@@ -47,7 +47,7 @@
     }
     $ulid = Illuminate\Support\Str::ulid();
 @endphp
-@if ($authorised)
+@if ($authorised && $show)
 <div x-data="{
         memNumDistrict: '',
         memNumTaluk: '',

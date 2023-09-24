@@ -374,7 +374,10 @@ class MemberService implements ModelViewConnector {
         $user = User::find(auth()->user()->id);
 
         $old = $this->request->input('ol');
-
+info('old:');
+info($old);
+$showMembershipField = $old == 1;
+info($showMembershipField);
         return [
             // 'membership_no_create' => FormHelper::makeInput(
             //     inputType: 'text',
@@ -389,7 +392,7 @@ class MemberService implements ModelViewConnector {
                 'input_type' => 'inputs.membership-no',
                 'key' => 'membership_no',
                 'label' => 'Membership No.',
-                'show' => $old == 1,
+                'show' => $showMembershipField,
                 'form_types' => ['create'],
                 'properties' => ['required' => true],
                 'authorised' => true
@@ -1719,7 +1722,9 @@ class MemberService implements ModelViewConnector {
             //Exists in Kerala Agricultural Workers Welfare Fund Board
             $status = $result->Status;
             $message = $result->Message;
-
+            info('result:');
+            info($status);
+            info($message);
             if (trim($status) == 'AVAILED' && trim($message) == 'Exists in Kerala Agricultural Workers Welfare Fund Board') {
                 $member = Member::where('aadhaar_no', $aadhaarNo)->get()->first();
                 if ($member == null) {
