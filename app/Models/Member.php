@@ -33,6 +33,9 @@ class Member extends Model
     protected $guarded = [];
 
     protected $appends = [
+        'photo',
+        'application_front',
+        'application_back',
         'aadhaar_card',
         'bank_passbook',
         'ration_card',
@@ -185,24 +188,40 @@ class Member extends Model
     public function getMediaStorage(): array
     {
         return [
+            'photo'=> [
+                'disk' => 's3',
+                'folder' => 'public/images/photo'
+            ],
+            'application_front'=> [
+                'disk' => 's3',
+                'folder' => 'public/images/application_front'
+            ],
+            'application_back'=> [
+                'disk' => 's3',
+                'folder' => 'public/images/application_back'
+            ],
             'aadhaarCard'=> [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/bank_passbook'
             ],
+            'rationCard' => [
+                'disk' => 's3',
+                'folder' => 'public/images/ration_card'
+            ],
             'wbPassbookFront' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/wb_passbook_back'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/one_and_same_cert'
             ],
         ];
@@ -227,6 +246,33 @@ class Member extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->approved_at != null;
+            },
+        );
+    }
+
+    protected function photo(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('photo');
+            },
+        );
+    }
+
+    protected function applicationFront(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('application_front');
+            },
+        );
+    }
+
+    protected function applicationBack(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('application_back');
             },
         );
     }

@@ -38,6 +38,9 @@ class MemberService implements ModelViewConnector {
     private $request;
 
     protected $mediaFields = [
+        'photo',
+        'application_front',
+        'application_back',
         'aadhaar_card',
         'bank_passbook',
         'ration_card',
@@ -329,6 +332,18 @@ class MemberService implements ModelViewConnector {
             'bank_name' => ['required',],
             'bank_branch' => ['required',],
             'bank_ifsc' => ['required',],
+            'photo' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'application_front' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
+            'application_back' => (new EAInputMediaValidator())
+                ->maxSize(200, 'kb')
+                ->mimeTypes(['jpeg', 'jpg', 'png'])
+                ->getRules(),
             'aadhaar_card' => (new EAInputMediaValidator())
                 ->maxSize(200, 'kb')
                 ->mimeTypes(['jpeg', 'jpg', 'png'])
@@ -374,10 +389,8 @@ class MemberService implements ModelViewConnector {
         $user = User::find(auth()->user()->id);
 
         $old = $this->request->input('ol');
-info('old:');
-info($old);
-$showMembershipField = $old == 1;
-info($showMembershipField);
+
+        $showMembershipField = $old == 1;
         return [
             // 'membership_no_create' => FormHelper::makeInput(
             //     inputType: 'text',
@@ -639,6 +652,39 @@ info($showMembershipField);
                 key: 'work_start_date',
                 label: 'Date of starting work as farm/agri labourer',
                 properties: ['required' => true],
+            ),
+            'photo' => FormHelper::makeImageUploader(
+                key: 'photo',
+                label: 'Photo',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
+            'application_front' => FormHelper::makeImageUploader(
+                key: 'application_front',
+                label: 'Application Front Page',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
+            'application_back' => FormHelper::makeImageUploader(
+                key: 'application_back',
+                label: 'Application Back Page',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
             ),
             'aadhaar_card' => FormHelper::makeImageUploader(
                 key: 'aadhaar_card',
@@ -931,6 +977,19 @@ info($showMembershipField);
                         [
                             (new ColumnLayout(
                                 width: '1/3'
+                            ))->addInputSlot('photo'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('application_front'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('application_back'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
                             ))->addInputSlot('aadhaar_card'),
                             (new ColumnLayout(
                                 width: '1/3'
@@ -1102,6 +1161,19 @@ info($showMembershipField);
                     ),
                     (new RowLayout(width: 'full'))
                         ->addElement(new SectionDivider('Image Uploads')),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('photo'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('application_front'),
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('application_back'),
+                        ]
+                    ),
                     (new RowLayout())->addElements(
                         [
                             (new ColumnLayout(
@@ -1722,9 +1794,7 @@ info($showMembershipField);
             //Exists in Kerala Agricultural Workers Welfare Fund Board
             $status = $result->Status;
             $message = $result->Message;
-            info('result:');
-            info($status);
-            info($message);
+
             if (trim($status) == 'AVAILED' && trim($message) == 'Exists in Kerala Agricultural Workers Welfare Fund Board') {
                 $member = Member::where('aadhaar_no', $aadhaarNo)->get()->first();
                 if ($member == null) {

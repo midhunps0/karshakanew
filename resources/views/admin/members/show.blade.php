@@ -230,6 +230,36 @@
                         <div class="text-center mt-8"><span class="text-warning underline font-bold">Documents</span></div>
                         <div class="flex flex-row flex-wrap items-start justify-center p-3">
                             <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Photo:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($member->photo != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$member->photo['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->photo['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Application Front Page:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($member->application_front != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$member->application_front['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->application_front['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Application Back Page:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($member->application_back != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$member->application_back['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->application_back['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
                                 <span class="text-warning">Aadhaar Card:</span>
                                 <div class="block m-2 w-32 h-24">
                                     @if ($member->aadhaar_card != null)

@@ -169,29 +169,36 @@
             this.inputElement.value = '';
             {{-- if (this.inputElement != null) { this.inputElement.value = ''; } --}}
         },
-        compressAndUpload(img) {
+        compressAndUpload(img, w = 750, h = 400, q = 0.7) {
             console.log(img.file);
-            new window.Compressor(img.file, {
-                quality: 0.6,
-                maxWidth: 750,
-                maxHeight: 400,
+            new window.Compressor(
+                img.file,
+                {
+                    quality: q,
+                    maxWidth: w,
+                    maxHeight: h,
 
-                // The compression process is asynchronous,
-                // which means you have to access the `result` in the `success` hook function.
-                success: (result) => {
-                    console.log('result file');
-                    console.log(result);
-                    img.file = result;
-                    console.log(img.file);
-                    img.sizeValidation = this.validateSize(img.file);
-                    this.files.push(img);
-                    this.upoladFile(img);
-                },
-                error(err) {
-                  console.log(err.message);
-                },
-              });
-            return img;
+                    // The compression process is asynchronous,
+                    // which means you have to access the `result` in the `success` hook function.
+                    success: (result) => {
+                        console.log('result file');
+                        console.log(result);
+                        img.file = result;
+                        console.log(img.file);
+                        img.sizeValidation = this.validateSize(img.file);
+                        if (img.sizeValidation) {
+                            this.files.push(img);
+                            this.upoladFile(img);
+                        } else {
+                            this.compressAndUpload(img, w * 0.8, h * 0.8, 0.9);
+                        }
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                }
+            );
+            {{-- return img; --}}
         },
         upoladFile(file) {
             let formData = new FormData();
