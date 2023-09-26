@@ -46,7 +46,8 @@ class MemberService implements ModelViewConnector {
         'ration_card',
         'wb_passbook_front',
         'wb_passbook_back',
-        'one_and_same_cert'
+        'one_and_same_cert',
+        'other_doc'
     ];
 
 
@@ -752,6 +753,17 @@ class MemberService implements ModelViewConnector {
                     'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
                     ]
             ),
+            'other_doc' => FormHelper::makeImageUploader(
+                key: 'other_doc',
+                label: 'Any Other Document',
+                properties: ['multiple' => false],
+                theme: 'regular',
+                allowGallery: false,
+                validations: [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+            ),
             'nominees' => FormHelper::makeDynamicInput(
                 key: 'nominees',
                 label: 'Nominees',
@@ -1012,6 +1024,13 @@ class MemberService implements ModelViewConnector {
                             ))->addInputSlot('one_and_same_cert'),
                         ]
                     ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('other_doc'),
+                        ]
+                    ),
                 ]
             );
 
@@ -1198,6 +1217,13 @@ class MemberService implements ModelViewConnector {
                             (new ColumnLayout(
                                 width: '1/3'
                             ))->addInputSlot('one_and_same_cert'),
+                        ]
+                    ),
+                    (new RowLayout())->addElements(
+                        [
+                            (new ColumnLayout(
+                                width: '1/3'
+                            ))->addInputSlot('other_doc'),
                         ]
                     ),
                     (new RowLayout(null, $style = "background-color: rgba(255, 255, 0, 0.5); font-weight: bold; padding: 10px 0 10px 0;"))->addElements(

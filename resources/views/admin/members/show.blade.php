@@ -309,6 +309,26 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">One And Same Certificate:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($member->one_and_same_cert != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$member->one_and_same_cert['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->one_and_same_cert['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Any Other Document:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($member->other_doc != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$member->other_doc['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$member->other_doc['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
 
                 </div>

@@ -42,6 +42,7 @@ class Member extends Model
         'wb_passbook_front',
         'wb_passbook_back',
         'one_and_same_cert',
+        'other_doc',
         'is_approved',
         'display_name',
         'display_current_address',
@@ -224,6 +225,10 @@ class Member extends Model
                 'disk' => 's3',
                 'folder' => 'public/images/one_and_same_cert'
             ],
+            'otherDoc' => [
+                'disk' => 's3',
+                'folder' => 'public/images/other_doc'
+            ],
         ];
     }
 
@@ -327,6 +332,15 @@ class Member extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->getSingleMediaForDisplay('one_and_same_cert');
+            },
+        );
+    }
+
+    protected function otherDoc(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->getSingleMediaForDisplay('other_doc');
             },
         );
     }
