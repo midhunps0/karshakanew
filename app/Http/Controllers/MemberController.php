@@ -11,6 +11,7 @@ use Ynotz\EasyAdmin\Traits\HasMVConnector;
 use App\Http\Requests\FeesCollectionStoreRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Requests\OldFeesCollectionStoreRequest;
+use App\Models\Member;
 use App\Models\WelfareScheme;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -209,6 +210,17 @@ class MemberController extends SmartController
     {
         $result = $memberService->unapprovedMembers($this->request->all());
         return $this->buildResponse('admin.members.unapproved', ['members' => $result]);
+    }
+
+    public function sync()
+    {
+        $member = null;
+        if ($this->request->input('m') != null) {
+            $member = Member::find($this->request->input('m'));
+        }
+        return $this->buildResponse('admin.members.merge', [
+            'member' => $member
+        ]);
     }
 
     // public function transferForm($id)

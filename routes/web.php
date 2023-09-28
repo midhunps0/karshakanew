@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     RouteHelper::getEasyRoutes(modelName: "Village");
     Route::post('/members/verify/{aadhaarNo}', [MemberController::class, 'verifyAadhaar'])
         ->name('members.verify_aadhaar');
+    Route::get('/members/sync', [MemberController::class, 'sync'])
+        ->name('members.sync');
     Route::get('/members/search', [MemberController::class, 'search'])
         ->name('members.search');
     Route::get('/members/unapproved', [MemberController::class, 'unapprovedMembers'])

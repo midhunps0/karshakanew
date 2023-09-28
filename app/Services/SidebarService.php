@@ -49,6 +49,14 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
+                'title' => 'Sync Member Data',
+                'route' => 'members.sync',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
                 'title' => 'Search Receipts',
                 'route' => 'feecollections.search',
                 'route_params' => [],

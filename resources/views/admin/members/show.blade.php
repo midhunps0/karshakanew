@@ -15,6 +15,7 @@
             <div class="flex flex-row justify-between items-center">
                 <div class="text-right p-4">
                     <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
+                    <a href="" class="btn btn-sm btn-ghost text-secondary" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.sync').'?m='.$member->id}}', route: 'member.edit'});" >Sync Data</a>
                 </div>
                 <div class="text-right p-4 flex flex-row space-x-4">
                     <a href="" class="btn btn-sm" @click.prevent.stop="doShowPrint();" >Print View</a>
