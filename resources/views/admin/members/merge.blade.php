@@ -19,6 +19,8 @@
                     ).then((r) => {
                         console.log(r.data);
                         this.dataloading = false;
+                        this.membership_no = '';
+                        $dispatch('showtoast', {message: 'Member data sync completed successfully!', mode: 'success'});
                     })
                     .catch((e) => {
                         console.log(e);
