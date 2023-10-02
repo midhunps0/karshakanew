@@ -1641,7 +1641,16 @@ class MemberService implements ModelViewConnector {
             //check if fee_type_id in types_with_tenures
             // if yes, add tenures
         }
+        //report-data-merge
+        $reportUrl = "https://api.karshakathozhilali.org/report-data-merge?membership_no=$membershipNo&security_token=$token";
+        info($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $reportUrl);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 80);
 
+        $r = curl_exec($ch);
         return $responseData;
     }
 

@@ -77,7 +77,7 @@ class AppHelper
             $fystr = str_pad($yx, 2, '0', STR_PAD_LEFT)
                 . '-' . str_pad($y, 2, '0', STR_PAD_LEFT);
         }
-        return 'FY'.$fystr;
+        return 'KAWWFB'.$fystr;
     }
 
     public static function getBookNumber($district)
