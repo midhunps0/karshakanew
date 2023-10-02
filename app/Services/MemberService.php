@@ -1566,7 +1566,10 @@ class MemberService implements ModelViewConnector {
 
         if ($memberId != null) {
             $member = Member::find($memberId);
+            info('existing member:');
+            info($member);
         } else {
+            info('new member created');
             $member = new Member();
             $member->district_id = $this->getDistrictIdForOldId($data->get_district->id);
             $member->taluk_id = $data->get_taluk->id;
