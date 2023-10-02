@@ -1601,7 +1601,7 @@ class MemberService implements ModelViewConnector {
 
         foreach ($data->subscriptions as $s) {
             //get matching fee_type_id for subscription_type_id
-            $feeTypeId = $this->getFeeTypeForOldId($s->subscription_type_id);
+            $feeTypeId = config('generalSettings.fee_types_map')[$s->subscription_type_id];
             //create feeCollection
             $fc = new FeeCollection();
             $fc->member_id = $member->id;
