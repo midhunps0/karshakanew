@@ -1550,6 +1550,8 @@ class MemberService implements ModelViewConnector {
         $response = curl_exec($ch);
         info($response);
         $data = json_decode($response);
+        info('name >>>>>>>>>>>>>>');
+        info($data->name);
         $responseData = [];
         if(curl_error($ch)){
             return [
