@@ -1574,7 +1574,8 @@ class MemberService implements ModelViewConnector {
         } else {
             info('new member created');
             $member = new Member();
-            $member->aadhaar_no = $data->membership_no;
+            $member->membership_no = $data->membership_no;
+            $member->reg_date = $data->reg_date;
             $member->district_id = $this->getDistrictIdForOldId($data->get_district->id);
             $member->taluk_id = $data->get_taluk->id;
             $member->village_id = $data->get_village->id;
