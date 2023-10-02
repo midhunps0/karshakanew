@@ -1684,9 +1684,9 @@ class MemberService implements ModelViewConnector {
             'tenure' => ''
         ];
         if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
-            $i['from'] = $subscription->peroid_from;
-            $i['to'] = $subscription->peroid_to;
-            $i['tenure'] = $subscription->tenure ??  $subscription->peroid_from . ' to ' .$subscription->peroid_to;
+            $i['from'] = $subscription->period_from;
+            $i['to'] = $subscription->period_to;
+            $i['tenure'] = $subscription->tenure ??  $subscription->period_from . ' to ' .$subscription->period_to;
 
         }
         $items[] = $i;
