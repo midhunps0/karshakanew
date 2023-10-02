@@ -1653,19 +1653,19 @@ class MemberService implements ModelViewConnector {
         $property = '';
         switch($prop) {
             case 'aadhaar_file':
-                $property = 'aadhaar_card';
+                $property = 'aadhaarCard';
                 break;
             case 'bank_passbook_file':
-                $property = 'bank_passbook';
+                $property = 'bankPassbook';
                 break;
             case 'wf_front':
-                $property = 'wb_passbook_front';
+                $property = 'wbPassbookFront';
                 break;
             case 'wf_back':
-                $property = 'wb_passbook_back';
+                $property = 'wbPassbookBack';
                 break;
             case 'one_certificate':
-                $property = 'one_and_same_cert';
+                $property = 'oneAndSameCert';
                 break;
         }
         $member->addOneImageFromUrl($property, $url);
