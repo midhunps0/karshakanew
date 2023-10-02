@@ -134,6 +134,56 @@ trait OwnsMedia
         }
     }
 
+    public function addOneImageFromUrl(string $property, string $url): void
+    {
+            $destFolder = '';
+            $destDisk = '';
+
+            if (isset($this->getMediaStorage()[$property])) {
+                $destFolder = $this->getMediaStorage()[$property]['folder'] ?? '';
+                $destDisk = $this->getMediaStorage()[$property]['disk'] ?? '';
+            } else {
+                $destFolder = config('mediaManager.images_folder');
+                $destDisk = config('mediaManager.images_disk');
+            }
+            $ulid = Str::ulid();
+            $fname = array_pop(explode('/', $url));
+            $storagePath = $destFolder.'/'.$ulid.'/original/'.$fname;
+
+            $headers = get_headers($url, 1);
+            $size = $headers["Content-Length"];
+            $file_info = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $file_info->buffer(file_get_contents($url));
+
+            $fileContent = file_get_contents($url);
+
+            Storage::disk($destDisk)->put(
+                $destFolder.'/'.$ulid.'/original/'.$fname,
+                $fileContent
+            );
+
+            $x = [
+                'ulid' => $ulid,
+                'filename' => $fname,
+                'filepath' => $storagePath,
+                'disk' => $destDisk,
+                'type' => 'image',
+                'size' => $size, //size of the file in bytes
+                'mime_type' => $mimeType,
+            ];
+
+            $mediaItem = MediaItem::create($x);
+
+            $this->attachMedia($mediaItem, $property);
+
+        // Do conversions if defined (check if conversions array exists)
+        if (isset($this->getMediaVariants()[$property])) {
+            if (isset($this->getMediaVariants()[$property]['process_on_upload']) && $this->getMediaVariants()[$property]['process_on_upload']) {
+                //if queue available, queue job, else convert now
+            }
+        }
+    }
+
     public function addMediaFromEAInput(string $property, array|string $vals): void
     {
         if (is_array($vals)) {

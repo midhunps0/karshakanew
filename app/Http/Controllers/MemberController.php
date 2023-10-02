@@ -13,6 +13,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Requests\OldFeesCollectionStoreRequest;
 use App\Models\Member;
 use App\Models\WelfareScheme;
+use GrahamCampbell\ResultType\Success;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class MemberController extends SmartController
@@ -222,6 +223,26 @@ class MemberController extends SmartController
             'member' => $member
         ]);
     }
+
+    public function fetchMemberFromOld()
+    {
+        $membershipNo = $this->request->input('membership_no');
+        $memberId = $this->request->input('member_id');
+
+        try {
+            return response()->json(
+                $this->connectorService->fetchMemberCurl($membershipNo, $memberId),
+                $memberId
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->__toString()
+            ]);
+        }
+    }
+
+
 
     // public function transferForm($id)
     // {

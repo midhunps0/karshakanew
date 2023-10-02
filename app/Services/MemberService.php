@@ -1535,6 +1535,184 @@ class MemberService implements ModelViewConnector {
             ->get()->first();
     }
 
+    public function fetchMemberCurl($membershipNo, $memberId)
+    {
+        $ch = curl_init();
+        $token ='$asajdas/as7%26dda67ada%23423AHJ';
+        $url = "https://api.karshakathozhilali.org/fetch-member?membership_no=$membershipNo&security_token=$token";
+        info($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 80);
+
+        $response = curl_exec($ch);
+        info($response);
+        $data = json_decode($response);
+        $responseData = [];
+        if(curl_error($ch)){
+            return [
+                'success' => false,
+                'error' => curl_error($ch)
+            ];
+        }else{
+            $responseData = [
+                'success' => true,
+            ];
+        }
+
+        curl_close($ch);
+
+        if ($memberId != null) {
+            $member = Member::find($memberId);
+        } else {
+            $member = new Member();
+            $member->district_id = $this->getDistrictIdForOldId($data->get_district->id);
+            $member->taluk_id = $data->get_taluk->id;
+            $member->village_id = $data->get_village->id;
+            $member->gender = $data->gender;
+            $member->dob = $data->dob;
+            $member->marital_status = $data->marital_status;
+            $member->parent_guardian = $data->parent_spouse_name;
+            $member->guardian_relationship = $data->relationship;
+            $member->religion_id = $data->religion_id;
+            $member->caste_id = $data->caste_id;
+            $member->trade_union_id = $data->trade_union_id;
+        }
+        //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
+        $member->name = $data->name;
+        $member->aadhaar_no = $data->aadhaar_no;
+        $member->mobile_no = $data->mobile_no;
+        $member->current_address = $data->present_address;
+        $member->permanent_address = $data->permanent_address;
+        $member->live_id = $data->id;
+        $member->bank_name = $data->name_in_bank;
+        $member->bank_branch = $data->bank_name;
+        $member->bank_acc_no = $data->bank_ac_no;
+        $member->bank_ifsc = $data->ifsc_code;
+        $member->save();
+
+        foreach ($data->subscriptions as $s) {
+            //get matching fee_type_id for subscription_type_id
+            $feeTypeId = $this->getFeeTypeForOldId($s->subscription_type_id);
+            //create feeCollection
+            $fc = new FeeCollection();
+            $fc->member_id = $member->id;
+            $fc->district_id = $member->district_id;
+            $fc->book_number = $s->book_number;
+            $fc->receipt_number = $s->voucher_number;
+            $fc->receipt_date = $s->subscription_date;
+            $fc->receipt_date = $s->subscription_date;
+            $fc->notes = $s->notes. ' '.$s->payment_through;
+
+            $feeItemsData = $this->getFeeItemsForOld($s);
+
+            $fc->total = $feeItemsData['total'];
+
+            $fc->save();
+
+            foreach ($feeItemsData['items'] as $fi) {
+                $item = new FeeItem();
+                $item->fee_collection_id = $fc->id;
+                $item->fee_type_id = $fi['fee_type_id'];
+                $item->amount = $fi['amount'];
+                if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
+                    $item->period_from = $fi['from'];
+                    $item->period_to = $fi['to'];
+                    $item->tenure = $fi['tenure'];
+                }
+                $item->save();
+            }
+
+            $this->createMediaForOld($member, 'aadhaar_file', $data->aadhaar_file);
+            $this->createMediaForOld($member, 'bank_passbook_file', $data->bank_passbook_file);
+            $this->createMediaForOld($member, 'wf_front', $data->wf_front);
+            $this->createMediaForOld($member, 'wf_back', $data->wf_back);
+            $this->createMediaForOld($member, 'one_certificate', $data->one_certificate);
+            //check if fee_type_id in types_with_tenures
+            // if yes, add tenures
+        }
+
+        return $responseData;
+    }
+
+    private function createMediaForOld($member, $prop, $url)
+    {
+        if($url == '' || strlen($url) == 0 || $url == null) {
+            return false;
+        }
+        $property = '';
+        switch($prop) {
+            case 'aadhaar_file':
+                $property = 'aadhaar_card';
+                break;
+            case 'bank_passbook_file':
+                $property = 'bank_passbook';
+                break;
+            case 'wf_front':
+                $property = 'wb_passbook_front';
+                break;
+            case 'wf_back':
+                $property = 'wb_passbook_back';
+                break;
+            case 'one_certificate':
+                $property = 'one_and_same_cert';
+                break;
+        }
+        $member->addOneImageFromUrl($property, $url);
+    }
+
+    private function getFeeItemsForOld($subscription)
+    {
+        //fee_type_id, amount, from, to, tenure (annual_sub id-2)
+
+        $total = $subscription->amount + $subscription->fine + $subscription->arrears;
+        $items = [];
+        $feeTypeId = config('generalSettings.fee_types_map')[$subscription->subscription_type_id];
+        $i = [
+            'fee_type_id' => $feeTypeId,
+            'amount' => $subscription->amount,
+            'from' => '',
+            'to' => '',
+            'tenure' => ''
+        ];
+        if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
+            $i['from'] = $subscription->peroid_from;
+            $i['to'] = $subscription->peroid_to;
+            $i['tenure'] = $subscription->tenure ??  $subscription->peroid_from . ' to ' .$subscription->peroid_to;
+
+        }
+        $items[] = $i;
+        if ($subscription->fine > 0) {
+            $items[] = [
+                'fee_type_id' => 3,
+                'amount' => $subscription->fine,
+                'from' => '',
+                'to' => '',
+                'tenure' => ''
+            ];
+        }
+        if ($subscription->arrears > 0) {
+            $items[] = [
+                'fee_type_id' => 4,
+                'amount' => $subscription->arrears,
+                'from' => '',
+                'to' => '',
+                'tenure' => ''
+            ];
+        }
+        return [
+            'items' => $items,
+            'total' => $total
+        ];
+    }
+
+    private function getDistrictIdForOldId($did)
+    {
+        return config('generalSettings.districts_idmap')[$did];
+    }
+
     public function annualFeesPeriod($id, $months): array
     {
         // $m = Member::find($id);

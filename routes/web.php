@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.verify_aadhaar');
     Route::get('/members/sync', [MemberController::class, 'sync'])
         ->name('members.sync');
+    Route::post('/members/fetch-old-data', [MemberController::class, 'fetchMemberFromOld'])
+        ->name('members.fetch.old');
     Route::get('/members/search', [MemberController::class, 'search'])
         ->name('members.search');
     Route::get('/members/unapproved', [MemberController::class, 'unapprovedMembers'])
