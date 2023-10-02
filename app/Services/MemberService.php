@@ -1653,7 +1653,7 @@ class MemberService implements ModelViewConnector {
         $property = '';
         switch($prop) {
             case 'aadhaar_file':
-                $property = 'aadhaar_ard';
+                $property = 'aadhaar_card';
                 break;
             case 'bank_passbook_file':
                 $property = 'bank_passbook';

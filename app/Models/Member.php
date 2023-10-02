@@ -213,7 +213,7 @@ class Member extends Model
                 'disk' => 's3',
                 'folder' => 'public/images/ration_card'
             ],
-            'wbP_pssbook_front' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/wb_passbook_front'
             ],
