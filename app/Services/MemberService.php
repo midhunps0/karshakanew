@@ -1614,7 +1614,7 @@ class MemberService implements ModelViewConnector {
 
             $feeItemsData = $this->getFeeItemsForOld($s);
 
-            $fc->total = $feeItemsData['total'];
+            $fc->total_amount = $feeItemsData['total'];
 
             $fc->save();
 
