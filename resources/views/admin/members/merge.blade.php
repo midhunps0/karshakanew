@@ -24,7 +24,7 @@
                     })
                     .catch((e) => {
                         console.log(e);
-                        this.dataloading = false;
+                        this.dataloading = false;$dispatch('showtoast', {message: 'Member data sync failed due to unexpected error.', mode: 'error'});
                     });
                 }
             }" action="" @submit.prevent.stop="doSubmit();"

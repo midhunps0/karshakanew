@@ -201,31 +201,31 @@ class Member extends Model
                 'disk' => 's3',
                 'folder' => 'public/images/application_back'
             ],
-            'aadhaarCard'=> [
+            'aadhaar_card'=> [
                 'disk' => 's3',
                 'folder' => 'public/images/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/bank_passbook'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/ration_card'
             ],
-            'wbPassbookFront' => [
+            'wbP_pssbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/wb_passbook_back'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/one_and_same_cert'
             ],
-            'otherDoc' => [
+            'other_doc' => [
                 'disk' => 's3',
                 'folder' => 'public/images/other_doc'
             ],
