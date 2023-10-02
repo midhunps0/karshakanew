@@ -147,7 +147,10 @@ trait OwnsMedia
                 $destDisk = config('mediaManager.images_disk');
             }
             $ulid = Str::ulid();
-            $fname = array_pop(explode('/', $url));
+            $arr = explode('/', $url);
+            $fname = array_pop($arr);
+            info('image file name :>>>>>>>>>>>>>>>>');
+            info($fname);
             $storagePath = $destFolder.'/'.$ulid.'/original/'.$fname;
 
             $headers = get_headers($url, 1);
