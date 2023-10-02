@@ -9,6 +9,7 @@
         </h3>
         <form x-data="{
             dataloading: false,
+            membership_no: '',
                 doSubmit(){
                     let fd = new FormData($el);
                     this.dataloading = true;
