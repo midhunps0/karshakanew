@@ -146,6 +146,12 @@ trait OwnsMedia
                 $destFolder = config('mediaManager.images_folder');
                 $destDisk = config('mediaManager.images_disk');
             }
+            info('property');
+            info($property);
+            info('destFolder');
+            info($destFolder);
+            info('destDisk');
+            info($destDisk);
             $ulid = Str::ulid();
             $arr = explode('/', $url);
             $fname = array_pop($arr);
