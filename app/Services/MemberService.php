@@ -1677,20 +1677,20 @@ class MemberService implements ModelViewConnector {
         $total = $subscription->amount + $subscription->fine + $subscription->arrears;
         $items = [];
         $feeTypeId = config('generalSettings.fee_types_map')[$subscription->subscription_type_id];
-        $i = [
+        $hasTenure = in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'));
+        $tenure = '';
+        if ($hasTenure) {
+            $tenure = $subscription->tenure ??  $subscription->period_from . ' to ' .$subscription->period_to;
+        }
+
+        $items[] = [
             'fee_type_id' => $feeTypeId,
             'amount' => $subscription->amount,
-            'from' => '',
-            'to' => '',
-            'tenure' => ''
+            'from' => $hasTenure ? $subscription->period_from : '',
+            'to' => $hasTenure ? $subscription->period_to : '',
+            'tenure' => $tenure
         ];
-        if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
-            $i['from'] = $subscription->period_from;
-            $i['to'] = $subscription->period_to;
-            $i['tenure'] = $subscription->tenure ??  $subscription->period_from . ' to ' .$subscription->period_to;
 
-        }
-        $items[] = $i;
         if ($subscription->fine > 0) {
             $items[] = [
                 'fee_type_id' => 3,
