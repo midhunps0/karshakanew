@@ -231,8 +231,7 @@ class MemberController extends SmartController
 
         try {
             return response()->json(
-                $this->connectorService->fetchMemberCurl($membershipNo, $memberId),
-                $memberId
+                $this->connectorService->fetchMemberCurl($membershipNo, $memberId)
             );
         } catch (\Throwable $e) {
             return response()->json([
