@@ -1599,6 +1599,7 @@ class MemberService implements ModelViewConnector {
         $member->bank_branch = $data->bank_name;
         $member->bank_acc_no = $data->bank_ac_no;
         $member->bank_ifsc = $data->ifsc_code;
+        $member->merged = 1;
         $member->save();
 
         foreach ($data->subscriptions as $s) {

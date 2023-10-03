@@ -30,6 +30,11 @@
             }" action="" @submit.prevent.stop="doSubmit();"
             class="m-auto max-w-1/2 rounded-md border border-base-content border-opacity-20 p-3"
             >
+            @if ($status != 'ok')
+                <div class="text-warning text-center p-4 rounded-lg my-2">
+                    {{$status}}
+                </div>
+            @endif
             @if ($member != null)
             <div class="opacity-80 mt-4 mb-8">
                     <span class="inline-block opacity-70 font-bold">Existing Member Name:</span><span class="inline-block font-bold">&nbsp;{{$member->display_name}}</span><br/>

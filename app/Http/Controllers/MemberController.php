@@ -216,11 +216,17 @@ class MemberController extends SmartController
     public function sync()
     {
         $member = null;
+        $status = 'ok';
         if ($this->request->input('m') != null) {
             $member = Member::find($this->request->input('m'));
+            if ($member->merged == 1) {
+                $member = null;
+                $status = 'The member you tried to fetch data for, was already updated.';
+            }
         }
         return $this->buildResponse('admin.members.merge', [
-            'member' => $member
+            'member' => $member,
+            'status' => $status
         ]);
     }
 
