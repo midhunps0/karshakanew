@@ -1612,7 +1612,7 @@ class MemberService implements ModelViewConnector {
             $fc->book_number = $s->book_number;
             $fc->receipt_number = $s->voucher_number;
             $fc->receipt_date = $s->subscription_date;
-            $fc->receipt_date = $s->subscription_date;
+            $fc->created_at = $s->created_at;
             $fc->notes = $s->notes. ' '.$s->payment_through;
 
             $feeItemsData = $this->getFeeItemsForOld($s);
