@@ -16,7 +16,9 @@ class FeeCollection extends Model
     protected $guarded = [];
 
     protected $with = [
-        'feeItems'
+        'district',
+        'feeItems',
+        'member'
     ];
 
     protected $appends = [

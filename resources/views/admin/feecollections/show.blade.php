@@ -21,12 +21,10 @@
                 },
             }"
         x-init="
-            receipt = JSON.parse(document.getElementById('receiptData').value).item;
-            console.log(receipt);
+            theData = {{Js::from($model)}};
+            receipt = theData.item;
         "
         >
-        <input id="receiptData" type="hidden" value="{{json_encode($model)}}">
-
         <div class="w-full md:w-10/12 m-auto p-3 border border-base-content border-opacity-50 rounded-md my-8 min-w-48 overflow-x-scroll">
             <div id="receipt">
                 <div class="text-center my-4 font-bold underline">കേരള കർഷക തൊഴിലാളി ക്ഷേമനിധി ബോർഡ്<br/>
@@ -36,7 +34,7 @@
                     <div>
                         <div>
                             <span class="text-warning">Member: </span>
-                            <span x-text="receipt.member ? receipt.member.name : ''"></span>
+                            <span x-text="receipt.member ? receipt.member.display_name : ''"></span>
                         </div>
                         <div>
                             <span class="text-warning">Membership No.: </span>

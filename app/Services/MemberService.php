@@ -1587,8 +1587,8 @@ class MemberService implements ModelViewConnector {
             $member->religion_id = $data->religion_id;
             $member->caste_id = $data->caste_id;
             $member->trade_union_id = $data->trade_union_id;
-            $member->created_at = $data->created_at;
-            $member->approved_at = $data->created_at;
+            $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyy-mm-dd') : $data->created_at;
+            $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyy-mm-dd') : $data->created_at;
         }
         //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
         $member->name = $data->name;
