@@ -1587,6 +1587,8 @@ class MemberService implements ModelViewConnector {
             $member->religion_id = $data->religion_id;
             $member->caste_id = $data->caste_id;
             $member->trade_union_id = $data->trade_union_id;
+            $member->created_at = $data->created_at;
+            $member->approved_at = $data->created_at;
         }
         //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
         $member->name = $data->name;
