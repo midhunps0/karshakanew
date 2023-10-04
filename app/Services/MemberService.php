@@ -16,6 +16,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Events\BusinessActionEvent;
 use App\Events\FeeCollectionEvent;
+use Exception;
 use Ynotz\EasyAdmin\Services\RowLayout;
 use Ynotz\EasyAdmin\Services\TabLayout;
 use Ynotz\EasyAdmin\Services\TabsPanel;
@@ -1566,83 +1567,92 @@ class MemberService implements ModelViewConnector {
         }
 
         curl_close($ch);
-
-        if ($memberId != null) {
-            $member = Member::find($memberId);
-            info('existing member:');
-            info($member);
-        } else {
-            info('new member created');
-            $member = new Member();
-            $member->membership_no = $data->membership_no;
-            $member->reg_date = $data->reg_date;
-            $member->district_id = $this->getDistrictIdForOldId($data->get_district->id);
-            $member->taluk_id = $data->get_taluk->id;
-            $member->village_id = $data->get_village->id;
-            $member->gender = $data->gender;
-            $member->dob = $data->dob;
-            $member->marital_status = $data->marital_status;
-            $member->parent_guardian = $data->parent_spouse_name;
-            $member->guardian_relationship = $data->relationship;
-            $member->religion_id = $data->religion_id;
-            $member->caste_id = $data->caste_id;
-            $member->trade_union_id = $data->trade_union_id;
-            $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
-            $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
-        }
-        //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
-        $member->name = $data->name;
-        $member->aadhaar_no = $data->aadhaar_no;
-        $member->mobile_no = $data->mobile_no;
-        $member->current_address = $data->present_address;
-        $member->permanent_address = $data->permanent_address;
-        $member->live_id = $data->id;
-        $member->bank_name = $data->name_in_bank;
-        $member->bank_branch = $data->bank_name;
-        $member->bank_acc_no = $data->bank_ac_no;
-        $member->bank_ifsc = $data->ifsc_code;
-        $member->merged = 1;
-        $member->save();
-
-        foreach ($data->subscriptions as $s) {
-            //get matching fee_type_id for subscription_type_id
-            $feeTypeId = config('generalSettings.fee_types_map')[$s->subscription_type_id];
-            //create feeCollection
-            $fc = new FeeCollection();
-            $fc->member_id = $member->id;
-            $fc->district_id = $member->district_id;
-            $fc->book_number = $s->book_number;
-            $fc->receipt_number = $s->voucher_number;
-            $fc->receipt_date = $s->subscription_date;
-            $fc->created_at = $s->created_at;
-            $fc->notes = $s->notes. ' '.$s->payment_through;
-
-            $feeItemsData = $this->getFeeItemsForOld($s);
-
-            $fc->total_amount = $feeItemsData['total'];
-
-            $fc->save();
-
-            foreach ($feeItemsData['items'] as $fi) {
-                $item = new FeeItem();
-                $item->fee_collection_id = $fc->id;
-                $item->fee_type_id = $fi['fee_type_id'];
-                $item->amount = $fi['amount'];
-                if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
-                    $item->period_from = $fi['from'];
-                    $item->period_to = $fi['to'];
-                    $item->tenure = $fi['tenure'];
-                }
-                $item->save();
+        try {
+            DB::beginTransaction();
+            if ($memberId != null) {
+                $member = Member::find($memberId);
+                info('existing member:');
+                info($member);
+            } else {
+                info('new member created');
+                $member = new Member();
+                $member->membership_no = $data->membership_no;
+                $member->reg_date = $data->reg_date;
+                $member->district_id = $this->getDistrictIdForOldId($data->get_district->id);
+                $member->taluk_id = $data->get_taluk->id;
+                $member->village_id = $data->get_village->id;
+                $member->gender = $data->gender;
+                $member->dob = $data->dob;
+                $member->marital_status = $data->marital_status;
+                $member->parent_guardian = $data->parent_spouse_name;
+                $member->guardian_relationship = $data->relationship;
+                $member->religion_id = $data->religion_id;
+                $member->caste_id = $data->caste_id;
+                $member->trade_union_id = $data->trade_union_id;
+                $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
+                $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
             }
+            //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
+            $member->name = $data->name;
+            $member->aadhaar_no = $data->aadhaar_no;
+            $member->mobile_no = $data->mobile_no;
+            $member->current_address = $data->present_address;
+            $member->permanent_address = $data->permanent_address;
+            $member->live_id = $data->id;
+            $member->bank_name = $data->name_in_bank;
+            $member->bank_branch = $data->bank_name;
+            $member->bank_acc_no = $data->bank_ac_no;
+            $member->bank_ifsc = $data->ifsc_code;
+            $member->merged = 1;
+            $member->save();
 
-            $this->createMediaForOld($member, 'aadhaar_file', $data->aadhaar_file);
-            $this->createMediaForOld($member, 'bank_passbook_file', $data->bank_passbook_file);
-            $this->createMediaForOld($member, 'wf_front', $data->wf_front);
-            $this->createMediaForOld($member, 'wf_back', $data->wf_back);
-            $this->createMediaForOld($member, 'one_certificate', $data->one_certificate);
-            //check if fee_type_id in types_with_tenures
-            // if yes, add tenures
+            foreach ($data->subscriptions as $s) {
+                //get matching fee_type_id for subscription_type_id
+                $feeTypeId = config('generalSettings.fee_types_map')[$s->subscription_type_id];
+                //create feeCollection
+                $fc = new FeeCollection();
+                $fc->member_id = $member->id;
+                $fc->district_id = $member->district_id;
+                $fc->book_number = $s->book_number;
+                $fc->receipt_number = $s->voucher_number;
+                $fc->receipt_date = $s->subscription_date;
+                $fc->created_at = $s->created_at;
+                $fc->notes = $s->notes. ' '.$s->payment_through;
+
+                $feeItemsData = $this->getFeeItemsForOld($s);
+
+                $fc->total_amount = $feeItemsData['total'];
+
+                $fc->save();
+
+                foreach ($feeItemsData['items'] as $fi) {
+                    $item = new FeeItem();
+                    $item->fee_collection_id = $fc->id;
+                    $item->fee_type_id = $fi['fee_type_id'];
+                    $item->amount = $fi['amount'];
+                    if (in_array($feeTypeId, config('generalSettings.fee_types_with_tenure'))) {
+                        $item->period_from = $fi['from'];
+                        $item->period_to = $fi['to'];
+                        $item->tenure = $fi['tenure'];
+                    }
+                    $item->save();
+                }
+
+                $this->createMediaForOld($member, 'aadhaar_file', $data->aadhaar_file);
+                $this->createMediaForOld($member, 'bank_passbook_file', $data->bank_passbook_file);
+                $this->createMediaForOld($member, 'wf_front', $data->wf_front);
+                $this->createMediaForOld($member, 'wf_back', $data->wf_back);
+                $this->createMediaForOld($member, 'one_certificate', $data->one_certificate);
+                //check if fee_type_id in types_with_tenures
+                // if yes, add tenures
+            }
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'error' => $e->__toString()
+            ];
         }
         //report-data-merge
         $reportUrl = "https://api.karshakathozhilali.org/report-data-merge?membership_no=$membershipNo&security_token=$token";
