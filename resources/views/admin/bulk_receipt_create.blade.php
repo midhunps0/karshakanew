@@ -245,11 +245,11 @@
             doSubmit() {
                 {{-- let form = document.getElementById('{{$form['id']}}'); --}}
                 let fd = new FormData();
-                let date = Date.parse(this.date);
+                {{-- let date = Date.parse(this.date); --}}
                 fd.append('members', this.members.map((m) => {
                     return m.id
                 }).join(','));
-                fd.append('date', date.toString('dd-MM-yyyy'));
+                fd.append('date', this.date);
                 this.fees.forEach((f, i) => {
                     fd.append('fee_item['+i+'][fee_type_id]', f.particulars);
                     if (f.tenure != null && f.tenure != '') {
@@ -456,7 +456,7 @@
                             Receipt
                         </h3>
                         <div>No.: <span x-text="r.receipt_number"></span></div>
-                        <div>Date: <span x-text="r.receipt_date"></span></div>
+                        <div>Date: <span x-text="r.formatted_receipt_date"></span></div>
                         <div>Member: <span x-text="r.member.name != null ? r.member.name : r.member.name_mal"></span></div>
                         <div>Reg. No.: <span x-text="r.member.membership_no"></span></div>
                         <div>
