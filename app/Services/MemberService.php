@@ -1941,15 +1941,7 @@ class MemberService implements ModelViewConnector {
                 info('Receipt created');
                 $successList[] = $id;
                 $fcIds[] = $fc->id;
-                $attemptSuccess = true;
-
-            } catch (\Throwable $e) {
-                // info("Couldn't create bulk receipts. Failed at id: ".$id);
-                // info($e->__toString());
-                DB::rollback();
-                $success = false;
-            }
-            if ($attemptSuccess) {
+                // $attemptSuccess = true;
                 FeeCollectionEvent::dispatch(
                     $member->district_id,
                     $fc,
@@ -1965,7 +1957,30 @@ class MemberService implements ModelViewConnector {
                     $fc,
                     'Created Receipt. No.: '.$fc->receipt_number,
                 );
+
+            } catch (\Throwable $e) {
+                // info("Couldn't create bulk receipts. Failed at id: ".$id);
+                // info($e->__toString());
+                DB::rollback();
+                $success = false;
             }
+            // if ($attemptSuccess) {
+            //     FeeCollectionEvent::dispatch(
+            //         $member->district_id,
+            //         $fc,
+            //         FeeCollectionEvent::$ACTION_CREATED
+            //     );
+
+            //     BusinessActionEvent::dispatch(
+            //         FeeCollection::class,
+            //         $fc->id,
+            //         'Created',
+            //         auth()->user()->id,
+            //         null,
+            //         $fc,
+            //         'Created Receipt. No.: '.$fc->receipt_number,
+            //     );
+            // }
         }
 
         if ($success) {
