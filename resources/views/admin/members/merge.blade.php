@@ -20,7 +20,11 @@
                         console.log(r.data);
                         this.dataloading = false;
                         this.membership_no = '';
-                        $dispatch('showtoast', {message: 'Member data sync completed successfully!', mode: 'success'});
+                        if (r.data.success) {
+                            $dispatch('showtoast', {message: 'Member data sync completed successfully!', mode: 'success'});
+                        } else {
+                            $dispatch('showtoast', {message: 'Member data sync failed due to unexpected error.', mode: 'error'});
+                        }
                     })
                     .catch((e) => {
                         console.log(e);
