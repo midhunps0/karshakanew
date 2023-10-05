@@ -1549,12 +1549,16 @@ class MemberService implements ModelViewConnector {
         curl_setopt($ch, CURLOPT_TIMEOUT, 80);
 
         $response = curl_exec($ch);
+
+
         info($response);
         $data = json_decode($response);
         $data = $data->member;
         info('name >>>>>>>>>>>>>>');
         info($data->name);
         $responseData = [];
+
+
         if(curl_error($ch)){
             return [
                 'success' => false,
@@ -1566,7 +1570,9 @@ class MemberService implements ModelViewConnector {
             ];
         }
 
+
         curl_close($ch);
+
         try {
             DB::beginTransaction();
             if ($memberId != null) {
@@ -1589,8 +1595,12 @@ class MemberService implements ModelViewConnector {
                 $member->religion_id = $data->religion_id;
                 $member->caste_id = $data->caste_id;
                 $member->trade_union_id = $data->trade_union_id;
-                $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
-                $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $data->created_at;
+                $c_at = explode('T', $data->created_at)[0];
+                info('c-at');
+                info($c_at);
+                $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $c_at;
+                $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $c_at;
+                $member->created_by = auth()->user()->id;
             }
             //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
             $member->name = $data->name;
@@ -1648,6 +1658,7 @@ class MemberService implements ModelViewConnector {
             }
             DB::commit();
         } catch (\Throwable $e) {
+            info($e->__toString());
             DB::rollBack();
             return [
                 'success' => false,
@@ -1655,6 +1666,7 @@ class MemberService implements ModelViewConnector {
             ];
         }
         //report-data-merge
+        /*
         $reportUrl = "https://api.karshakathozhilali.org/report-data-merge?membership_no=$membershipNo&security_token=$token";
         info($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -1664,6 +1676,7 @@ class MemberService implements ModelViewConnector {
         curl_setopt($ch, CURLOPT_TIMEOUT, 80);
 
         $r = curl_exec($ch);
+        */
         return $responseData;
     }
 
@@ -1718,8 +1731,8 @@ class MemberService implements ModelViewConnector {
             $items[] = [
                 'fee_type_id' => 3,
                 'amount' => $subscription->fine,
-                'from' => '',
-                'to' => '',
+                'from' => null,
+                'to' => null,
                 'tenure' => ''
             ];
         }
@@ -1727,8 +1740,8 @@ class MemberService implements ModelViewConnector {
             $items[] = [
                 'fee_type_id' => 4,
                 'amount' => $subscription->arrears,
-                'from' => '',
-                'to' => '',
+                'from' => null,
+                'to' => null,
                 'tenure' => ''
             ];
         }
