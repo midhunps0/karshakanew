@@ -1709,8 +1709,8 @@ class MemberService implements ModelViewConnector {
         $items[] = [
             'fee_type_id' => $feeTypeId,
             'amount' => $subscription->amount,
-            'from' => $hasTenure ? $subscription->period_from : '',
-            'to' => $hasTenure ? $subscription->period_to : '',
+            'from' => $hasTenure ? $subscription->period_from : null,
+            'to' => $hasTenure ? $subscription->period_to : null,
             'tenure' => $tenure
         ];
 
