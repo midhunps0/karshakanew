@@ -1538,6 +1538,21 @@ class MemberService implements ModelViewConnector {
 
     public function fetchMemberCurl($membershipNo, $memberId)
     {
+        info('params');
+        info($membershipNo);
+        info($memberId);
+        if ($memberId == null) {
+            info('checking existing member');
+            $m = Member::where('membership_no', $membershipNo)->get()->first();
+            info($m);
+            if ($m != null) {
+                return [
+                    'success' => false,
+                    'exists' => true,
+                    'member' => $m
+                ];
+            }
+        }
         $ch = curl_init();
         $token ='$asajdas/as7%26dda67ada%23423AHJ';
         $url = "https://api.karshakathozhilali.org/fetch-member?membership_no=$membershipNo&security_token=$token";

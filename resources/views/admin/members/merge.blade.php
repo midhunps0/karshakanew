@@ -10,6 +10,7 @@
         <form x-data="{
             dataloading: false,
             membership_no: '',
+            existing_member: null,
                 doSubmit(){
                     let fd = new FormData($el);
                     this.dataloading = true;
@@ -22,8 +23,12 @@
                         this.membership_no = '';
                         if (r.data.success) {
                             $dispatch('showtoast', {message: 'Member data sync completed successfully!', mode: 'success'});
+                            this.existing_member = null;
                         } else {
-                            $dispatch('showtoast', {message: 'Member data sync failed due to unexpected error.', mode: 'error'});
+                            if (r.data.exists) {
+                                this.existing_member = r.data.member;
+                            }
+                            $dispatch('showtoast', {message: 'Member data sync failed. Please make sure that you have entered the correct membership number.', mode: 'error'});
                         }
                     })
                     .catch((e) => {
@@ -39,6 +44,12 @@
                     {{$status}}
                 </div>
             @endif
+            <div x-show="existing_member != null" class="border border-warning border-opacity-50 p-3 rounded-lg leading-relaxed">
+                A member with the membership number you entered already exists.<br/>
+                <span class="font-bolg text-warning">Membership No.:</span>&nbsp;<span x-text="existing_member.membership_no" class="font-bold text-warning"></span><br/>
+                Please make sure you have entered the correct membership number.<br/>
+                To sync data for existing members, please go to the corresponding member profile page.
+            </div>
             @if ($member != null)
             <div class="opacity-80 mt-4 mb-8">
                     <span class="inline-block opacity-70 font-bold">Existing Member Name:</span><span class="inline-block font-bold">&nbsp;{{$member->display_name}}</span><br/>
