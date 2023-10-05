@@ -1615,7 +1615,7 @@ class MemberService implements ModelViewConnector {
             $member->bank_ifsc = $data->ifsc_code;
             $member->merged = 1;
             $member->save();
-
+info('member saved');
             foreach ($data->subscriptions as $s) {
                 //get matching fee_type_id for subscription_type_id
                 $feeTypeId = config('generalSettings.fee_types_map')[$s->subscription_type_id];
@@ -1657,6 +1657,7 @@ class MemberService implements ModelViewConnector {
                 // if yes, add tenures
             }
             DB::commit();
+            info('committed');
         } catch (\Throwable $e) {
             info($e->__toString());
             DB::rollBack();
@@ -1666,7 +1667,7 @@ class MemberService implements ModelViewConnector {
             ];
         }
         //report-data-merge
-        /*
+
         $reportUrl = "https://api.karshakathozhilali.org/report-data-merge?membership_no=$membershipNo&security_token=$token";
         info($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -1676,7 +1677,7 @@ class MemberService implements ModelViewConnector {
         curl_setopt($ch, CURLOPT_TIMEOUT, 80);
 
         $r = curl_exec($ch);
-        */
+
         return $responseData;
     }
 
