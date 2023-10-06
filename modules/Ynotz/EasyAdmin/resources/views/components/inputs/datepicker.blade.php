@@ -5,6 +5,7 @@
     'xerrors' => [],
     'label_position' => 'top'
     ])
+
 @php
     $type = $element['input_type'];
     $name = $element['key'];
@@ -203,6 +204,7 @@
                     this.no_of_days = daysArray;
                 },
                 updateOnEvent(source, value) {
+                    console.log('update called');
                     if (Object.keys(this.listeners).includes(source)) {
                         if (this.listeners[source].serviceclass == null) {
                             this.textval = '';
@@ -227,6 +229,8 @@
                     }
                 },
                 toggleOnEvent(source, value) {
+
+                    console.log('toggle called');
                     if (Object.keys(this.toggleListeners).includes(source)) {
                         this.toggleListeners[source].forEach((item) => {
                             switch(item.condition) {
@@ -265,6 +269,7 @@
                     }
                 },
                 resetOnEvent(detail) {
+                    console.log('reset called');
                     if(this.resetSources.includes(detail.source)) {
                         this.reset();
                     }
@@ -297,8 +302,19 @@
                 setPosition() {
                     let x = window.innerHeight - this.displaybox.getBoundingClientRect().bottom;
                     this.position = x < 200 ? 'top' : 'bottom';
+                },
+                checkDateFormat() {
+                    /*
+                    console.log('datepickerValue');
+                    console.log(this.datepickerValue);
+                    let arr = this.datepickerValue.split('-');
+                    let d = arr[0] ? arr[0] : null;
+                    let m = arr[1] ? arr[1] : null;
+                    let y = arr[2] ? arr[2] : null;
+                    */
                 }
-            }" x-init="
+            }"
+            x-init="
                 displaybox = $el;
                 selectedDate = '{{$_old[$name] ?? ''}}';
                 startYear = {{$startYear}};
@@ -381,10 +397,12 @@
                             @else
                             placeholder="{{$placeholder ?? ''}}"
                             @endif
-                            x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;" x-model="datepickerValue"
+                            x-on:click="calendarFromDate(); setPosition(); showDatepicker = !showDatepicker;"
+                            x-model="datepickerValue"
                             x-on:keydown.escape="showDatepicker = false;"
                             class="peer w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm bg-base-100 text-base-content font-medium input input-bordered"
-                            readonly />
+                            @keyup="checkDateFormat();"
+                            />
                         @if ($label_position == 'float')
                         <label x-on:click="document.getElementById('di-{{$ulid}}').click(); document.getElementById('di-{{$ulid}}').focus();" class="absolute text-warning peer-placeholder-shown:text-base-content duration-300 transform -translate-y-4 scale-90 top-2 left-2 z-10 origin-[0] bg-base-100 px-2 peer-focus:px-2 peer-focus:text-warning peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-4 transition-all">
                             {{-- {{$label}} --}}

@@ -162,6 +162,8 @@
                         false;
                 },
                 getDateValue(date) {
+                    console.log('y, m, d');
+                    console.log(this.year + ', ' + this.month + ', ' + date);
                     let selectedDate = new Date(
                         this.year,
                         this.month,
@@ -306,8 +308,10 @@
                         this.initDate();
                     }
                 }
-            }" x-init="
+            }"
+            x-init="
                 $watch('datepickerValue', (v) => {
+                    console.log('dpv: '+v);
                     $dispatch('datepicker', {value: v})
                 });
                 key = '{{$name}}';
@@ -353,6 +357,7 @@
                 @endforeach
                 @endif
             "
+
             @if (isset($update_on_events) || isset($toggle_on_events))
             @eaforminputevent.window="@if (isset($update_on_events))updateOnEvent($event.detail.source, $event.detail.value);@endif @if(isset($toggle_on_events))toggleOnEvent($event.detail.source, $event.detail.value);@endif"
             @endif
@@ -514,7 +519,7 @@
                                     </template>
                                     <template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
                                         <div style="width: 14.28%" class="px-1 mb-1">
-                                            <button @click.prevent.stop="getDateValue(date)" x-text="date"
+                                            <button type="button" @click.prevent.stop="getDateValue(date)" x-text="date"
                                                 class="cursor-pointer text-center text-sm rounded-full leading-loose transition ease-in-out duration-100 flex flex-row items-center justify-center w-8 h-8 focus:bg-primary border-none outline-none"
                                                 :class="{
                                                     'bg-base-200': isToday(date) == true,

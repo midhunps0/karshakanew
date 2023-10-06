@@ -127,7 +127,7 @@
                         </div>
                         <div class="md:w-1/4 p-1 my-1">
                             <span class="text-warning">Trade Union:</span>
-                            <span>{{isset($member->trade_union) ? $member->trade_union->name : '--'}}</span>
+                            <span>{{isset($member->tradeUnion) ? $member->tradeUnion->name : '--'}}</span>
                         </div>
                     </div>
                     <div class="p-3">

@@ -1,7 +1,7 @@
 <x-easyadmin::partials.adminpanel>
     <div class="flex flex-col justify-evenly items-center h-full">
         <span class="text-2xl text-base-content text-opacity-50">
-            Unable to display the page.
+            Unable to display the page.<br/>You may not be authorised to view this resource.
             @if (config('app.debug'))
                 <div class="text-sm p-4 max-w-2/3">Error:<br>{{$error}}</div>
             @endif

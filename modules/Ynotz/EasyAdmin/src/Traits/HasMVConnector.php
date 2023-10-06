@@ -56,8 +56,13 @@ trait HasMVConnector {
 
     public function show($id)
     {
-        $instance = $this->connectorService->show($id);
-        return $this->buildResponse($this->showView, ['model' => $instance]);
+        try {
+            $instance = $this->connectorService->show($id);
+            return $this->buildResponse($this->showView, ['model' => $instance]);
+        } catch (\Throwable $e) {
+            $msg = env('APP_DEBUG') ? $e->__toString() : $e->getMessage();
+            return $this->buildResponse('easyadmin::admin.error', ['error' => $msg]);
+        }
     }
 
     public function selectIds()

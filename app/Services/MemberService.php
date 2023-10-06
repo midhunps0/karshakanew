@@ -30,6 +30,7 @@ use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Ynotz\MediaManager\Services\EAInputMediaValidator;
 
 class MemberService implements ModelViewConnector {
@@ -240,16 +241,24 @@ class MemberService implements ModelViewConnector {
 
     public function show($id)
     {
-        return Member::with(
-            'district',
-            'taluk',
-            'village',
-            'tradeUnion',
-            'approvedBy',
-            'feePayments',
-            'nominees'
+        $m =  Member::with(
+            [
+                'district',
+                'taluk',
+                'village',
+                'tradeUnion',
+                'approvedBy',
+                'feePayments' => function ($query) {
+                    $query->orderBy('receipt_date', 'desc');
+                },
+                'nominees'
+            ]
         )->where('id', $id)
             ->get()->first();
+        if (!Gate::allows('view', $m)) {
+            throw new Exception('You are not authorised to view this member');
+        }
+        return $m;
     }
 
     public function buildSearchFormLayout(Type $args)
@@ -602,13 +611,13 @@ class MemberService implements ModelViewConnector {
             'bank_name' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'bank_name',
-                label: 'Bank Name',
+                label: 'Name In Bank',
                 properties: ['required' => true],
             ),
             'bank_branch' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'bank_branch',
-                label: 'Bank Branch',
+                label: 'Bank Name & Branch',
                 properties: ['required' => true],
             ),
             'bank_ifsc' => FormHelper::makeInput(

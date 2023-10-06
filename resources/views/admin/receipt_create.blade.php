@@ -328,7 +328,7 @@
                     }
                 }
             "
-            @datepicker.window="date = $event.detail.value;"
+            @datepicker.window="date = $event.detail.value; console.log(date);"
             @selectmember.window="fetchMember($event.detail.id); showform = true; showreceipt = false;"
             class="p-1" action=""
             id="{{$form['id']}}"
@@ -433,7 +433,7 @@
                             <div class="divider"></div>
                             <div class="flex flex-wrap space-x-0 md:space-x-4 items-end">
                                 <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full md:w-3/4" placeholder="Notes"></textarea>
-                                <button class="my-2 md:my-0 btn btn-md btn-warning flex-grow"
+                                <button type="submit" class="my-2 md:my-0 btn btn-md btn-warning flex-grow"
                                 :disabled="member != null && member.aadhaar_no == null"> Create Receipt </button>
                             </div>
                         </div>

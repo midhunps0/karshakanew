@@ -10,6 +10,9 @@
             'Female',
             'Others'
         ],
+        'relationships' => [
+            'Husband', 'Wife', 'Father', 'Mother', 'Uncle', 'Aunt', 'Grand Father', 'Grand Mother'
+        ],
         'marital_status' => [
             'Unmarried',
             'Married',
