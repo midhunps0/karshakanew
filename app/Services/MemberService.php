@@ -386,6 +386,16 @@ class MemberService implements ModelViewConnector {
     public function getUpdateValidationRules($id): array
     {
         $rules = $this->getStoreValidationRules();
+        unset($rules['photo']);
+        unset($rules['application_front']);
+        unset($rules['application_back']);
+        unset($rules['aadhaar_card']);
+        unset($rules['bank_passbook']);
+        unset($rules['ration_card']);
+        unset($rules['wb_passbook_front']);
+        unset($rules['wb_passbook_back']);
+        unset($rules['one_and_same_cert']);
+        unset($rules['other_doc']);
         $rules['is_approved'] = ['sometimes'];
         $rules['membership_no'] = ['required'];
         $rules['aadhaar_no'] = ['required', Rule::unique('members')->ignore($id)];
@@ -402,7 +412,7 @@ class MemberService implements ModelViewConnector {
         $old = $this->request->input('ol');
 
         $showMembershipField = $old == 1;
-        return [
+        $data = [
             // 'membership_no_create' => FormHelper::makeInput(
             //     inputType: 'text',
             //     key: 'membership_no',
@@ -787,6 +797,21 @@ class MemberService implements ModelViewConnector {
                 show: $user->hasPermissionTo('Member: Approve In Own District')
             )
         ];
+
+        if ($member != null) {
+            unset($data['photo']['validations']['max_size']);
+            unset($data['application_front']['validations']['max_size']);
+            unset($data['application_back']['validations']['max_size']);
+            unset($data['aadhaar_card']['validations']['max_size']);
+            unset($data['bank_passbook']['validations']['max_size']);
+            unset($data['ration_card']['validations']['max_size']);
+            unset($data['wb_passbook_front']['validations']['max_size']);
+            unset($data['wb_passbook_back']['validations']['max_size']);
+            unset($data['one_and_same_cert']['validations']['max_size']);
+            unset($data['other_doc']['validations']['max_size']);
+        }
+
+        return $data;
     }
 
     public function authoriseCreate()
@@ -1622,8 +1647,11 @@ class MemberService implements ModelViewConnector {
                 $c_at = explode('T', $data->created_at)[0];
                 info('c-at');
                 info($c_at);
-                $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $c_at;
-                $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('yyyy-mm-dd') : $c_at;
+                info($data->created_at);
+                info('compare dates:');
+                info($data->created_at == '-000001-11-29T18:06:32.000000Z');
+                $member->created_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('Y-m-d') : $c_at;
+                $member->approved_at = $data->created_at == '' || $data->created_at == '-000001-11-29T18:06:32.000000Z' || $data->created_at == null ? Carbon::today()->format('Y-m-d') : $c_at;
                 $member->created_by = auth()->user()->id;
             }
             //Member Name, Member Address, Aadhaar Number, Phone Number, Bank Information, Subscription Details, Images
@@ -1691,7 +1719,7 @@ info('member saved');
             ];
         }
         //report-data-merge
-
+/*
         $reportUrl = "https://api.karshakathozhilali.org/report-data-merge?membership_no=$membershipNo&security_token=$token";
         info($url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -1701,7 +1729,7 @@ info('member saved');
         curl_setopt($ch, CURLOPT_TIMEOUT, 80);
 
         $r = curl_exec($ch);
-
+*/
         return $responseData;
     }
 

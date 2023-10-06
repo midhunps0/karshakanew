@@ -446,7 +446,7 @@
 
         </form>
         <div x-show="showReceipts" class="fixed top-0 left-0 z-50 h-full w-full overflow-x-scroll md:py-4 bg-base-100 bg-opacity-30">
-            <div class="w-80 ml-auto mr-auto bg-base-200 p-4">
+            <div class="w-80 ml-auto mr-auto bg-base-200 p-4 overflow-y-scroll max-h-192">
                 <template x-for="r in receipts">
                     <div class="border border-x-base-content border-opacity-20 rounded-md shadow-md p-2">
                         <h3 class="text-lg text-center">

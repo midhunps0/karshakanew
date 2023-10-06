@@ -425,9 +425,9 @@
             @if (isset($validations['max_size']))
                 validations.maxSize = '{{$validations['max_size']}}';
             @endif
-            console.log('validations');
+            {{-- console.log('validations');
             console.log(validations);
-            console.log(validationsString);
+            console.log(validationsString); --}}
         @endif
         @if (isset($properties['multiple']) && $properties['multiple'])
             multiple = true;
