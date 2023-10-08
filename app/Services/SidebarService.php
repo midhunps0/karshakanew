@@ -328,7 +328,8 @@ class SidebarService implements SidebarServiceInterface
     }
     private function showAccessControl($action = 'View')
     {
-       return $this->user->hasPermissionTo("User: {$action} In Any District");
+       return $this->user->hasPermissionTo("User: {$action} In Any District") ||
+        $this->user->hasPermissionTo("User: {$action} In Own District");
     }
     private function showRoles()
     {

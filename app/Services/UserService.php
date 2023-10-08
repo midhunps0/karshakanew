@@ -167,7 +167,7 @@ class UserService implements ModelViewConnector {
             FormHelper::makeSelect(
                 key: 'district',
                 label: 'District',
-                options: District::all()->pluck('name', 'id'),
+                options: District::userAccessControlled()->get()->pluck('name', 'id'),
                 options_type: 'key_value',
                 properties: ['required' => true],
             ),
