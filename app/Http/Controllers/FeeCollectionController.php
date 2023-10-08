@@ -107,7 +107,8 @@ class FeeCollectionController extends SmartController
                 'start' => $start,
                 'end' => $end,
                 'fullreport' => true,
-                'datetype' => $request->input('datetype', 'receipt_date')
+                'datetype' => $request->input('datetype', 'receipt_date'),
+                'created_by' => $request->input('created_by', null)
             ]);
         }
         return response()->json([
@@ -127,7 +128,8 @@ class FeeCollectionController extends SmartController
                 'start' => $start,
                 'end' => $end,
                 'fullreport' => true,
-                'datetype' => $request->input('datetype', 'receipt_date')
+                'datetype' => $request->input('datetype', 'receipt_date'),
+                'created_by' => $request->input('created_by', null)
             ]);
         }
 
