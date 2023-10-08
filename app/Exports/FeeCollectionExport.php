@@ -26,7 +26,7 @@ class FeeCollectionExport implements FromArray, WithHeadings
             $item[] = $fc->receipt_date;
             $item[] = $fc->receipt_number;
             $item[] = $fc->member->membership_no;
-            $item[] = $fc->member->displayName;
+            $item[] = $fc->member->name;
             // foreach ($fc->feeItems as $fi) {
             //     $item = array(
             //         $fi->feeType->name,
@@ -42,7 +42,7 @@ class FeeCollectionExport implements FromArray, WithHeadings
             }
             $item[] = $fc->total_amount;
             $item[] = $fc->notes;
-            $item[] = $fc->collectedBy->name;
+            $item[] = $fc->collectedBy ? $fc->collectedBy->name : '';
             $arr[] = $item;
         }
         return $arr;
