@@ -38,21 +38,21 @@
         if ($event.detail.target == $el.id) {
             {{-- console.log('response for form submission');
             console.log($event.detail.content); --}}
-            let theId = null;
-            if ($event.detail.content.instance != undefined && $event.detail.content.instance != undefined != null) {
-                theId = $event.detail.content.instance.id;
-            } else {
-                theId = $event.detail.content.id;
-            }
-            let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', theId) : successRedirectUrl;
-            console.log('theUrl');
-            console.log(theUrl);
+
             if ($event.detail.content.success) {
+                let theId = null;
+                if ($event.detail.content.instance != undefined && $event.detail.content.instance != null) {
+                    theId = $event.detail.content.instance.id;
+                } else {
+                    theId = $event.detail.content.id;
+                }
+                let theUrl = $event.detail.content.instance != undefined ? successRedirectUrl.replace('_X_', theId) : successRedirectUrl;
+
                 $dispatch('shownotice', {message: $event.detail.content.message, mode: 'success', redirectUrl: theUrl, redirectRoute: successRedirectRoute});
                 $dispatch('formerrors', {errors: []});
             } else if (typeof $event.detail.content.errors != undefined) {
                 $dispatch('formerrors', {errors: $event.detail.content.errors});
-            } else{
+            } else {
                 $dispatch('shownotice', {message: $event.detail.content.error, mode: 'error', redirectUrl: null, redirectRoute: null});
             }
         }

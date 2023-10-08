@@ -66,9 +66,6 @@ class FeeCollectionExport implements FromArray, WithHeadings
         ];
         $headings =  array_merge($headings, $otherHeadings);
 
-        info('$headings');
-        info($headings);
-
         return $headings;
     }
 
