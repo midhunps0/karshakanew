@@ -333,7 +333,8 @@ class SidebarService implements SidebarServiceInterface
     }
     private function showRoles()
     {
-        return auth()->check();
+        return $this->user->hasPermissionTo("Role: Edit In Any District") ||
+        $this->user->hasPermissionTo("Role: Edit In Own District");
     }
     private function showCollections()
     {

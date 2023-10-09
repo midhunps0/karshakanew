@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\District;
+use Illuminate\Support\Str;
 use App\Services\RoleService;
 use App\Events\BusinessActionEvent;
 use Illuminate\Support\Facades\Hash;
@@ -174,7 +175,7 @@ class UserService implements ModelViewConnector {
             FormHelper::makeSelect(
                 key: 'roles',
                 label: 'Role',
-                options: Role::all(),
+                options: $this->getManageableRoles(),
                 options_type: 'collection',
                 options_id_key: 'id',
                 options_text_key: 'name',
@@ -193,6 +194,19 @@ class UserService implements ModelViewConnector {
         ];
     }
 
+    private function getManageableRoles()
+    {
+        $u = auth()->user();
+        $theRole = null;
+        foreach (Role::orderBy('id', 'asc')->get()->pluck('name') as $r) {
+            if(in_array($r, $u->roles->pluck('name')->toArray())){
+                $theRole = Str::snake($r);
+                break;
+            }
+        }
+        $marr = config('generalSettings.roles_hierarchy')[$theRole];
+        return Role::whereIn('name', $marr)->get();
+    }
     private function getQuery()
     {
         return $this->modelClass::query()->with([

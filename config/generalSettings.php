@@ -58,6 +58,33 @@
             5 => 8,
             6 => 5,
             7 => 9,
+        ],
+        'roles_hierarchy' => [
+            'system_admin' => [
+                'State Admin',
+                'District Admin',
+                'State Executive',
+                'District Executive',
+                'Union Representative',
+                // 'Member'
+            ],
+            'state_admin' => [
+                'District Admin',
+                'State Executive',
+                'District Executive',
+                'Union Representative',
+                // 'Member'
+            ],
+            'district_admin' => [
+                'State Executive',
+                'District Executive',
+                'Union Representative',
+                // 'Member'
+            ],
+            'state_executive' => [],
+            'district_executive' => [],
+            'union_representative' => [],
+            'member' => []
         ]
     ];
 ?>
