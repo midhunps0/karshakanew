@@ -50,10 +50,15 @@
 
                 $dispatch('shownotice', {message: $event.detail.content.message, mode: 'success', redirectUrl: theUrl, redirectRoute: successRedirectRoute});
                 $dispatch('formerrors', {errors: []});
-            } else if (typeof $event.detail.content.errors != undefined) {
-                $dispatch('formerrors', {errors: $event.detail.content.errors});
-            } else {
-                $dispatch('shownotice', {message: $event.detail.content.error, mode: 'error', redirectUrl: null, redirectRoute: null});
+            }
+            else if (typeof $event.detail.content.errors != undefined) {
+                console.log('errors dispatched');
+                console.log($event.detail.content.response.data.errors);
+                $dispatch('formerrors', {errors: $event.detail.content.response.data.errors});
+                $dispatch('showtoast', {message: 'Invalid inputs. Please check all the fields.', mode: 'error'});
+            }
+            else {
+                $dispatch('shownotice', {message: $event.detail.content.errors, mode: 'error', redirectUrl: null, redirectRoute: null});
             }
         }
     "

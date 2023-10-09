@@ -517,17 +517,19 @@
         errors = '';
 
         erArr = [];
-        Object.keys($event.detail.errors).forEach((e) => {
-            if (e.startsWith('{{$name}}')) {
-                erArr.push(($event.detail.errors[e]).reduce((result, e) => {
-                    if (result.length > 0) {
-                        return result + ' ' + e;
-                    } else {
-                        return result + e;
-                    }
-                }));
-            }
-        });
+        if ($event.detail.errors) {
+            Object.keys($event.detail.errors).forEach((e) => {
+                if (e.startsWith('{{$name}}')) {
+                    erArr.push(($event.detail.errors[e]).reduce((result, e) => {
+                        if (result.length > 0) {
+                            return result + ' ' + e;
+                        } else {
+                            return result + e;
+                        }
+                    }));
+                }
+            });
+        }
 
         errors = erArr.reduce(
             (result, e) => {
