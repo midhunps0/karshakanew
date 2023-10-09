@@ -158,7 +158,7 @@ class SidebarService implements SidebarServiceInterface
                 'type' => 'menu_group',
                 'title' => 'Reports',
                 'icon' => 'easyadmin::icons.gear',
-                'show' => $this->showRoles(),
+                'show' => $this->showReports(),
                 'menu_items' => [
                     [
                         'type' => 'menu_item',
@@ -343,6 +343,11 @@ class SidebarService implements SidebarServiceInterface
     private function showAllowancesReport()
     {
         return auth()->user()->can('viewReport', Allowance::class);
+    }
+    private function showReports()
+    {
+        return $this->showCollections() ||
+            $this->showAllowancesReport();
     }
     private function showPermissions()
     {
