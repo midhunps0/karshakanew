@@ -78,7 +78,7 @@ class FeeCollection extends Model
     {
         $districtId = auth()->user()->district_id;
         if ($districtId != 15) {
-            $query->where('district_id', $districtId);
+            $query = $query->where('district_id', $districtId);
         }
         return $query;
     }
