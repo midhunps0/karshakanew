@@ -286,10 +286,10 @@
                                     </td>
                                     {{-- <td><span x-show="index == 0" x-text="r.district.name"></span></td> --}}
                                     <td>
-                                        <span x-show="index == 0" x-text="r.receipt_number"></span>
+                                        <span x-show="index == 0" x-text="r.member.name"></span>
                                     </td>
                                     <td>
-                                        <span x-show="index == 0" x-text="r.receipt_number"></span>
+                                        <span x-show="index == 0" x-text="r.member.membership_no"></span>
                                     </td>
                                     <td>
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>
