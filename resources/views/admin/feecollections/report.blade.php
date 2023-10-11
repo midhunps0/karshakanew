@@ -263,16 +263,17 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>District</th>
+                                    {{-- <th>District</th> --}}
                                     <th>Member</th>
                                     <th>Member Reg. No.</th>
                                     <th>Receipt No.</th>
                                     <th>particulars</th>
-                                    <th>From</th>
-                                    <th>To</th>
+                                    {{-- <th>From</th>
+                                    <th>To</th> --}}
                                     <th>Tenure</th>
                                     <th>Amount</th>
                                     <th>Total Amount</th>
+                                    <th>Notes</th>
                                     <th>Created By</th>
                                 </tr>
                             </thead>
@@ -283,7 +284,7 @@
                                     <td>
                                         <span x-show="index == 0" x-text="r.formatted_receipt_date"></span>
                                     </td>
-                                    <td><span x-show="index == 0" x-text="r.district.name"></span></td>
+                                    {{-- <td><span x-show="index == 0" x-text="r.district.name"></span></td> --}}
                                     <td>
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>
                                     </td>
@@ -294,15 +295,16 @@
                                         <span x-show="index == 0" x-text="r.receipt_number"></span>
                                     </td>
                                     <td><span x-text="fi.fee_type.name"></span></td>
-                                    <td>
+                                    {{-- <td>
                                         <span x-text="fi.period_from != null ? fi.period_from : '--'"></span>
                                     </td>
                                     <td>
                                         <span x-text="fi.period_to != null ? fi.period_to : '--'"></span>
-                                    <td>
-                                        <span x-text="fi.tenure != null ? fi.tenure : '--'"></span></td>
+                                    </td> --}}
+                                    <td><span x-text="fi.tenure != null ? fi.tenure : '--'"></span></td>
                                     <td><span x-text="fi.amount"></td>
                                     <td><span x-show="index == 0" x-text="r.total_amount"></span></td>
+                                    <td><span x-show="index == 0" x-text="r.notes"></span></td>
                                     <td><span x-show="index == 0" x-text="r.collected_by.name"></span></td>
                                 </tr>
                                 </template>

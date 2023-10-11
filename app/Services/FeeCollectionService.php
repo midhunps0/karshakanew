@@ -178,7 +178,7 @@ class FeeCollectionService implements ModelViewConnector {
         if (isset($data['end'])) {
             $query->where($datetype, '<=', AppHelper::formatDateForSave(thedate: $data['end'], setTimeTo: 'end'));
         }
-
+        $query->orderBy('fee_collections.id');
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
