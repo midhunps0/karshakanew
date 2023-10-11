@@ -75,11 +75,11 @@
             @foreach ($_old['nominees'] as $n)
                 items.push({
                     name: '{{\App\Helpers\AppHelper::jssafe($n->name)}}',
-                    relation: '{{$n->relation}}',
+                    relation: '{{\App\Helpers\AppHelper::jssafe(e($n->relation))}}',
                     percentage: '{{$n->percentage}}',
                     dob: '{{$n->dob}}',
-                    guardian_name: '{{\App\Helpers\AppHelper::jssafe($n->guardian_name)}}',
-                    guardian_relation: '{{$n->guardian_relation}}'
+                    guardian_name: '{{\App\Helpers\AppHelper::jssafe(e($n->guardian_name))}}',
+                    guardian_relation: '{{\App\Helpers\AppHelper::jssafe(e($n->guardian_relation))}}'
                 });
             @endforeach
             @endif
