@@ -1510,9 +1510,9 @@ class MemberService implements ModelViewConnector {
     public function processBeforeUpdate(array $data, $id = null): array
     {
         if (filter_var($data['copy_address'], FILTER_VALIDATE_BOOLEAN)) {
-            $data['permanent_address'] = $data['current_address'];
-            $data['permanent_address_mal'] = $data['current_address_mal'];
-            $data['pa_pincode'] = $data['ca_pincode'];
+            $data['current_address'] = $data['permanent_address'];
+            $data['current_address_mal'] = $data['permanent_address_mal'];
+            $data['ca_pincode'] = $data['pa_pincode'];
         }
 
         /**
