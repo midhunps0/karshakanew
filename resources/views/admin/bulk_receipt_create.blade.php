@@ -217,8 +217,8 @@
                 }
             },
             printReceipt() {
-                let divContents = document.getElementById('receipt').innerHTML;
-                let a = window.open('', '', 'height=500, width=500');
+                let divContents = document.getElementById('bulk-receipts-div').innerHTML;
+                let a = window.open('', '', 'height=350, width=500');
                 a.document.write('<html>');
                 a.document.write('<body>');
                 a.document.write(divContents);
@@ -446,7 +446,7 @@
 
         </form>
         <div x-show="showReceipts" class="fixed top-0 left-0 z-50 h-full w-full overflow-x-scroll md:py-4 bg-base-100 bg-opacity-30">
-            <div class="w-80 ml-auto mr-auto bg-base-200 p-4 overflow-y-scroll max-h-192">
+            <div id="bulk-receipts-div" class="w-80 ml-auto mr-auto bg-base-200 p-4 overflow-y-scroll max-h-192">
                 <template x-for="r in receipts">
                     <div class="border border-x-base-content border-opacity-20 rounded-md shadow-md p-2">
                         <h3 class="text-lg text-center">
@@ -493,7 +493,8 @@
                     <button @click.prevent.stop="showReceipts = false;" class="btn btn-sm btn-error bg-opacity-60 m-2 p-0 px-2">
                         Close&nbsp;<x-easyadmin::display.icon icon="easyadmin::icons.close" height="h-6" width="w-6"/>
                     </button>
-                    <button @click.prevent.stop="window.print()" class="btn btn-sm btn-success bg-opacity-60 m-2 p-0 px-2">
+                    {{-- <button @click.prevent.stop="window.print()" class="btn btn-sm btn-success bg-opacity-60 m-2 p-0 px-2"> --}}
+                    <button @click.prevent.stop="printReceipt()" class="btn btn-sm btn-success bg-opacity-60 m-2 p-0 px-2">
                         Print
                     </button>
                 </div>
