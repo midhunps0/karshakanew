@@ -386,16 +386,18 @@ class MemberService implements ModelViewConnector {
     public function getUpdateValidationRules($id): array
     {
         $rules = $this->getStoreValidationRules();
-        unset($rules['photo']);
-        unset($rules['application_front']);
-        unset($rules['application_back']);
-        unset($rules['aadhaar_card']);
-        unset($rules['bank_passbook']);
-        unset($rules['ration_card']);
-        unset($rules['wb_passbook_front']);
-        unset($rules['wb_passbook_back']);
-        unset($rules['one_and_same_cert']);
-        unset($rules['other_doc']);
+
+        $rules['photo'] = ['sometimes'];
+        $rules['application_front'] = ['sometimes'];
+        $rules['application_back'] = ['sometimes'];
+        $rules['aadhaar_card'] = ['sometimes'];
+        $rules['bank_passbook'] = ['sometimes'];
+        $rules['ration_card'] = ['sometimes'];
+        $rules['wb_passbook_front'] = ['sometimes'];
+        $rules['wb_passbook_back'] = ['sometimes'];
+        $rules['one_and_same_cert'] = ['sometimes'];
+        $rules['other_doc'] = ['sometimes'];
+
         $rules['is_approved'] = ['sometimes'];
         $rules['membership_no'] = ['required'];
         $rules['aadhaar_no'] = ['required', Rule::unique('members')->ignore($id)];
