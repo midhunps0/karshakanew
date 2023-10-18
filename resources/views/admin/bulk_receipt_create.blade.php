@@ -395,6 +395,16 @@
                                 <textarea x-model="notes" class="my-2 md:my-0 textarea textarea-bordered w-full" placeholder="Notes"></textarea>
                             </div>
                             <div class="divider"></div>
+                            <div class="flex flex-row justify-evenly p-2 border border-base-content border-opacity-20 text-warning font-bold rounded-md mb-8 bg-base-100">
+                                <div>
+                                    <span>No. Of Receipts:</span>&nbsp;
+                                    <span x-text="members.length"></span>
+                                </div>
+                                <div>
+                                    <span>Total Amount (Rs.):</span>&nbsp;
+                                    <span x-text="total() * members.length"></span>
+                                </div>
+                            </div>
                             <span class="font-bold text-warning">Add Members:</span>
                             <div>
                                 <x-utils.member-selector />
