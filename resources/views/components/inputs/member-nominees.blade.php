@@ -111,7 +111,7 @@
                         <input :name="'nominees['+index+'][percentage]'" class="input input-sm border border-base-content border-opacity-20 max-w-24" type="text" x-model="item.percentage" required>
                     </td>
                     <td>
-                        <input :name="'nominees['+index+'][dob]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.dob" required>
+                        <input :name="'nominees['+index+'][dob]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.dob">
                     </td>
                     <td>
                         <input :name="'nominees['+index+'][guardian_name]'" class="input input-sm border border-base-content border-opacity-20 max-w-28" type="text" x-model="item.guardian_name">

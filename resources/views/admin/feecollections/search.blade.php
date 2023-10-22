@@ -139,12 +139,19 @@
                                 <td>
                                     @if ($loop->first)
                                         @if ($fp->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))
+                                        <div class="flex flex-row space-x-4 w-full items-center">
+                                            <span>{{$fp->receipt_number}}</span>
+                                            <a href="" @click.prevent.stop="$dispatch('linkaction', {
+                                                link: '{{route('feecollections.show', $fp->id)}}', route: 'feecollections.show'
+                                            });" class="flex flex-row space-x-4 items-center">
+                                                <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-4" width="w-4" class="text-warning font-bold"/>
+                                            </a>
                                             <a href="" @click.prevent.stop="$dispatch('linkaction', {
                                                 link: '{{route('feecollections.edit', $fp->id)}}', route: 'feecollections.edit'
                                             });" class="flex flex-row space-x-4 items-center">
-                                                <span>{{$fp->receipt_number}}</span>
                                                 <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4" class="text-warning font-bold"/>
                                             </a>
+                                        </div>
                                         @else
                                             <span>{{$fp->receipt_number}}</span>
                                         @endif

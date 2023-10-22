@@ -528,10 +528,11 @@ class MemberService implements ModelViewConnector {
                 label: 'Parent/Guardian',
                 properties: ['required' => true],
             ),
-            'guardian_relationship' => FormHelper::makeInput(
-                inputType: 'text',
+            'guardian_relationship' => FormHelper::makeSelect(
                 key: 'guardian_relationship',
                 label: 'Relationship',
+                options: config('generalSettings.relationships'),
+                options_type: 'value_only',
                 properties: ['required' => true],
             ),
             'permanent_address' => FormHelper::makeTextarea(
@@ -2166,6 +2167,21 @@ info('member saved');
             $instance,
             $action.' Member with Membership No.: '.$instance->membership_no,
         );
+    }
+
+    public function authoriseDestroy($member): bool
+    {
+        $mayDelete = $member->feePayments()->count() == 0 &&
+            $member->allowances()->count() ==0;
+        if ($mayDelete) {
+            throw new AuthorizationException('Can\'t delete the Member. There may be receipts or allowances issued to this member.');
+        }
+        $user = auth()->user();
+        if ($user->hasPermissionTo('Member: Delete In Any District') ||
+            $user->hasPermissionTo('Member: Delete In Own District') && $member->district_id == $user->district_id) {
+            return true;
+        }
+        throw new AuthorizationException('Unable to delete the Member. The user is not authorised for this action.');
     }
 }
 

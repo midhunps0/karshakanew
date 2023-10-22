@@ -186,6 +186,11 @@ class Member extends Model
         return $query->where('approved_at', null);
     }
 
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('active', true);
+    }
+
     public function getMediaStorage(): array
     {
         return [

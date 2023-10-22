@@ -388,10 +388,10 @@
                                     />
                                     {{-- <input type="text" class="input input-bordered input-sm"> --}}
                                 </div>
-                                {{-- <div>
+                                <div>
                                     Receipt No.:
-                                    <input type="text" class="input input-bordered input-sm">
-                                </div> --}}
+                                    <input type="text" class="input input-bordered input-sm" value="{{$receipt->receipt_number}}" readonly>
+                                </div>
                             </div>
                             <div class="w-full overflow-x-scroll">
                                 <table class="table text-sm table-compact mx-auto w-full table-auto ">
