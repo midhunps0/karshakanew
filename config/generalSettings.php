@@ -66,6 +66,7 @@
                 'State Executive',
                 'District Executive',
                 'Union Representative',
+                'DP Operartor'
                 // 'Member'
             ],
             'state_admin' => [
@@ -73,6 +74,7 @@
                 'State Executive',
                 'District Executive',
                 'Union Representative',
+                'DP Operartor'
                 // 'Member'
             ],
             'district_admin' => [
