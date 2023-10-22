@@ -361,7 +361,17 @@
             @if (isset($reset_on_events) && count($reset_on_events) > 0)
             @eaforminputevent.window="resetOnEvent($event.detail);"
             @endif
-
+            @formerrors.window="if (Object.keys($event.detail.errors).includes('{{$name}}')) {
+                errors = $event.detail.errors['{{$name}}'].reduce((result, e) => {
+                    if (result.length > 0) {
+                        return result + ' ' + e;
+                    } else {
+                        return result + e;
+                    }
+                }, '');
+            } else {
+                errors = '';
+            }"
             @class([
                 'relative',
                 'form-control',
@@ -401,6 +411,7 @@
                             x-model="datepickerValue"
                             x-on:keydown.escape="showDatepicker = false;"
                             class="peer w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm bg-base-100 text-base-content font-medium input input-bordered"
+                            :class="errors.length == 0 || 'border-error  border-opacity-50'"
                             @keyup="checkDateFormat();"
                             />
                         @if ($label_position == 'float')

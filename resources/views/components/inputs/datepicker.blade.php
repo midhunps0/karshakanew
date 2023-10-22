@@ -372,7 +372,17 @@
                 // 'my-4' => $label_position != 'side',
                 'flex flex-row' => $label_position == 'side'
             ])
-
+            @formerrors.window="if (Object.keys($event.detail.errors).includes('{{$name}}')) {
+                errors = $event.detail.errors['{{$name}}'].reduce((result, e) => {
+                    if (result.length > 0) {
+                        return result + ' ' + e;
+                    } else {
+                        return result + e;
+                    }
+                }, '');
+            } else {
+                errors = '';
+            }"
             x-show="showelement"
             x-cloak>
             @if ($label_position != 'float')

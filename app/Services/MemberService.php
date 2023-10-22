@@ -321,7 +321,7 @@ class MemberService implements ModelViewConnector {
             'membership_no' => ['sometimes','unique:members,membership_no'],
             'name' => ['required',],
             'name_mal' => ['sometimes',],
-            'dob' => ['required',],
+            'dob' => ['required', 'date_format:"d-m-Y"'],
             'gender' => ['required',],
             'marital_status' => ['required',],
             'mobile_no' => ['required',],
@@ -454,6 +454,7 @@ class MemberService implements ModelViewConnector {
             'dob' => FormHelper::makeDatePicker(
                 key: 'dob',
                 label: 'Date of Birth',
+                properties: ['required' => true,],
                 startYear: 1947,
                 endYear: Carbon::today()->year
             ),
