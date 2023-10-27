@@ -14,7 +14,7 @@
             }" class="print:hidden">
             <div class="flex flex-row justify-between items-center">
                 <div class="text-right p-4">
-                    @if (Gate::allows('edit', $member))
+                    @if (Gate::allows('update', $member))
                     <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link:'{{route('members.edit', $member->id)}}', route: 'member.edit'});" >Edit</a>
                     @endif
                     @if(!$member->merged)
