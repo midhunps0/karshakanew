@@ -698,7 +698,7 @@ class MemberService implements ModelViewConnector {
                 validations: [
                     'max_size' => '200 kb',
                     'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
-                    ]
+                ],
             ),
             'application_back' => FormHelper::makeImageUploader(
                 key: 'application_back',
