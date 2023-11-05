@@ -62,6 +62,16 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.verify_aadhaar');
     Route::get('/members/sync', [MemberController::class, 'sync'])
         ->name('members.sync');
+    Route::get('/members/reports', [MemberController::class, 'reportsIndex'])
+        ->name('members.reports_home');
+    Route::get('/members/report', [MemberController::class, 'report'])
+        ->name('members.report');
+    Route::get('/members/report/gender', [MemberController::class, 'reportGenders'])
+        ->name('members.report.gender');
+    Route::get('/members/report/new', [MemberController::class, 'reportNew'])
+        ->name('members.report.new');
+    Route::get('/members/report/status', [MemberController::class, 'reportStatus'])
+        ->name('members.report.status');
     Route::post('/members/fetch-old-data', [MemberController::class, 'fetchMemberFromOld'])
         ->name('members.fetch.old');
     Route::get('/members/search', [MemberController::class, 'search'])

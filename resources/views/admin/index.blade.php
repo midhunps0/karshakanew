@@ -25,16 +25,21 @@
         deleteItemId: null,
         showDeleteBox: false,
         advQueryParams() {
+            console.log('conditions now:');
+            console.log(this.conditions);
             if ((this.conditions.length == 1 && this.conditions[0].field == 'none')) {
                 return [];
             }
             let processed = this.conditions.map((c) => {
                 return c.field + '::' + c.operation + '::' + c.value;
             });
+            console.log(processed);
             return processed;
         },
         doAdvSearch(detail) {
             this.conditions = detail.conditions;
+            console.log('detail.condidions in doAdvSearch()');
+            console.log(detail.conditions);
             this.advSearchStr = detail.str;
             console.log('this.advSearchStr');
             console.log(this.advSearchStr);
@@ -90,8 +95,16 @@
                 params.filter = this.processParams(this.filters);
             }
             if (!(this.conditions.length == 1 && this.conditions[0].field == 'none')) {
-                params.adv_search = this.advQueryParams();
+                x = this.advQueryParams();
+                console.log('xxxx');
+                console.log(x);
+                params.adv_search = [];
+                x.forEach((x) => { console.log(x);
+                    params.adv_search.push(x);
+                });
             }
+            console.log('params advsearch');
+            console.log(params);
             params.items_count = this.itemsCount;
             params.page = this.paginatorPage;
 
@@ -102,6 +115,8 @@
             if (this.selectedIds.length > 0) {
                 allParams['selected_ids'] = this.selectedIds.join('|');
             }
+            console.log('params before fetch');
+            console.log(allParams);
             console.log('currentpath');
             console.log(currentpath);
             console.log('request url');
@@ -304,7 +319,7 @@
     @setparam.window="setParam($event.detail)"
     @spotsort.window="doSort($event.detail)" @setsort.window="setSort($event.detail)"
     @spotfilter.window="doFilter($event.detail);" @setfilter.window="setFilter($event.detail);"
-    @pageaction.window="getPaginatedPage($event.detail.page, $event.detail.link);" @advsearch.window="doAdvSearch($event.detail);"
+    @pageaction.window="getPaginatedPage($event.detail.page, $event.detail.link);" @advsearch.window="doAdvSearch($event.detail); console.log('its working')"
     @formresponse.window="onDeleteResponse($event.detail);" class="pb-4" id="{{ $index_id }}"
     >
     <h3 class="text-xl font-bold pb-3"><span>{{ $title }}</span>&nbsp;</h3>
@@ -317,7 +332,7 @@
                     <x-easyadmin::display.icon icon="easyadmin::icons.plus" />
                 </a>
             @endif
-            @if (isset($advSearchFields) && count($advSearchFields))
+            @if (isset($advSearchFields) && count($advSearchFields) > 0)
                 <x-easyadmin::utils.advsearchbtn />
             @endif
         </div>

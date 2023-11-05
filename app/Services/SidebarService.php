@@ -124,39 +124,39 @@ class SidebarService implements SidebarServiceInterface
             // ],
             [
                 'type' => 'menu_group',
-                'title' => 'Access Control',
-                'icon' => 'easyadmin::icons.users',
-                'show' => $this->showAccessControl(),
+                'title' => 'Member Reports',
+                'icon' => 'easyadmin::icons.gear',
+                'show' => $this->showReports(),
                 'menu_items' => [
                     [
                         'type' => 'menu_item',
-                        'title' => 'Users',
-                        'route' => 'users.index',
+                        'title' => 'Gender-wise',
+                        'route' => 'members.report.gender',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showAccessControl()
+                        'show' => $this->showMembersReport()
                     ],
                     [
                         'type' => 'menu_item',
-                        'title' => 'Roles - permissions',
-                        'route' => 'roles.index',
+                        'title' => 'New Registrations',
+                        'route' => 'members.report.new',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
-                        'show' => $this->showRoles()
+                        'show' => $this->showMembersReport()
                     ],
-                    // [
-                    //     'type' => 'menu_item',
-                    //     'title' => 'Permissions',
-                    //     'route' => 'permissions.index',
-                    //     'route_params' => [],
-                    //     'icon' => 'easyadmin::icons.users',
-                    //     'show' => $this->showPermissions()
-                    // ],
-                ]
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Active/inactive',
+                        'route' => 'members.report.status',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showMembersReport()
+                    ],
+                ],
             ],
             [
                 'type' => 'menu_group',
-                'title' => 'Reports',
+                'title' => 'Other Reports',
                 'icon' => 'easyadmin::icons.gear',
                 'show' => $this->showReports(),
                 'menu_items' => [
@@ -241,6 +241,38 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->createLedgerPermission()
                     ],
+                ]
+            ],
+            [
+                'type' => 'menu_group',
+                'title' => 'Access Control',
+                'icon' => 'easyadmin::icons.users',
+                'show' => $this->showAccessControl(),
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Users',
+                        'route' => 'users.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showAccessControl()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Roles - permissions',
+                        'route' => 'roles.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showRoles()
+                    ],
+                    // [
+                    //     'type' => 'menu_item',
+                    //     'title' => 'Permissions',
+                    //     'route' => 'permissions.index',
+                    //     'route_params' => [],
+                    //     'icon' => 'easyadmin::icons.users',
+                    //     'show' => $this->showPermissions()
+                    // ],
                 ]
             ],
             [
@@ -384,6 +416,11 @@ class SidebarService implements SidebarServiceInterface
     public function manageSchemesPermission()
     {
         return auth()->user()->hasPermissionTo('Welfare Scheme: View');
+    }
+    public function showMembersReport()
+    {
+        return auth()->user()->hasPermissionTo('Member: Edit In Any District')
+            || auth()->user()->hasPermissionTo('Member: Edit In Own District');
     }
 }
 ?>

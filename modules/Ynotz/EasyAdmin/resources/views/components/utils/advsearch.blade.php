@@ -57,8 +57,6 @@
             });
         },
         dispatchSearch() {
-            console.log('conditionString');
-            console.log(this.conditionString());
             $dispatch('advsearch', {conditions: JSON.parse(JSON.stringify(this.sanitisedConditions(this.myconditions))), str: this.conditionString()});
         },
         conditionString() {
@@ -72,7 +70,8 @@
                         item.operation != 'none' &&
                         item.value != ''
                     ) {
-                        result += item.field[0].toUpperCase() + item.field.substring(1);
+                        x = this.advFields[item.field];
+                        result += x.text[0].toUpperCase() + x.text.substring(1);
                         result += ' ' + ((this.fieldOperators[(this.advFields[item.field]).type]).filter(
                             (x) => {
                                 return x.key == item.operation;
@@ -83,8 +82,6 @@
                                     return x.key == item.value;
                                 })[0].text + '\'  '
                         } else {
-                            console.log('item value');
-                            console.log(item.value);
                             result += ' \'' + item.value + '\'  ';
                         }
                     }
@@ -104,7 +101,7 @@
                 options: [
                     @if ($data['options_type'] == 'value_only')
                     @foreach ($data['options'] as $opt)
-                        {key: '{{$opt}}', text: '{{$opt}}}'},
+                        {key: '{{$opt}}', text: '{{$opt}}'},
                     @endforeach
                     @else
                     @foreach ($data['options'] as $key => $val)
@@ -117,17 +114,18 @@
             };
         @endforeach
         @if (request('adv_search', null) != null)
-        @foreach ( request('adv_search') as $ads)
-            @php
-                $tarr = explode('::', $ads);
-            @endphp
+        ads = {{Js::from(request('adv_search'))}};
+        if (ads.length > 0) {
             myconditions = [];
-            myconditions.push({
-                field: '{{$tarr[0]}}',
-                operation: '{{$tarr[1]}}',
-                value: '{{$tarr[2]}}'
+            ads.forEach((x) => {
+                let y = x.split('::');
+                myconditions.push({
+                    field: y[0],
+                    operation: y[1],
+                    value: y[2],
+                });
             });
-        @endforeach
+        }
         console.log('loaded adv_search from request');
         console.log(myconditions);
         console.log(advFields);
@@ -166,7 +164,7 @@
                         });">
                         {{-- <option value="none">Select Field</option> --}}
                         <template x-for="field in Object.values(advFields)">
-                            <option :value="field.key"></span><span x-text="field.text"></span>
+                            <option :value="field.key" :selected="condition.field == field.key"></span><span x-text="field.text"></span>
                             </option>
                         </template>
                     </select>

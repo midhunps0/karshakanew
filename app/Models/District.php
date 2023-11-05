@@ -59,6 +59,14 @@ class District extends Model
         return $query;
     }
 
+    public function scopeMemberEditAllowed(Builder $query)
+    {
+        $authUser = User::find(auth()->user()->id);
+        if (!$authUser->hasPermissionTo('Member: Edit In Any District')) {
+            $query->where('id', $authUser->district_id);
+        }
+    }
+
     public function scopeWithoutHo(Builder $query)
     {
         $query->where('id', '<>', 15);

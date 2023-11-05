@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AppHelper;
 use Throwable;
 use App\Models\District;
 use Illuminate\Support\Str;
@@ -247,7 +248,101 @@ class MemberController extends SmartController
         }
     }
 
+    public function reportsIndex()
+    {
+        return $this->buildResponse('admin.members.reports-index');
+    }
 
+    public function reportGenders(Request $request)
+    {
+        $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page'));
+        return $this->buildResponse('admin.members.report-gender', [
+            'districts' => $districts,
+            'data' => $members
+        ]);
+    }
+
+    public function reportNew(Request $request)
+    {
+        $districts = District::memberEditAllowed()->withoutHO()->get();
+        $searches = $request->input('searches');
+        $from = null;
+        $to = null;
+        if ($searches != null) {
+            $from = explode('::', $searches[0])[2];
+            $fromArr = explode('-', $from);
+            $fromArr = array_reverse($fromArr);
+            $from = implode('-', $fromArr);
+
+            $to = explode('::', $searches[1])[2];
+            $toArr = explode('-', $to);
+            $toArr = array_reverse($toArr);
+            $to = implode('-', $toArr);
+        }
+        $members = $this->connectorService->memberReport(
+            searches: $searches,
+            page: $request->input('page'));
+        return $this->buildResponse('admin.members.report-new', [
+            'districts' => $districts,
+            'data' => $members,
+            'from' => $from,
+            'to' => $to
+        ]);
+    }
+
+    public function reportStatus(Request $request)
+    {
+        $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page'));
+        return $this->buildResponse('admin.members.report-status', [
+            'districts' => $districts,
+            'data' => $members
+        ]);
+    }
+    public function report()
+    {
+        if (is_string($this->indexView)) {
+            $view = $this->indexView ?? 'admin.'.Str::plural($this->getItemName()).'.index';
+        } elseif(is_array($this->indexView)) {
+            $target = $this->request->input('x_target');
+            $view = isset($target) && isset($this->indexView[$target]) ? $this->indexView[$target] : $this->indexView['default'];
+        }
+
+        try {
+            $result = $this->connectorService->report(
+                intval($this->request->input('items_count', 100)),
+                $this->request->input('page'),
+                $this->request->input('search', []),
+                $this->request->input('sort', []),
+                $this->request->input('filter', []),
+                $this->request->input('adv_search', []),
+                $this->request->input('index_mode', true),
+                $this->request->input('selected_ids', ''),
+                'results',
+            );
+            return $this->buildResponse($view, $result);
+        } catch (AuthorizationException $e) {
+            info($e);
+            return $this->buildResponse($this->unauthorisedView);
+        } catch (Throwable $e) {
+            info($e);
+            return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        }
+        // try {
+        //     $result = $this->connectorService->report($this->request->all());
+        //     return $this->buildResponse('members.report', $result);
+        // } catch (\Throwable $e) {
+        //     info($e);
+        //     return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
+        // }
+    }
 
     // public function transferForm($id)
     // {

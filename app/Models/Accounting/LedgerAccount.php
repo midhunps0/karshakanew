@@ -64,9 +64,10 @@ class LedgerAccount extends Model
         $districtId = auth()->user()->district_id;
         if ($districtId != 15) {
             $query->where('district_id', $districtId);
-        } else {
-            $query->where('district_id', 2);
         }
+        // else {
+        //     $query->where('district_id', 2);
+        // }
         return $query;
     }
 

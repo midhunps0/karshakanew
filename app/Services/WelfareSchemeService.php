@@ -166,6 +166,7 @@ class WelfareSchemeService implements ModelViewConnector {
     public function prepareForUpdateValidation(array $data): array
     {
         $data['is_enabled'] = filter_var($data['is_enabled'], FILTER_VALIDATE_BOOLEAN);
+        info($data);
         return $data;
     }
 

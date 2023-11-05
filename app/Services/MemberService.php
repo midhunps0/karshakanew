@@ -2184,6 +2184,152 @@ info('member saved');
         }
         throw new AuthorizationException('Unable to delete the Member. The user is not authorised for this action.');
     }
+
+    public function report(
+        int $itemsCount,
+        ?int $page,
+        array $searches,
+        array $sorts,
+        array $filters,
+        array $advParams,
+        bool $indexMode,
+        string $selectedIds = '',
+        string $resultsName = 'results',
+    ): array {
+        $name = ucfirst(Str::plural(Str::lower($this->getModelShortName())));
+        if (!$this->authoriseIndex()) {
+            throw new AuthorizationException('The user is not authorised to view '.$name.'.');
+        }
+        $this->preIndexExtra();
+
+        $queryData = $this->getQueryAndParams(
+            $searches,
+            $sorts,
+            $filters,
+            $advParams
+        );
+
+        if ($indexMode
+            || count($searches) > 0
+            || count($sorts) > 0
+            || count($filters) > 0
+            || count($advParams) > 0
+        ) {
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE=''");
+            // }
+
+            $results = $queryData['query']->orderBy(
+                $this->orderBy[0],
+                $this->orderBy[1]
+            )->paginate(
+                $itemsCount,
+                $this->selects,
+                'page',
+                $page
+            );
+
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE='only_full_group_by'");
+            // }
+
+            $this->postIndexExtra();
+            $data = $results->toArray();
+        } else {
+            $data = [];
+        }
+        // $paginator = $this->getPaginatorArray($results);
+        return [
+            'results' => $results,
+            // 'results_json' => json_encode($this->formatIndexResults($results->toArray()['data'])),
+            'searches' => $queryData['searchParams'],
+            'sorts' => $queryData['sortParams'],
+            'filters' => $queryData['filterData'],
+            'adv_params' => $queryData['advParams'],
+            'items_count' => $itemsCount,
+            'items_ids' => $this->getItemIds($results),
+            'selected_ids' => $selectedIds,
+            'selectIdsUrl' => $this->getSelectedIdsUrl(),
+            'total_results' => $data['total'],
+            // 'current_page' => $data['current_page'],
+            // 'paginator' => json_encode($paginator),
+            'downloadUrl' => $this->getDownloadUrl(),
+            'createRoute' => $this->getCreateRoute(),
+            'destroyRoute' => $this->getDestroyRoute(),
+            'editRoute' => $this->getEditRoute(),
+            'route' => 'members.report',
+            'showAddButton' => false,
+            'selectionEnabled' => $this->getSelectionEnabled(),
+            'exportsEnabled' => $this->getExportsEnabled(),
+            'advSearchFields' => $this->getSearchFields(),
+            'col_headers' => $this->getIndexHeaders(),
+            'columns' => $this->getIndexColumns(),
+            'title' => $this->getPageTitle(),
+            'index_id' => $this->getIndexId(),
+        ];
+    }
+
+    public function getSearchFields()
+    {
+        return $this->indexTable
+        ->addSearchField(
+            key: 'gender',
+            displayText: 'Gender',
+            valueType: 'list_string',
+            options: config('generalSettings.genders'),
+            optionsType: 'value_only'
+        )
+        ->addSearchField(
+            key: 'active',
+            displayText: 'Status',
+            valueType: 'list_string',
+            options: [0 => 'Inactive', 1 => 'Active'],
+            optionsType: 'key_value'
+        )
+        ->getAdvSearchFields();
+    }
+
+    public function memberReport($searches, $indexMode = false, $itemsCount = 30, $page = 1)
+    {
+        // $searches = $data['searches'] ?? [];
+        if (!$this->authoriseIndex()) {
+            throw new AuthorizationException('The user is not authorised to access thi data.');
+        }
+        $this->preIndexExtra();
+
+
+        $responseData = [];
+        if ($indexMode
+            || $searches != null
+        ) {
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE=''");
+            // }
+            $queryData = $this->getQueryAndParams(
+                $searches,[], []
+            );
+            $results = $queryData['query']->orderBy(
+                $this->orderBy[0],
+                $this->orderBy[1]
+            )->paginate(
+                $itemsCount,
+                $this->selects,
+                'page',
+                $page
+            );
+
+            // if (!$this->sqlOnlyFullGroupBy) {
+            //     DB::statement("SET SQL_MODE='only_full_group_by'");
+            // }
+
+            // $this->postIndexExtra();
+            $responseData['results'] = $results;
+            $responseData['searches'] = $queryData['searchParams'];
+        } else {
+            $responseData['results'] = null;
+        }
+        return $responseData;
+    }
 }
 
 ?>
