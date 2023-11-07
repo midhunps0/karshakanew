@@ -66,12 +66,22 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.reports_home');
     Route::get('/members/report', [MemberController::class, 'report'])
         ->name('members.report');
+
     Route::get('/members/report/gender', [MemberController::class, 'reportGenders'])
         ->name('members.report.gender');
     Route::get('/members/report/new', [MemberController::class, 'reportNew'])
         ->name('members.report.new');
     Route::get('/members/report/status', [MemberController::class, 'reportStatus'])
         ->name('members.report.status');
+
+    Route::get('/members/download/gender', [MemberController::class, 'downloadGenders'])
+        ->name('members.download.gender');
+    Route::get('/members/download/new', [MemberController::class, 'downloadNew'])
+        ->name('members.download.new');
+    Route::get('/members/download/status', [MemberController::class, 'downloadStatus'])
+        ->name('members.download.status');
+
+
     Route::post('/members/fetch-old-data', [MemberController::class, 'fetchMemberFromOld'])
         ->name('members.fetch.old');
     Route::get('/members/search', [MemberController::class, 'search'])

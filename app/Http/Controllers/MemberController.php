@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\AppHelper;
+use App\Exports\MembersExport;
 use Throwable;
+use App\Models\Member;
 use App\Models\District;
+use App\Helpers\AppHelper;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\WelfareScheme;
 use App\Services\MemberService;
+use Maatwebsite\Excel\Facades\Excel;
+use GrahamCampbell\ResultType\Success;
 use Ynotz\EasyAdmin\Traits\HasMVConnector;
 use App\Http\Requests\FeesCollectionStoreRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Requests\OldFeesCollectionStoreRequest;
-use App\Models\Member;
-use App\Models\WelfareScheme;
-use GrahamCampbell\ResultType\Success;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class MemberController extends SmartController
@@ -266,6 +268,36 @@ class MemberController extends SmartController
         ]);
     }
 
+    public function downloadGenders(Request $request)
+    {
+        // $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page'),
+            download: true
+        );
+        $columns = [
+            'name',
+            'membership_no',
+            'aadhaar_no',
+            'permanent_address',
+            'gender',
+            'district.name',
+            'taluk.name',
+        ];
+        $headings = [
+            'Name',
+            'Membership No',
+            'Aadhaar No',
+            'Permanent Address',
+            'Gender',
+            'District',
+            'Taluk'
+        ];
+        return Excel::download(new MembersExport($members, $columns, $headings), 'members.csv');
+    }
+
     public function reportNew(Request $request)
     {
         $districts = District::memberEditAllowed()->withoutHO()->get();
@@ -294,6 +326,50 @@ class MemberController extends SmartController
         ]);
     }
 
+    public function downloadNew(Request $request)
+    {
+        // $districts = District::memberEditAllowed()->withoutHO()->get();
+        $searches = $request->input('searches');
+        $from = null;
+        $to = null;
+        if ($searches != null) {
+            $from = explode('::', $searches[0])[2];
+            $fromArr = explode('-', $from);
+            $fromArr = array_reverse($fromArr);
+            $from = implode('-', $fromArr);
+
+            $to = explode('::', $searches[1])[2];
+            $toArr = explode('-', $to);
+            $toArr = array_reverse($toArr);
+            $to = implode('-', $toArr);
+        }
+        $members = $this->connectorService->memberReport(
+            searches: $searches,
+            page: $request->input('page'),
+            download: true
+        );
+
+        $columns = [
+            'name',
+            'membership_no',
+            'aadhaar_no',
+            'reg_date',
+            'permanent_address',
+            'district.name',
+            'taluk.name',
+        ];
+        $headings = [
+            'Name',
+            'Membership No',
+            'Aadhaar No',
+            'Registration Date',
+            'Permanent Address',
+            'District',
+            'Taluk'
+        ];
+        return Excel::download(new MembersExport($members, $columns, $headings), 'members.csv');
+    }
+
     public function reportStatus(Request $request)
     {
         $districts = District::memberEditAllowed()->withoutHO()->get();
@@ -306,6 +382,40 @@ class MemberController extends SmartController
             'data' => $members
         ]);
     }
+
+    public function downloadStatus(Request $request)
+    {
+        // $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page'),
+            download: true
+        );
+            $columns = [
+                'name',
+                'membership_no',
+                'aadhaar_no',
+                'permanent_address',
+                'active',
+                'district.name',
+                'taluk.name',
+            ];
+            $boolCols = [
+                'active' => ['Active', 'Inactive']
+            ];
+            $headings = [
+                'Name',
+                'Membership No',
+                'Aadhaar No',
+                'Permanent Address',
+                'Status',
+                'District',
+                'Taluk'
+            ];
+            return Excel::download(new MembersExport($members, $columns, $headings, $boolCols), 'members.csv');
+    }
+
     public function report()
     {
         if (is_string($this->indexView)) {

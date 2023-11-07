@@ -10,6 +10,8 @@
                 village: '',
                 gender: 'Female',
                 page: 1,
+                downloadLink: '',
+                showDownload: false,
                 getTaluks() {
                     if(this.district == '') {
                         return false;
@@ -80,6 +82,23 @@
                     }).catch((e) => {
                         console.log(e);
                     }); --}}
+                },
+                setDownloadLink() {
+                    let url = '{{route('members.download.gender')}}';
+                    let searches = ['gender::is::'+this.gender];
+
+                    if (this.district != '') {
+                        searches.push('district::eq::'+this.district);
+                    }
+                    if (this.taluk != '') {
+                        searches.push('taluk::eq::'+this.taluk);
+                    }
+                    if (this.village != '') {
+                        searches.push('village::eq::'+this.village);
+                    }
+
+                    let queryStr = '?searches[]=' + searches.join('&searches[]=');
+                    this.downloadLink = url + queryStr;
                 }
             }"
             x-init="
@@ -103,6 +122,10 @@
                 @endif
                 @if(isset($data['searches']) && isset($data['searches']['village_id']))
                 village = {{$data['searches']['village_id']}};
+                @endif
+                setDownloadLink();
+                @if (isset($data['results']) && count($data['results']) > 0)
+                showDownload = true;
                 @endif
                 {{-- if (district != '') {
                     getTaluks();
@@ -157,6 +180,9 @@
                 </div>
                 <div class="w-1/3">
                     <button type="submit" class="btn btn-sm btn-success">Get Report</button>
+                </div>
+                <div class="text-center p-2">
+                    <a :href="downloadLink" x-show="showDownload" class="btn btn-link btn-sm text-warning normal-case" download>Download</a>
                 </div>
             </div>
         </form>

@@ -2289,7 +2289,9 @@ info('member saved');
         ->getAdvSearchFields();
     }
 
-    public function memberReport($searches, $indexMode = false, $itemsCount = 30, $page = 1)
+    public function memberReport(
+        $searches, $indexMode = false, $itemsCount = 30, $page = 1, $download = false
+        )
     {
         // $searches = $data['searches'] ?? [];
         if (!$this->authoriseIndex()) {
@@ -2308,15 +2310,24 @@ info('member saved');
             $queryData = $this->getQueryAndParams(
                 $searches,[], []
             );
-            $results = $queryData['query']->orderBy(
-                $this->orderBy[0],
-                $this->orderBy[1]
-            )->paginate(
-                $itemsCount,
-                $this->selects,
-                'page',
-                $page
-            );
+            if ($download) {
+                $results = $queryData['query']->orderBy(
+                    $this->orderBy[0],
+                    $this->orderBy[1]
+                )->select($this->selects)
+                ->get();
+                return $results;
+            } else {
+                $results = $queryData['query']->orderBy(
+                    $this->orderBy[0],
+                    $this->orderBy[1]
+                )->paginate(
+                    $itemsCount,
+                    $this->selects,
+                    'page',
+                    $page
+                );
+            }
 
             // if (!$this->sqlOnlyFullGroupBy) {
             //     DB::statement("SET SQL_MODE='only_full_group_by'");

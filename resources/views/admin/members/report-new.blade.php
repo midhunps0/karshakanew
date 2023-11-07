@@ -11,6 +11,8 @@
                 from: '',
                 to: '',
                 page: 1,
+                downloadLink: '',
+                showDownload: false,
                 getTaluks() {
                     if(this.district == '') {
                         return false;
@@ -96,16 +98,26 @@
                         params.page = this.page;
                     }
                     $dispatch('linkaction', {link: '{{route('members.report.new')}}', route: 'members.report.new', params: params, fresh: true});
-                    {{-- axios.get(
-                        url,
-                        {
-                            params: {searches: searches}
-                        }
-                    ).then((r) => {
-                        console.log(r.data);
-                    }).catch((e) => {
-                        console.log(e);
-                    }); --}}
+                },
+                setDownloadLink() {
+                    let url = '{{route('members.download.new')}}';
+                    let searches = [
+                        'reg_date::gte::'+this.formatDate(this.from),
+                        'reg_date::lte::'+this.formatDate(this.to),
+                        ];
+
+                    if (this.district != '') {
+                        searches.push('district::eq::'+this.district);
+                    }
+                    if (this.taluk != '') {
+                        searches.push('taluk::eq::'+this.taluk);
+                    }
+                    if (this.village != '') {
+                        searches.push('village::eq::'+this.village);
+                    }
+
+                    let queryStr = '?searches[]=' + searches.join('&searches[]=');
+                    this.downloadLink = url + queryStr;
                 }
             }"
             x-init="
@@ -132,6 +144,10 @@
                 @endif
                 @if(isset($data['searches']) && isset($data['searches']['village_id']))
                 village = {{$data['searches']['village_id']}};
+                @endif
+                setDownloadLink();
+                @if (isset($data['results']) && count($data['results']) > 0)
+                showDownload = true;
                 @endif
             "
             action=""
@@ -188,6 +204,9 @@
                 </div>
                 <div class="w-1/3">
                     <button type="submit" class="btn btn-sm btn-success">Get Report</button>
+                </div>
+                <div class="text-center p-2">
+                    <a :href="downloadLink" x-show="showDownload" class="btn btn-link btn-sm text-warning normal-case" download>Download</a>
                 </div>
             </div>
         </form>
