@@ -102,7 +102,7 @@
                             break;
                     }
                     let regx = /[0-9]+/g;
-                    let matchArr = item.amount.match(regx);
+                    let matchArr = String(item.amount).match(regx);
                     item.amount = matchArr != null ? (matchArr.join() * 1) + '' : 0;
                 },
                 resetForm() {
@@ -207,7 +207,7 @@
                     errors = '';
                 });
                 let d = new Date();
-                date = d.getDate() + '-' + String(d.getMonth()+1).padStart(2,'0')+ '-' + d.getFullYear();
+                date = String(d.getDate()).padStart(2,'0') + '-' + String(d.getMonth()+1).padStart(2,'0')+ '-' + d.getFullYear();
                 {{-- date = '12-01-2022'; --}}
             "
             @formresponse.window="
@@ -276,8 +276,6 @@
                                                                 }
                                                             );
                                                         @endforeach
-                                                        console.log('accounts');
-                                                        console.log(accounts);
                                                         $watch(
                                                             'txt',
                                                             (val) => {
@@ -378,8 +376,6 @@
                                                                 }
                                                             );
                                                         @endforeach
-                                                        console.log('accounts');
-                                                        console.log(accounts);
                                                         $watch(
                                                             'txt',
                                                             (val) => {

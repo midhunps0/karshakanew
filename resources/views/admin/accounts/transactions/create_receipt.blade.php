@@ -103,7 +103,7 @@
                             break;
                     }
                     let regx = /[0-9]+/g;
-                    let matchArr = (item.amount+'').match(regx);
+                    let matchArr = String(item.amount).match(regx);
                     item.amount = matchArr != null ? (matchArr.join() * 1) + '' : 0;
                 },
                 resetForm() {
