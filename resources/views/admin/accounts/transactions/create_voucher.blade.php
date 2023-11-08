@@ -14,6 +14,24 @@
                 debit_total: 0,
                 credit_total: 0,
                 errors: '',
+                formatDate(el, event) {
+                    let re = /[0-9,-]/g;
+                    let theval = el.value.replace('/', '-');
+                    if (theval.length == 0) {
+                        return false;
+                    }
+                    let x = (theval.match(re) || []).join('');
+                    let arr = x.split('-');
+                    let newarr = [];
+                    for(i = 0; i < arr.length; i++) {
+                        if (i < 2) {
+                            newarr.push(arr[i].padStart(2, '0'));
+                        } else {
+                            newarr.push(arr[i]);
+                        }
+                    }
+                    el.value = newarr.join('-');
+                },
                 chosen_accounts: {
                     debits: [],
                     credits: []
@@ -87,20 +105,6 @@
                     let regx = /[0-9]+/g;
                     let matchArr = item.amount.match(regx);
                     item.amount = matchArr != null ? (matchArr.join() * 1) + '' : 0;
-                },
-                formatDate(el, event) {
-                    let re = /[0-9,-]/g;
-                    let x = (el.value.match(re) || []).join('');
-                    let arr = x.split('-');
-                    let newarr = [];
-                    for(i = 0; i < arr.length; i++) {
-                        if (i < 2) {
-                            newarr.push(arr[i].padStart(2, '0'));
-                        } else {
-                            newarr.push(arr[i]);
-                        }
-                    }
-                    {{-- el.value = newarr.join('-'); --}}
                 },
                 resetForm() {
                     this.remarks = '';
@@ -268,6 +272,7 @@
                                                                 return a.id == id;
                                                             })[0].name;
                                                             this.showlist = false;
+                                                            dc.account_id = id;
                                                         }
                                                     }"
                                                     x-init="
@@ -367,6 +372,7 @@
                                                                 return a.id == id;
                                                             })[0].name;
                                                             this.showlist = false;
+                                                            cc.account_id = id;
                                                         }
                                                     }"
                                                     x-init="
