@@ -271,7 +271,7 @@
                                                         }
                                                     }"
                                                     x-init="
-                                                        @foreach ($accounts as $a)
+                                                        @foreach ($cashOrBank as $a)
                                                             accounts.push(
                                                                 {
                                                                     id: {{$a->id}},
