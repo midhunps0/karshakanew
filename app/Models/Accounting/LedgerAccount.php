@@ -62,7 +62,9 @@ class LedgerAccount extends Model
     public function scopeUserDistrictConstrained(Builder $query)
     {
         $districtId = auth()->user()->district_id;
-        if ($districtId != 15) {
+        $user = auth()->user();
+        // if ($districtId != 15) {
+        if (!$user->hasPermissionTo('Journal: Edit In Any District')) {
             $query->where('district_id', $districtId);
         }
         // else {
