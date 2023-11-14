@@ -491,10 +491,10 @@
                 showImg: false
             }"
             @showimg.window="imgSrc = $event.detail.src; showImg = true;"
-            class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 print:hidden"
+            class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 p-4 print:hidden"
             >
-            <div class="max-w-full max-h-full relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4">
-                <button @click="showImg = false; imgSrc = '';" class="btn btn-error btn-sm absolute -top-14 -right-14">
+            <div class="max-w-full h-full relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4">
+                <button @click="showImg = false; imgSrc = '';" class="btn btn-error btn-sm absolute top-4 -right-14">
                     <x-easyadmin::display.icon icon="easyadmin::icons.close"/>
                 </button>
                 <img :src="imgSrc" class="max-w-full max-h-full">
