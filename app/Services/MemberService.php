@@ -397,7 +397,8 @@ class MemberService implements ModelViewConnector {
         $rules['wb_passbook_back'] = ['sometimes'];
         $rules['one_and_same_cert'] = ['sometimes'];
         $rules['other_doc'] = ['sometimes'];
-
+        $rules['dobForEdit'] = $rules['dob'];
+        unset($rules['dob']);
         $rules['is_approved'] = ['sometimes'];
         $rules['membership_no'] = ['required'];
         $rules['aadhaar_no'] = ['required', Rule::unique('members')->ignore($id)];
@@ -452,7 +453,7 @@ class MemberService implements ModelViewConnector {
                 properties: ['required' => true],
             ),
             'dob' => FormHelper::makeDatePicker(
-                key: 'dob',
+                key: 'dobForEdit',
                 label: 'Date of Birth',
                 properties: ['required' => true,],
                 startYear: 1947,
@@ -1543,7 +1544,8 @@ class MemberService implements ModelViewConnector {
         unset($data['is_approved']);
 
         $data['created_by'] = auth()->user()->id;
-        $data['dob'] = AppHelper::formatDateForSave($data['dob']);
+        $data['dob'] = AppHelper::formatDateForSave($data['dobForEdit']);
+        unset($data['dobForEdit']);
         $data['reg_date'] = AppHelper::formatDateForSave($data['reg_date']);;
         return $data;
     }

@@ -40,5 +40,106 @@
             </a>
             @endif
         </div>
+        <div class="my-8">
+            <h3 class="py-3 font-bold text-warning">Fee Collections Data:</h3>
+            <div x-data="{
+                    data: [],
+                    level: null,
+                    feeTypes: null,
+                    from: '',
+                    to: '',
+                    loading: false,
+                    formatDate(el, event) {
+                        let re = /[0-9,-]/g;
+                        let x = (el.value.match(re) || []).join('');
+                        let arr = x.split('-');
+                        let newarr = [];
+                        for(i = 0; i < arr.length; i++) {
+                            if (i < 2) {
+                                newarr.push(arr[i].padStart(2, '0'));
+                            } else {
+                                newarr.push(arr[i]);
+                            }
+                        }
+                        el.value = newarr.join('-');
+                    },
+                    fetchData() {
+                        this.loading = true;
+                        axios.get(
+                            '{{route('dashboard.data')}}',
+                            {
+                                params: { 'from': this.from, to: this.to }
+                            }
+                        ).then((r)  => {
+                            if (r.data.success) {
+                                this.data = r.data.data;
+                                this.level = r.data.level;
+                                this.feeTypes = r.data.fee_types;
+                            } else {
+                                console.log(r.data.error);
+                            }
+                            this.loading = false;
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+                    }
+                }"
+                x-init="
+                    from = '{{$from}}';
+                    to = '{{$to}}';
+                    fetchData();
+                "
+                >
+                <div x-show="loading" class="absolute h-full w-full bg-base-300 bg-opacity-20 flex flex-row justify-center z-20 pt-32">
+                    <span class="animate-pulse text-warning">Loading...</span>
+                </div>
+                <form
+                    @submit.prevent.stop="fetchData();"
+                    action="">
+                    <div class="flex flex-row space-x-4 mb-4 items-end">
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                              <span class="label-text">From</span>
+                            </label>
+                            <input x-model="from" @change="formatDate($el, $event);" type="text" name="from" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
+                        </div>
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                              <span class="label-text">To</span>
+                            </label>
+                            <input x-model="to" @change="formatDate($el, $event);" type="text" name="to" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" pattern="[0-3][0-9]-[0-1][0-9]-[0-9][0-9][0-9][0-9]" required/>
+                        </div>
+                        <div class="form-control w-full max-w-xs">
+                            <button type="submit" class="btn btn-md btn-success">Get Data</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="rounded-xl border border-base-content border-opacity-10 max-w-full overflow-x-scroll">
+                    <table class="table table-compact min-w-full">
+                        <thead>
+                            <th>Districts</th>
+                            <template x-for="ft in feeTypes">
+                                <th><span x-text="ft"></span></th>
+                            </template>
+                        </thead>
+                        <tbody>
+                            <template x-for="key in Object.keys(data)">
+                                <tr :class="key != 'Total' || 'font-bold'">
+                                    <td>
+                                        <span x-text="key"></span>
+                                    </td>
+                                    <template x-for="ft in feeTypes">
+                                        <td>
+                                            <span x-text="data[key][ft] || 0"></span>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </x-easyadmin::partials.adminpanel>

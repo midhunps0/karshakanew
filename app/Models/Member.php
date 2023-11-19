@@ -392,6 +392,13 @@ class Member extends Model
         );
     }
 
+    protected function dobForEdit(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (Carbon::createFromFormat('d-m-Y', $this->dob))->format('Y-m-d'),
+        );
+    }
+
     protected function regDate(): Attribute
     {
         return Attribute::make(
