@@ -118,7 +118,7 @@
                 <div class="rounded-xl border border-base-content border-opacity-10 max-w-full overflow-x-scroll">
                     <table class="table table-compact min-w-full">
                         <thead>
-                            <th>Districts</th>
+                            <th><span x-text="level == 'state' ? 'Districts' : 'Taluks'"></span></th>
                             <template x-for="ft in feeTypes">
                                 <th><span x-text="ft"></span></th>
                             </template>
