@@ -122,6 +122,7 @@
                             <template x-for="ft in feeTypes">
                                 <th><span x-text="ft"></span></th>
                             </template>
+                            <th><span>Total</span></th>
                         </thead>
                         <tbody>
                             <template x-for="key in Object.keys(data)">
@@ -134,6 +135,7 @@
                                             <span x-text="data[key][ft] || 0"></span>
                                         </td>
                                     </template>
+                                    <td><span x-text="data[key]['Total'] || 0"></span></td>
                                 </tr>
                             </template>
                         </tbody>

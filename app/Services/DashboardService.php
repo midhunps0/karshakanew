@@ -43,6 +43,10 @@ class DashboardService
                     $data[$r->district][$r->fee_type] = $r->amount;
                     $data['Total'][$r->fee_type] = $data['Total'][$r->fee_type] ?? 0;
                     $data['Total'][$r->fee_type] += $r->amount;
+                    $data[$r->district]['Total'] = $data[$r->district]['Total'] ?? 0;
+                    $data[$r->district]['Total'] += $r->amount;
+                    $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
+                    $data['Total']['Total'] += $r->amount;
                 }
         } elseif ($user->hasPermissionTo('Dashboard: View Own District Data')) {
             $level = 'district';
@@ -68,6 +72,10 @@ class DashboardService
                     $data[$r->taluk][$r->fee_type] = $r->amount;
                     $data['Total'][$r->fee_type] = $data['Total'][$r->fee_type] ?? 0;
                     $data['Total'][$r->fee_type] += $r->amount;
+                    $data[$r->taluk]['Total'] = $data[$r->taluk]['Total'] ?? 0;
+                    $data[$r->taluk]['Total'] += $r->amount;
+                    $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
+                    $data['Total']['Total'] += $r->amount;
                 }
         }
         $response = [
