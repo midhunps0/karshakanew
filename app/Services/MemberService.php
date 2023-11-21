@@ -321,7 +321,7 @@ class MemberService implements ModelViewConnector {
             'membership_no' => ['sometimes','unique:members,membership_no'],
             'name' => ['required',],
             'name_mal' => ['sometimes',],
-            'dob' => ['required', 'date_format:"d-m-Y"'],
+            'dobForEdit' => ['required', 'date_format:"d-m-Y"'],
             'gender' => ['required',],
             'marital_status' => ['required',],
             'mobile_no' => ['required',],
@@ -397,8 +397,6 @@ class MemberService implements ModelViewConnector {
         $rules['wb_passbook_back'] = ['sometimes'];
         $rules['one_and_same_cert'] = ['sometimes'];
         $rules['other_doc'] = ['sometimes'];
-        $rules['dobForEdit'] = $rules['dob'];
-        unset($rules['dob']);
         $rules['is_approved'] = ['sometimes'];
         $rules['membership_no'] = ['required'];
         $rules['aadhaar_no'] = ['required', Rule::unique('members')->ignore($id)];
@@ -1507,7 +1505,9 @@ class MemberService implements ModelViewConnector {
         unset($data['is_approved']);
 
         $data['created_by'] = auth()->user()->id;
-        $data['dob'] = AppHelper::formatDateForSave($data['dob']);
+        // $data['dob'] = AppHelper::formatDateForSave($data['dob']);
+        $data['dob'] = AppHelper::formatDateForSave($data['dobForEdit']);
+        unset($data['dobForEdit']);
         $data['reg_date'] = Carbon::now()->format('Y-m-d');
         return $data;
     }

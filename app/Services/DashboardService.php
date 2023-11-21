@@ -16,7 +16,7 @@ class DashboardService
         $data = [];
         $level = null;
         $feeTypes = FeeType::all()->pluck('name')->toArray();
-        $ditricts = null;
+        // $ditricts = null;
         $theTaluks = null;
         /**
          * @var \App\Models\User
@@ -78,10 +78,10 @@ class DashboardService
                     $data['Total']['Total'] += $r->amount;
                 }
         }
-        $response = [
-            'level' => $level,
-            'data' => $data,
-        ];
+        // $response = [
+        //     'level' => $level,
+        //     'data' => $data,
+        // ];
         if ($level == 'state') {
             return [
                 'success' => true,
