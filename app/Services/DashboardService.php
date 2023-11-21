@@ -10,19 +10,23 @@ class DashboardService
 {
     public function dashboardData($from, $to)
     {
-        $from = AppHelper::formatDateForSave($from);
+		$from = AppHelper::formatDateForSave($from);
         $to = AppHelper::formatDateForSave($to);
         $result = null;
         $data = [];
         $level = null;
         $feeTypes = FeeType::all()->pluck('name')->toArray();
-        // $ditricts = null;
+        $ditricts = null;
         $theTaluks = null;
         /**
          * @var \App\Models\User
          */
         $user = auth()->user();
+		//dd(collect($user->permissions())->pluck('name'));
+		//dd($user->hasPermissionTo('Dashboard: View All District Data'));
         if ($user->hasPermissionTo('Dashboard: View All District Data')) {
+		//if (in_array('Dashboard: View All District Data',collect($user->permissions())->pluck('name'))) {
+			//dd('okay1');
             $level = 'state';
             $districts = District::withoutHo()->orderBy('display_code', 'asc')->get()->pluck('name')->toArray();
             foreach ($districts as $d) {
@@ -33,10 +37,10 @@ class DashboardService
                 ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
                 ->join('fee_types as ft', 'ft.id', '=', 'fi.fee_type_id')
                 ->join('districts as d', 'd.id', '=', 'fc.district_id')
-                ->select('d.id', 'd.name as district', 'ft.name as fee_type', DB::raw('SUM(fi.amount) as amount'))
+                ->select('d.name as district', 'ft.name as fee_type', DB::raw('SUM(fi.amount) as amount'))
                 ->where('fc.receipt_date', '>=', $from)
                 ->where('fc.receipt_date', '<=', $to)
-                ->groupBy('ft.id', 'fc.district_id')
+                ->groupBy('ft.id', 'fc.district_id','d.id')
                 ->orderBy('d.display_code', 'asc')
                 ->get();
                 foreach ($result as $r) {
@@ -49,6 +53,7 @@ class DashboardService
                     $data['Total']['Total'] += $r->amount;
                 }
         } elseif ($user->hasPermissionTo('Dashboard: View Own District Data')) {
+			//dd('okay');
             $level = 'district';
             $d = District::find($user->district_id);
             $theTaluks = $d->taluks->pluck('name')->toArray();
@@ -64,8 +69,8 @@ class DashboardService
                 ->where('fc.district_id', $user->district_id)
                 ->where('fc.receipt_date', '>=', $from)
                 ->where('fc.receipt_date', '<=', $to)
-                ->select('t.id', 't.name as taluk', 'ft.name as fee_type', DB::raw('SUM(fi.amount) as amount'))
-                ->groupBy('ft.id', 'm.taluk_id')
+                ->select('t.name as taluk', 'ft.name as fee_type', DB::raw('SUM(fi.amount) as amount'))
+                ->groupBy('ft.id', 'm.taluk_id','t.id')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
                 foreach ($result as $r) {
