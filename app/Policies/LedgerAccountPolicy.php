@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Models\Accounting\LedgerAccount;
-use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LedgerAccountPolicy
@@ -21,7 +21,7 @@ class LedgerAccountPolicy
         if ($user->hasPermissionTo('ledger_account.view.any_district')) {
             return true;
         }
-        if ($user->hasPermissionTo('ledger_account.view.own_district') && $user->district == $districtId) {
+        if ($user->hasPermissionTo('ledger_account.view.own_district') && $user->district_id == $districtId) {
             return true;
         }
         return false;
@@ -39,7 +39,7 @@ class LedgerAccountPolicy
         if ($user->hasPermissionTo('ledger_account.view.any_district')) {
             return true;
         }
-        if ($user->hasPermissionTo('ledger_account.view.own_district') && $user->district == $account->district_id) {
+        if ($user->hasPermissionTo('ledger_account.view.own_district') && $user->district_id == $account->district_id) {
             return true;
         }
 
@@ -56,7 +56,25 @@ class LedgerAccountPolicy
     {
         if ($user->hasPermissionTo('ledger_account.create.any_district')) {
             return true;
-        } elseif ($user->hasPermissionTo('ledger_account.create.own_district') && $user->district == $districtId) {
+        } elseif ($user->hasPermissionTo('ledger_account.create.own_district') && $user->district_id == $districtId) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\User  $user
+     * @param  App\Models\Accounting\LedgerAccount $account
+     * @return mixed
+     */
+    public function store(User $user, $districtId)
+    {
+        if ($user->hasPermissionTo('Ledger Account: Create In Any District')) {
+            return true;
+        }
+        if ($user->hasPermissionTo('Ledger Account: Create In Own District') && $user->district_id == $districtId) {
             return true;
         }
         return false;
@@ -74,7 +92,7 @@ class LedgerAccountPolicy
         if ($user->hasPermissionTo('ledger_account.edit.any_district')) {
             return true;
         }
-        if ($user->hasPermissionTo('ledger_account.edit.own_district') && $user->district == $account->district_id) {
+        if ($user->hasPermissionTo('ledger_account.edit.own_district') && $user->district_id == $account->district_id) {
             return true;
         }
         return false;
@@ -92,7 +110,7 @@ class LedgerAccountPolicy
         if ($user->hasPermissionTo('ledger_account.delete.any_district')) {
             return true;
         }
-        if ($user->hasPermissionTo('ledger_account.delete.own_district') && $user->district == $account->district_id) {
+        if ($user->hasPermissionTo('ledger_account.delete.own_district') && $user->district_id == $account->district_id) {
             return true;
         }
         return false;

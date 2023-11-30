@@ -221,7 +221,7 @@
                 a.document.write('</body></html>');
                 a.document.close();
 
-                setTimeout(() => {a.print(); a.close();}, 100);
+                setTimeout(() => {a.print(); a.close();}, 500);
             },
             newReceipt() {
                 this.showreceipt = false;

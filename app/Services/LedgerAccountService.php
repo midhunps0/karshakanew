@@ -100,8 +100,26 @@ class LedgerAccountService implements ModelViewConnector
         ];
     }
 
-    public function getEditPageData(): array
-    {}
+    public function getEditPageData($id): array
+    {
+        return [
+            'title' => '',
+            'form' => FormHelper::makeEditForm(
+                title: 'Edit Ledger Account',
+                id: 'form_members_edit',
+                action_route: 'ledgeraccounts.update',
+                action_route_params: ['id' => $id],
+                success_redirect_route: 'ledgeraccounts.show',
+                cancel_route: 'dashboard',
+                items: $this->getCreateFormElements(),
+                layout: $this->buildCreateFormLayout(),
+                label_position: 'top',
+                width: '3/4',
+                type: 'easyadmin::partials.simpleform',
+            ),
+            '_old' => LedgerAccount::with(['district'])->where('id', $id)->get()->first()
+        ];
+    }
 
     private function formElements(LedgerAccount $account = null): array
     {
@@ -150,7 +168,7 @@ class LedgerAccountService implements ModelViewConnector
             ),
             'cashorbank' => FormHelper::makeCheckbox(
                 key: 'cashorbank',
-                label: 'Is Cash/Bank Account?'
+                label: 'Is Cash/Bank Account?',
             )
         ];
     }
@@ -215,8 +233,17 @@ class LedgerAccountService implements ModelViewConnector
         unset($data['district']);
         $data['group_id'] = $data['group'];
         unset($data['group']);
-        $data['cashorbank'] = $data['cashorbank'] == 'true';
+        $data['cashorbank'] = filter_var($data['cashorbank'], FILTER_VALIDATE_BOOLEAN);
+        return $data;
+    }
 
+    public function prepareForUpdateValidation(array $data): array
+    {
+        $data['district_id'] = $data['district'];
+        unset($data['district']);
+        $data['group_id'] = $data['group'];
+        unset($data['group']);
+        $data['cashorbank'] = filter_var($data['cashorbank'], FILTER_VALIDATE_BOOLEAN);
         return $data;
     }
 
@@ -245,6 +272,26 @@ class LedgerAccountService implements ModelViewConnector
         }
 
         return $rules;
+    }
+
+    public function authoriseStore()
+    {
+        $user = auth()->user();
+        if ($user->hasPermissionTo('Ledger Account: Create In Any District')
+            || $user->hasPermissionTo('Ledger Account: Create In Own District')) {
+            return true;
+        }
+        return false;
+    }
+
+    public function authoriseUpdate($account)
+    {
+        $user = auth()->user();
+        if ($user->hasPermissionTo('Ledger Account: Edit In Any District')
+            || ($user->hasPermissionTo('Ledger Account: Edit In Own District') && $user->district_id == $account->district_id)) {
+            return true;
+        }
+        return false;
     }
 /*
     public function model()

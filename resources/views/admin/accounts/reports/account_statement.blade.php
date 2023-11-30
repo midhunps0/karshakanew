@@ -68,7 +68,7 @@
         </form>
         @if ($account != null)
         <div x-show="account_id != ''">
-            <h4 class="text-sm font-bold">Account: {{$account->name}}</h4>
+            <h4 class="text-sm font-bold">Account: {{$account->name}}&nbsp;&nbsp;&nbsp;<a class="text-warning" href="" @click.stop.prevent="$dispatch('linkaction', {link: '{{route('ledgeraccounts.show', $account->id)}}'})"><x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-5" width="w-5" /></a> </h4>
             <div class="my-2 font-bold">
                 Period: <span x-text="from"></span> To <span x-text="to"></span>
             </div>

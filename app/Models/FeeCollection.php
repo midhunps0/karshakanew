@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 class FeeCollection extends Model
 {
@@ -23,7 +24,8 @@ class FeeCollection extends Model
 
     protected $appends = [
         'formatted_receipt_date',
-        'is_editable_period'
+        'is_editable_period',
+        'formatted_created_at'
     ];
 
     public function district()
@@ -57,6 +59,16 @@ class FeeCollection extends Model
             get: function (mixed $value, array $attributes) {
                 $tdate = new \DateTime($this->receipt_date);
                 return $tdate->format('d-m-Y');
+            },
+        );
+    }
+
+    protected function formattedCreatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $tdate = Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at);
+                return $tdate->format('d-m-Y H:i:s');
             },
         );
     }

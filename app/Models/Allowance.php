@@ -32,7 +32,9 @@ class Allowance extends Model
     //     'payment_date' => 'datetime:d-m-Y',
     // ];
 
-    protected $guarded = [];
+    protected $guarded = [
+        'formatted_created_at'
+    ];
 
     protected $appends = [
         'editable_by_status'
@@ -66,6 +68,16 @@ class Allowance extends Model
     public function allowanceable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    protected function formattedCreatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $tdate = Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at);
+                return $tdate->format('d-m-Y H:i:s');
+            },
+        );
     }
 
     protected function status(): Attribute

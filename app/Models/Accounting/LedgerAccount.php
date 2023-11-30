@@ -15,14 +15,7 @@ class LedgerAccount extends Model
 {
     use SoftDeletes, HasFactory;
 
-    protected $fillable = [
-        'district_id',
-        'name',
-        'description',
-        'group_id',
-        'opening_balance',
-        'opening_bal_type'
-    ];
+    protected $guarded = [];
 
     protected $hidden = [
         'created_at',
@@ -91,7 +84,7 @@ class LedgerAccount extends Model
     protected function iscashorbank(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value == 1 ? 'Yes' : 'No'
+            get: fn ($value) => $this->cashorbank == 1 ? 'Yes' : 'No'
         );
     }
 }

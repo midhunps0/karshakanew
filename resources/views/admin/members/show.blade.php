@@ -342,7 +342,7 @@
                         <table class="table table-compact w-full">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
+                                    <th class="!relative">Date</th>
                                     <th>Receipt No.</th>
                                     <th>particulars</th>
                                     <th>From</th>
@@ -350,12 +350,14 @@
                                     <th>Tenure</th>
                                     <th>Amount</th>
                                     <th>Total Amount</th>
+                                    <th>Collected By</th>
+                                    <th>Created At</th>
                                 </tr>
                             </thead>
                             @forelse ($member->feePayments as $fp)
                             <tbody class="border-b border-base-content border-opacity-30">
                                 @foreach ($fp->feeItems as $fi)
-                                <tr>
+                                <tr id="receipt-{{$fp->id}}">
                                     <td>
                                         @if ($loop->first)
                                             {{$fp->formatted_receipt_date}}
@@ -371,6 +373,45 @@
 
                                                 <x-easyadmin::display.icon icon="easyadmin::icons.view_on" height="h-5" width="w-5" class="text-warning font-bold"/>
                                             </a>
+                                            @if(auth()->user()->hasPermissionTo('Fee Collection: Delete In Any District') ||
+                                            (auth()->user()->hasPermissionTo('Fee Collection: Delete In Own District') && auth()->user()->district_id == $fp->district_id))
+                                            <div x-data="{
+                                                    showConfirmation: false,
+                                                    doDelete() {
+                                                        let theForm = document.getElementById(
+                                                            'delete-receipt-{{$fp->id}}'
+                                                        );
+                                                        let formData = new FormData(theForm);
+                                                        axios.post(
+                                                            '{{route('feecollections.destroy', ['id' => $fp->id])}}',
+                                                            formData
+                                                        ).then((r) => {
+                                                            console.log(r);
+                                                            if (r.data.success) {
+                                                                $dispatch('showtoast', {message: 'Receipt deleted.', mode: 'success'});
+                                                                document.getElementById('receipt-{{$fp->id}}').remove();
+                                                            }
+                                                            this.showConfirmation = false;
+                                                        }).catch(() => {
+
+                                                        });
+                                                    }
+                                                }" class="p-0">
+                                                <button type="button" @click.prevent.stop="showConfirmation = true;" class="btn btn-xs btn-ghost">
+                                                    <x-easyadmin::display.icon icon="easyadmin::icons.delete" height="h-4" width="w-4" class="text-error font-bold"/>
+                                                </button>
+                                                <div x-show="showConfirmation" class="fixed top-0 left-0 z-50 w-screen h-screen bg-base-200 bg-opacity-60 flex flex-row justify-center items-start pt-40">
+                                                    <form id="delete-receipt-{{$fp->id}}" action="" @submit.prevent.stop="doDelete();" class="bg-base-200 rounded-md bg-opacity-100 p-4 flex flex-col border border-base-content border-opacity-20">
+                                                        @method('DELETE')
+                                                        <div class="w-full text-center m-4">This transaction will be permanently deleted.<br>Do you wish to delete?</div>
+                                                        <div class="flex flex-row space-x-4 justify-center items-start">
+                                                            <button type="button" @click.prevent.stop="showConfirmation = false;" class="btn btn-sm btn-ghost">Cancel</button>
+                                                            <button type="submit" class="btn btn-sm btn-error">Delete</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            @endif
                                             {{-- @if ($fp->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))
                                             <a href="" @click.prevent.stop="$dispatch('linkaction', {
                                                 link: '{{route('feecollections.edit', $fp->id)}}', route: 'feecollections.edit'
@@ -388,6 +429,8 @@
                                     <td>{{$fi->tenure ?? '--'}}</td>
                                     <td>{{$fi->amount ?? ''}}</td>
                                     <td>@if ($loop->first){{$fp->total_amount}}@endif</td>
+                                    <td>{{$fp->collectedBy->name ?? ''}}</td>
+                                    <td>{{$fp->formatted_created_at}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -415,7 +458,7 @@
                             <table class="table table-compact w-full">
                                 <thead>
                                     <tr>
-                                        <th class="px-2">Appln. Date</th>
+                                        <th class="px-2 !relative">Appln. Date</th>
                                         <th class="px-2">Appln. No.</th>
                                         <th class="px-2">Scheme Applied For</th>
                                         <th class="px-2">Status</th>
@@ -423,6 +466,8 @@
                                         <th class="px-2">Sanctioned Amount</th>
                                         <th class="px-2">Sanctioned Date</th>
                                         <th class="px-2">Payment Date</th>
+                                        <th class="px-2">Created By</th>
+                                        <th class="px-2">Created At</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -447,6 +492,8 @@
                                             <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
                                             <td class="px-2">{{$a->sanctioned_date}}</td>
                                             <td class="px-2">{{$a->payment_date}}</td>
+                                            <td class="px-2">{{$a->createdBy->name}}</td>
+                                            <td class="px-2">{{$a->formatted_created_at}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

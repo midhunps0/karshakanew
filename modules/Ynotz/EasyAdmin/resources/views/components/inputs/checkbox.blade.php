@@ -155,7 +155,7 @@
         @endforeach
         @endif
         @if (isset($_old[$name]))
-            elvalue = '{{$_old[$name]}}';
+            elvalue = {{$_old[$name]}};
         @endif
         @if ($fire_input_event)
             fireInputEvent = true;
