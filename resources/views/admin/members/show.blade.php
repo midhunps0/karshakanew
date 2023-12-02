@@ -492,7 +492,7 @@
                                             <td class="text-right px-2">{{$a->sanctioned_amount}}</td>
                                             <td class="px-2">{{$a->sanctioned_date}}</td>
                                             <td class="px-2">{{$a->payment_date}}</td>
-                                            <td class="px-2">{{$a->createdBy->name}}</td>
+                                            <td class="px-2">{{isset($a->createdBy) ? $a->createdBy->name : ''}}</td>
                                             <td class="px-2">{{$a->formatted_created_at}}</td>
                                         </tr>
                                     @endforeach
