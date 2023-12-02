@@ -67,8 +67,11 @@ class FeeCollection extends Model
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                $tdate = Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at);
-                return $tdate->format('d-m-Y H:i:s');
+                if (isset($this->created_at)) {
+                    $tdate = Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at);
+                    return $tdate->format('d-m-Y H:i:s');
+                }
+                return '';
             },
         );
     }
