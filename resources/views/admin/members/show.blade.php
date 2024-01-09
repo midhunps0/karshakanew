@@ -445,11 +445,14 @@
                             @endforelse
                         </table>
                     </div>
+                    @if (auth()->user()->hasPermissionTo('Fee Collection: Create In Any District') || (auth()->user()->district_id == $member->district_id &&
+                    auth()->user()->hasPermissionTo('Fee Collection: Create In Own District')))
                     <div class="text-center mt-8 print:hidden">
                         <button class="btn btn-sm" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('feecollections.create').'?m='.$member->id}}', route: 'feecollections.create'})">
                             New Receipt
                         </button>
                     </div>
+                    @endif
                 </div>
                 <div x-show="activeTab == 3" id="allowancestab" class="border-b border-r border-l border-base-content border-opacity-10 bg-base-200 min-h-48 rounded-b-lg">
                     <div class="flex flex-row flex-wrap justify-center items-start p-2">

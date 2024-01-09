@@ -388,7 +388,7 @@ class Member extends Model
     protected function dob(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => (Carbon::createFromFormat('Y-m-d', $value))->format('d-m-Y'),
+            get: fn ($value) => $value != null ?(Carbon::createFromFormat('Y-m-d', $value))->format('d-m-Y') : '',
         );
     }
 
