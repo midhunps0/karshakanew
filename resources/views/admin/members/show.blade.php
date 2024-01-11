@@ -515,19 +515,22 @@
                                 @if (isset($enabledSchemes['EDU']) && $enabledSchemes['EDU'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.create')}}', route: 'allowances.education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Education Allowance</button>
                                 @endif
-                                @if (isset($enabledSchemes['EDU']) && $enabledSchemes['DEX'])
+                                @if (isset($enabledSchemes['DEX']) && $enabledSchemes['DEX'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.create')}}', route: 'allowances.postdeath.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Death Ex-Gracia</button>
                                 @endif
-                                @if (isset($enabledSchemes['EDU']) && $enabledSchemes['MRG'])
+                                @if (isset($enabledSchemes['MRG']) && $enabledSchemes['MRG'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.marriage.create')}}', route: 'allowances.marriage.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Marriage Allowance</button>
                                 @endif
-                                @if (isset($enabledSchemes['EDU']) && $enabledSchemes['MTY'])
+                                @if (isset($enabledSchemes['MTY']) && $enabledSchemes['MTY'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.maternity.create')}}', route: 'allowances.maternity.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Maternity Allowance</button>
                                 @endif
-                                @if (isset($enabledSchemes['EDU']) && $enabledSchemes['MED'])
+                                @if (isset($enabledSchemes['MED']) && $enabledSchemes['MED'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.medical.create')}}', route: 'allowances.medical.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Medical Allowance</button>
                                 @endif
-                                @if (isset($enabledSchemes['EDU']) && $enabledSchemes['SA'])
+                                @if (isset($enabledSchemes['SA']) && $enabledSchemes['SA'])
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.create')}}', route: 'allowances.super_annuation.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Super Annuation</button>
+                                @endif
+                                @if (isset($enabledSchemes['HEDU']) && $enabledSchemes['HEDU'])
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.create')}}', route: 'allowances.super_annuation.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Super Annuation</button>
                                 @endif
                             </div>
