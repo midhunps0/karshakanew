@@ -30,6 +30,7 @@
             'maternity' => 'Maternity Assistance',
             'medical' => 'Medical Assistance',
             'super_annuation' => 'Super Annuation',
+            'higher_education' => 'Higher Education Assistance'
         ],
         'membership_fee_id' => 2,
         'default_payment_mode_id' => 1,

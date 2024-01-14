@@ -10,54 +10,62 @@ use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Events\ApplicationCreateEvent;
-use App\Models\DeathExgraciaApplication;
 use Ynotz\MediaManager\Models\MediaItem;
+use App\Models\HigherEducationSchemeApplication;
 use Illuminate\Contracts\Database\Query\Builder;
 
-class PostDeathAllowanceService
+class HigherEducationAllowanceService
 {
     public function store($data)
     {
+        $appln = HigherEducationSchemeApplication::whereJsonContains('passed_exam_details->exam_reg_no', $data['passed_exam_details']['exam_reg_no'])->get()->first();
+        if ($appln != null) {
+            return false;
+        }
         $member = Member::find($data['member_id']);
         $applnData = collect($this->prepareForStoreValidation($data))->only([
             'member_id',
             'member_name',
             'member_address',
-            'date_of_death',
-            'marital_status',
+            'student_name',
+            'fee_period_from',
+            'fee_period_to',
             // 'application_date',
-            'member_reg_date',
-            'applicant_name',
-            'applicant_address',
-            'applicant_phone',
-            'applicant_aadhaar',
-            'applicant_bank_details',
-            'applicant_relation',
-            'applicant_is_minor',
+            'passed_exam_details',
+            'arrear_months_exdt',
+            'is_sc_st',
+            'marks_scored',
+            'total_marks',
+            'member_phone',
+            'member_aadhaar',
+            'member_bank_account',
         ])->toArray();
-        $applnData['member_reg_date'] = AppHelper::formatDateForSave($member->reg_date);
-        $applnData['date_of_death'] = AppHelper::formatDateForSave($applnData['date_of_death']);
+
+        $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
+        $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
         /**
-         * @var DeathExgraciaApplication
+         * @var HigherEducationSchemeApplication
          */
-        $esa = DeathExgraciaApplication::create($applnData);
+        $esa = HigherEducationSchemeApplication::create($applnData);
+        AppHelper::syncImageFromRequestData($esa, 'mark_list', $data);
+        AppHelper::syncImageFromRequestData($esa, 'tc', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
         AppHelper::syncImageFromRequestData($esa, 'aadhaar_card', $data);
         AppHelper::syncImageFromRequestData($esa, 'bank_passbook', $data);
+        AppHelper::syncImageFromRequestData($esa, 'union_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'ration_card', $data);
+        AppHelper::syncImageFromRequestData($esa, 'caste_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
-        AppHelper::syncImageFromRequestData($esa, 'minor_age_proof', $data);
-        AppHelper::syncImageFromRequestData($esa, 'death_certificate', $data);
 
         BusinessActionEvent::dispatch(
-            DeathExgraciaApplication::class,
+            HigherEducationSchemeApplication::class,
             $esa->id,
             'Created',
             auth()->user()->id,
             null,
             $esa,
-            'Created DeathExgraciaApplication with id: '.$esa->id,
+            'Created EducationAllowanceApplication with id: '.$esa->id,
             $member->district_id
         );
 
@@ -71,7 +79,7 @@ class PostDeathAllowanceService
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
-            'allowanceable_type' => DeathExgraciaApplication::class,
+            'allowanceable_type' => HigherEducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
@@ -101,7 +109,7 @@ class PostDeathAllowanceService
         $allowance = Allowance::find($id);
 
         /**
-         * @var DeathExgraciaApplication
+         * @var HigherEducationSchemeApplication
          */
         $esa = $allowance->allowanceable;
         $member = Member::find($data['member_id']);
@@ -136,7 +144,7 @@ class PostDeathAllowanceService
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
 
         BusinessActionEvent::dispatch(
-            DeathExgraciaApplication::class,
+            HigherEducationSchemeApplication::class,
             $esa->id,
             'Updated',
             auth()->user()->id,
@@ -156,7 +164,7 @@ class PostDeathAllowanceService
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
-            'allowanceable_type' => DeathExgraciaApplication::class,
+            'allowanceable_type' => HigherEducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
             'application_no' => $allowance->application_no,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
@@ -177,8 +185,110 @@ class PostDeathAllowanceService
         return $allowance;
     }
 
+    public function approve($id, $approval, $amount = null, $reason = '')
+    {
+        try {
+            $status = match($approval) {
+                'Paid' => Allowance::$STATUS_PAID,
+                'Approved' => Allowance::$STATUS_APPROVED,
+                'Rejected' => Allowance::$STATUS_REJECTED,
+                'Pending' => Allowance::$STATUS_PENDING,
+                'Old - Unknown' => Allowance::$STATUS_OLD_UNKNOWN,
+            };
+            $a = Allowance::find($id);
+            $a->status = $status;
+            if ($status == Allowance::$STATUS_REJECTED) {
+                $a->rejection_reason = $reason;
+            }
+            if ($amount != null && $status == Allowance::$STATUS_APPROVED) {
+                $a->sanctioned_amount = $amount;
+                $a->sanctioned_date = Carbon::today()->format('Y-m-d');
+            }
+            if ($status == Allowance::$STATUS_PAID) {
+                $a->payment_date = Carbon::today()->format('Y-m-d');
+            }
+            $a->save();
+            $a->refresh();
+            AllowanceEvent::dispatch($a->member->district_id, AllowanceEvent::$ACTION_APPROVED, $a);
+            BusinessActionEvent::dispatch(
+                Allowance::class,
+                $a->id,
+                $approval,
+                auth()->user()->id,
+                null,
+                $a,
+                $approval.' Allowance with id: '.$a->id,
+                $a->member->district_id
+            );
+            return [
+                'success' => true,
+                'sanctioned_date' => $a->sanctioned_date,
+                'sanctioned_amount' => $a->sanctioned_amount,
+                'payment_date' => $a->payment_date
+            ];
+            } catch (\Throwable $e) {
+            return [
+                'success' => false
+            ];
+        }
+    }
+
+    public function pending()
+    {
+        $did = auth()->user()->district_id;
+        $ps = Allowance::$STATUS_PENDING;
+
+        return Allowance::where('status', $ps)
+            ->where('district_id', $did)
+            ->get();
+    }
+
+    public function report($data)
+    {
+        $query = Allowance::query();
+        $query->userDistrictConstrained();
+        $datetype = $data['datetype'];
+        if (isset($data['created_by'])) {
+            $query->where('created_by', $data['created_by']);
+        }
+        if (isset($data['start'])) {
+            $query->where($datetype, '>=', AppHelper::formatDateForSave(thedate: $data['start'], setTimeTo: 'start'));
+        }
+        if (isset($data['end'])) {
+            $query->where($datetype, '<=', AppHelper::formatDateForSave(thedate: $data['end'], setTimeTo: 'end'));
+        }
+        if (isset($data['status'])) {
+            $statkey = 'STATUS_'.Str::upper($data['status']);
+            $query->where('status', Allowance::$$statkey);
+        }
+        if (isset($data['scheme'])) {
+            $query->where('welfare_scheme_id', $data['scheme']);
+        }
+        if (isset($data['course'])) {
+            $query->whereHas(
+                'allowanceable',
+                function (Builder $query) use ($data) {
+                    $query->whereJsonContains('passed_exam_details->exam_name', $data['course']);
+                }
+            );
+        }
+        $query->orderBy('created_at', 'desc');
+        if (isset($data['fullreport']) && $data['fullreport']) {
+            return $query->get();
+        } else {
+            return $query->paginate(
+                perPage: 100,
+                page: $data['page']
+            );
+        }
+    }
+
+
     public function prepareForStoreValidation(array $data): array
     {
+        $data['is_sc_st'] = $data['is_sc_st'] == 'Yes';
+        $data['total_marks'] = $data['marks_total'];
+
         return $data;
     }
 

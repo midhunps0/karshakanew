@@ -531,7 +531,7 @@
                                 <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.create')}}', route: 'allowances.super_annuation.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Super Annuation</button>
                                 @endif
                                 @if (isset($enabledSchemes['HEDU']) && $enabledSchemes['HEDU'])
-                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.super_annuation.create')}}', route: 'allowances.super_annuation.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Super Annuation</button>
+                                <button @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.higher_education.create')}}', route: 'allowances.higher_education.create', params: {member_id: {{$member->id}}}})" class="bg-base-100 hover:bg-base-300 p-4 w-auto rounded-md m-2">Higher Education</button>
                                 @endif
                             </div>
                         </div>

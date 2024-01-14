@@ -15,6 +15,7 @@ use App\Http\Controllers\Accounting\TransactionController;
 use App\Http\Controllers\Accounting\AccountGroupController;
 use App\Http\Controllers\Accounting\AccountsReportsController;
 use App\Http\Controllers\Allowances\AllowanceController;
+use App\Http\Controllers\Allowances\HigherEducationController;
 use App\Http\Controllers\Allowances\MarriageController;
 use App\Http\Controllers\Allowances\MaternityController;
 use App\Http\Controllers\Allowances\MedicalController;
@@ -154,11 +155,18 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::post('/allowances/education/store', [EducationController::class, 'store'])->name('allowances.education.store');
     Route::post('/allowances/education/update/{id}', [EducationController::class, 'update'])->name('allowances.education.update');
 
+    Route::get('/allowances/higher-education/show/{id}', [HigherEducationController::class, 'show'])->name('allowances.higher_education.show');
+    Route::get('/allowances/higher-education/create', [HigherEducationController::class, 'create'])->name('allowances.higher_education.create');
+    Route::get('/allowances/higher-education/edit/{id}', [HigherEducationController::class, 'edit'])->name('allowances.higher_education.edit');
+    Route::post('/allowances/higher-education/store', [HigherEducationController::class, 'store'])->name('allowances.higher_education.store');
+    Route::post('/allowances/higher-education/update/{id}', [HigherEducationController::class, 'update'])->name('allowances.higher_education.update');
+
     Route::get('/allowances/postdeath/show/{id}', [PostDeathController::class, 'show'])->name('allowances.postdeath.show');
     Route::get('/allowances/postdeath/create', [PostDeathController::class, 'create'])->name('allowances.postdeath.create');
     Route::get('/allowances/postdeath/edit/{id}', [PostDeathController::class, 'edit'])->name('allowances.postdeath.edit');
     Route::post('/allowances/postdeath/store', [PostDeathController::class, 'store'])->name('allowances.postdeath.store');
     Route::post('/allowances/postdeath/update/{id}', [PostDeathController::class, 'update'])->name('allowances.postdeath.update');
+
 
     Route::get('/allowances/marriage/show/{id}', [MarriageController::class, 'show'])->name('allowances.marriage.show');
     Route::get('/allowances/marriage/create', [MarriageController::class, 'create'])->name('allowances.marriage.create');

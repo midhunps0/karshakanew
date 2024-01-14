@@ -10,9 +10,7 @@ use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Events\ApplicationCreateEvent;
-use App\Models\DeathExgraciaApplication;
 use Ynotz\MediaManager\Models\MediaItem;
-use App\Models\EducationSchemeApplication;
 use App\Models\MaternityAssistanceApplication;
 use Illuminate\Contracts\Database\Query\Builder;
 

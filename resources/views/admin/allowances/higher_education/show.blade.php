@@ -1,9 +1,9 @@
 <x-easyadmin::partials.adminpanel>
     <div>
-        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Death Exgracia Application</span>&nbsp;</h3>
+        <h3 class="text-xl font-bold pb-3 print:hidden"><span>Allowance Application</span>&nbsp;</h3>
         <div class="text-right p-4 flex flex-row justify-between">
             @if(isset($application) && $application->editable_by_status)
-            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.postdeath.edit', $application->id)}}'});" >Edit</a>
+            <a href="" class="btn btn-sm btn-warning" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('allowances.education.edit', $application->id)}}'});" >Edit</a>
             @else
             <span class="btn btn-sm btn-disabled">Edit</span>
             @endif
@@ -23,7 +23,6 @@
             </div>
             <div class="my-2 p-2"><span class="font-bold opacity-60">Membership No.:</span>&nbsp;<span>{{$application->member->membership_no}}</span></div>
             <div class="my-2 p-2"><span class="font-bold opacity-60">Aadhaar No.:</span>&nbsp;<span>{{$application->member->aadhaar_no}}</span></div>
-            <div class="my-2 p-2"><span class="font-bold opacity-60">Date of death:</span>&nbsp;<span>{{$application->allowanceable->date_of_death}}</span></div>
         </div>
         <h4 class="my-4 text-center text-2xl underline mt-8"><span class="font-bold opacity-80">Application Details:</span></h4>
         @if (isset($application->allowanceable))
@@ -35,30 +34,11 @@
             <div class="flex flex-row flex-wrap">
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Name:</span>&nbsp;<span>{{$application->allowanceable->member_name}}</span></div>
                 <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Address:</span>&nbsp;<span>{{$application->allowanceable->member_address}}</span></div>
+                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Aadhaar No.:</span>&nbsp;<span>{{$application->allowanceable->member_aadhaar}}</span></div>
+                <div class="my-2 p-y2 w-1/2"><span class="font-bold opacity-60">Member's Phone No.:</span>&nbsp;<span>{{$application->allowanceable->member_phone}}</span></div>
+
             </div>
             <div>
-                <h4 class="my-4"><span class="font-bold opacity-60">Applicant Details:</span></h4>
-                <div class="border border-base-content border-opacity-20 rounded-md">
-                    <table class="table table-compact w-full">
-                        <thead>
-                            <tr>
-                                <td class="opacity-60">Name</td>
-                                <td class="opacity-60">Address</td>
-                                <td class="opacity-60">Mobile No.</td>
-                                <td class="opacity-60">Aadhaar No.</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td>{{$application->allowanceable->applicant_name}}</td>
-                                <td>{{$application->allowanceable->applicant_address}}</td>
-                                <td>{{$application->allowanceable->applicant_phone}}</td>
-                                <td>{{$application->allowanceable->applicant_aadhaar}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
                 <h4 class="my-4"><span class="font-bold opacity-60">Bank Details:</span></h4>
                 <div class="border border-base-content border-opacity-20 rounded-md">
                     <table class="table table-compact w-full">
@@ -71,7 +51,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             <tr>
                                 <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
                                 <td>{{$application->allowanceable->member_bank_account['bank_name']}}</td>
@@ -81,11 +60,96 @@
                         </tbody>
                     </table>
                 </div>
-
+                <div class="my-4">
+                    <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">Student's Name:</span>&nbsp;<span>{{$application->allowanceable->student_name}}</span></div>
+                </div>
+                <div class="my-4">
+                    <div class="my-2 w-1/2"><span class="font-bold opacity-60">Exam Details:</div>
+                    <div class="border border-base-content border-opacity-20 rounded-md">
+                        <table class="table table-compact w-full">
+                            <thead>
+                                <tr>
+                                    <td class="opacity-60">Exam</td>
+                                    <td class="opacity-60">Reg. No.</td>
+                                    <td class="opacity-60">Institution</td>
+                                    <td class="opacity-60">Affiliated Board</td>
+                                    <td class="opacity-60">Exam Start Date</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{$application->allowanceable->passed_exam_details['exam_name']}}</td>
+                                    <td>{{$application->allowanceable->passed_exam_details['exam_reg_no']}}</td>
+                                    <td>{{$application->allowanceable->passed_exam_details['institution']}}</td>
+                                    <td>{{$application->allowanceable->passed_exam_details['affilated_board']}}</td>
+                                    <td>{{$application->allowanceable->passed_exam_details['exam_start_date']}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="my-4">
+                    <div class="my-2 py-2 w-1/2"><span class="font-bold opacity-60">No. of months of arrears:</span>&nbsp;<span>{{$application->allowanceable->arrear_months_exdt}}</span></div>
+                </div>
+                <div class="my-4">
+                    <div class="my-2 w-1/2"><span class="font-bold opacity-60">Marks scored by the student:</div>
+                    <div class="border border-base-content border-opacity-20 rounded-md">
+                        <table class="table table-compact w-full">
+                            <thead>
+                                <tr>
+                                    <td class="opacity-60">Subject</td>
+                                    <td class="opacity-60">Marks Scored</td>
+                                    <td class="opacity-60">Maximum Marks</td>
+                                    <td class="opacity-60">Points (If, applicable)</td>
+                                    <td class="opacity-60">Percentage</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($application->allowanceable->marks_scored as $m)
+                                <tr>
+                                    <td>{{$m['subject']}}</td>
+                                    <td>{{$m['marks_scored'] ?? ''}}</td>
+                                    <td>{{$m['max_mark'] ?? ''}}</td>
+                                    <td>{{$m['points'] ?? ''}}</td>
+                                    <td>{{$m['percentage'] ?? ''}}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tbody>
+                                <tr class="font-bold">
+                                    <td>Total</td>
+                                    <td>{{$application->allowanceable->total_marks['total_scored'] ?? ''}}</td>
+                                    <td>{{$application->allowanceable->total_marks['total_max'] ?? ''}}</td>
+                                    <td>{{$application->allowanceable->total_marks['points'] ?? ''}}</td>
+                                    <td>{{$application->allowanceable->total_marks['percentage'] ?? ''}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="my-4">
                     <div class="my-2 w-1/2"><span class="font-bold opacity-60">Attachments:</div>
                         <div class="flex flex-row flex-wrap items-start justify-start p-3">
-
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Mark List:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($application->allowanceable->getSingleMediaForDisplay('mark_list') != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('mark_list')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('mark_list')['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Transfer Certificate:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($application->allowanceable->getSingleMediaForDisplay('tc') != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('tc')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('tc')['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
                             <div class="md:w-1/5 p-1 my-1">
                                 <span class="text-warning">Passbook Front:</span>
                                 <div class="block m-2 w-32 h-24">
@@ -127,6 +191,16 @@
                                 </div>
                             </div>
                             <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Union Certificate:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($application->allowanceable->getSingleMediaForDisplay('union_certificate') != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('union_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('union_certificate')['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
                                 <span class="text-warning">Ration Card:</span>
                                 <div class="block m-2 w-32 h-24">
                                     @if ($application->allowanceable->getSingleMediaForDisplay('ration_card') != null)
@@ -137,30 +211,20 @@
                                 </div>
                             </div>
                             <div class="md:w-1/5 p-1 my-1">
+                                <span class="text-warning">Caste Certificate:</span>
+                                <div class="block m-2 w-32 h-24">
+                                    @if ($application->allowanceable->getSingleMediaForDisplay('caste_certificate') != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('caste_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('caste_certificate')['path']}}" />
+                                    @else
+                                    <span class="text-error text-opacity-80">Not submitted</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="md:w-1/5 p-1 my-1">
                                 <span class="text-warning">One And Same Certificate:</span>
                                 <div class="block m-2 w-32 h-24">
                                     @if ($application->allowanceable->getSingleMediaForDisplay('one_and_same_certificate') != null)
                                     <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('one_and_same_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('one_and_same_certificate')['path']}}" />
-                                    @else
-                                    <span class="text-error text-opacity-80">Not submitted</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="md:w-1/5 p-1 my-1">
-                                <span class="text-warning">Death Certificate</span>
-                                <div class="block m-2 w-32 h-24">
-                                    @if ($application->allowanceable->getSingleMediaForDisplay('death_certificate') != null)
-                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('death_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('death_certificate')['path']}}" />
-                                    @else
-                                    <span class="text-error text-opacity-80">Not submitted</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="md:w-1/5 p-1 my-1">
-                                <span class="text-warning">Minor Age Proof</span>
-                                <div class="block m-2 w-32 h-24">
-                                    @if ($application->allowanceable->getSingleMediaForDisplay('minor_age_proof') != null)
-                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('minor_age_proof')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('minor_age_proof')['path']}}" />
                                     @else
                                     <span class="text-error text-opacity-80">Not submitted</span>
                                     @endif
@@ -325,7 +389,7 @@
                                     $dispatch('showtoast', {message: 'Application marked as paid', mode: 'success', });
                                     $dispatch('applnstatusupdated', {status: 'Paid'});
                                     {{-- setTimeout(() => {
-                                        $dispatch('linkaction', {link: '{{route('allowances.education.showallowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
+                                        $dispatch('linkaction', {link: '{{route('allowances.education.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
                                     }, 500); --}}
                                 } else {
                                     $dispatch('shownotice', {message: 'Application updation failed', mode: 'error', });
