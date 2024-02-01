@@ -2,7 +2,7 @@
     <div>
         <h3 class="text-xl font-bold pb-3 print:hidden"><span>Chart Of Accounts ({{$districtName}}) </span>&nbsp;</h3>
         <div>
-            @if ($districtId == 15)
+            @if (auth()->user()->district_id == 15)
             <form x-data="{
                 districtId: null,
                 doSubmit() {

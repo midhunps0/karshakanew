@@ -125,7 +125,7 @@ class AllowanceController extends SmartController
                 'end' => $end,
                 'fullreport' => true,
                 'datetype' => $this->request->input('datetype', 'receipt_date'),
-                'datetype' => $this->request->input('datetype', 'receipt_date'),
+                'created_by' => $this->request->input('created_by', null),
                 'status' => $this->request->input('status', null),
                 'scheme' => $this->request->input('scheme', null),
                 'course' => $this->request->input('course', null),
@@ -140,7 +140,7 @@ class AllowanceController extends SmartController
     {
         $start = $this->request->input('start', null);
         $end = $this->request->input('end', null);
-        $page = $this->request->input('page', 1);
+        // $page = $this->request->input('page', 1);
 
         if (count($this->request->all()) == 0) {
             $result = [];
@@ -148,10 +148,13 @@ class AllowanceController extends SmartController
             $result = $this->allowanceService->report([
                 'start' => $start,
                 'end' => $end,
-                'page' => $page,
+                'fullreport' => true,
+                // 'page' => $page,
                 'datetype' => $this->request->input('datetype', 'receipt_date'),
                 'created_by' => $this->request->input('created_by', null),
                 'status' => $this->request->input('status', null),
+                'scheme' => $this->request->input('scheme', null),
+                'course' => $this->request->input('course', null),
                 'fullreport' => true
             ]);
         }

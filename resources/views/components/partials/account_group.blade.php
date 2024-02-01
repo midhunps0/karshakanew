@@ -2,14 +2,18 @@
 <div x-data="{
         xpand: false
     }">
-    <div class="pl-5 font-bold text-secondary opacity-80 flex flex-row space-x-8 my-2">
-        <span>{{$sgf->name}}</span>
-        <button @click.prevent.stop="xpand = true;" type="button" class="btn btn-xs" x-show="!xpand">
-            <x-easyadmin::display.icon icon="easyadmin::icons.plus" height="h-4" width="w-4"/>
-        </button>
-        <button @click.prevent.stop="xpand = false;" type="button" class="btn btn-xs" x-show="xpand">
-            <x-easyadmin::display.icon icon="easyadmin::icons.minus" height="h-4" width="w-4"/>
-        </button>
+    <div class="font-bold text-secondary opacity-80 flex flex-row space-x-8 my-1 bg-base-200 p-2 rounded-md">
+        <div class="flex-grow">
+            <span>{{$sgf->name}}</span>
+        </div>
+            <div>
+            <button @click.prevent.stop="xpand = true;" type="button" class="btn btn-xs" x-show="!xpand">
+                <x-easyadmin::display.icon icon="easyadmin::icons.plus" height="h-4" width="w-4"/>
+            </button>
+            <button @click.prevent.stop="xpand = false;" type="button" class="btn btn-xs" x-show="xpand">
+                <x-easyadmin::display.icon icon="easyadmin::icons.minus" height="h-4" width="w-4"/>
+            </button>
+        </div>
     </div>
     <div class="overflow-hidden transition-all duration-500" :style="xpand ? 'height: {{(count($sgf->subGroups) + count($sgf->accounts)) * 20}}px;' : 'height: 0px'">
         @foreach ($sgf->subGroups as $sg)
