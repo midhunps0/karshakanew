@@ -35,8 +35,8 @@
                 @endif
             @elseif ($item['type'] == 'menu_section')
             @if (!isset($item['show']) || (isset($item['show']) && $item['show']))
-            <li class="flex flex-row items-center justify-start bg-base-200 bg-opacity-50 opacity-80 mt-4">
-                <x-easyadmin::partials.menu-group title="{{$item['title']}}" icon="{{$item['icon']}}"/><span>:</span>
+            <li class="flex flex-row items-center justify-start bg-base-200 bg-opacity-50 opacity-80 mt-4 text-warning">
+                <x-easyadmin::partials.menu-group title="{{$item['title']}}" icon="{{$item['icon']}}"/>
             </li>
             @endif
             @endif

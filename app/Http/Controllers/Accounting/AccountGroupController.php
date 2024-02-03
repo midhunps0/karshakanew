@@ -15,39 +15,39 @@ class AccountGroupController extends SmartController
 {
     use HasMVConnector;
 
-    private $accountGroupService;
-
-    public function __construct(AccountGroupService $service)
+    public function __construct(Request $request, AccountGroupService $service)
     {
-        $this->accountGroupService = $service;
+        $this->request = $request;
+        $this->connectorService = $service;
+        $this->indexView = 'admin.index';
     }
 
-    public function index()
-    {
-        return $this->accountGroupService->all();
-    }
+    // public function index()
+    // {
+    //     return $this->accountGroupService->all();
+    // }
 
-    public function show($id)
-    {
-        try {
-            $result = $this->accountGroupService->findOrFail($id);
-            return $this->buildResponse(
-                'admin.accounts.group.show',
-                [
-                    'success' => true,
-                    'data' => $result
-                ]
-            );
-        } catch (\Throwable $e) {
-            return $this->buildResponse(
-                'admin.accounts.group.show',
-                [
-                    'success' => false,
-                    'error' => $e->__toString()
-                ]
-            );
-        }
-    }
+    // public function show($id)
+    // {
+    //     try {
+    //         $result = $this->accountGroupService->findOrFail($id);
+    //         return $this->buildResponse(
+    //             'admin.accounts.group.show',
+    //             [
+    //                 'success' => true,
+    //                 'data' => $result
+    //             ]
+    //         );
+    //     } catch (\Throwable $e) {
+    //         return $this->buildResponse(
+    //             'admin.accounts.group.show',
+    //             [
+    //                 'success' => false,
+    //                 'error' => $e->__toString()
+    //             ]
+    //         );
+    //     }
+    // }
     /*
     public function store(StoreAccountGroupRequest $request)
     {

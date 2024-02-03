@@ -195,15 +195,20 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/allowances/search', [AllowanceController::class, 'search'])->name('allowances.search');
     Route::post('/allowances/search', [AllowanceController::class, 'getAllowance'])->name('allowances.search');
 
-    Route::get('/account-group-all', [AccountGroupController::class, 'index']);
-    Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);
-    Route::post('/account-group-create', [AccountGroupController::class, 'store']);
-    Route::post('/account-group-update/{id}', [AccountGroupController::class, 'update']);
-    Route::post('/account-group-delete/{id}', [AccountGroupController::class, 'delete']);
+    // Route::get('/account-group-all', [AccountGroupController::class, 'index']);
+    // Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);
+    // Route::post('/account-group-create', [AccountGroupController::class, 'store']);
+    // Route::post('/account-group-update/{id}', [AccountGroupController::class, 'update']);
+    // Route::post('/account-group-delete/{id}', [AccountGroupController::class, 'delete']);
 
     RouteHelper::getEasyRoutes(
         modelName: "LedgerAccount",
         controller: 'App\Http\Controllers\Accounting\LedgerController'
+    );
+
+    RouteHelper::getEasyRoutes(
+        modelName: "AccountGroup",
+        controller: 'App\Http\Controllers\Accounting\AccountGroupController'
     );
 
     RouteHelper::getEasyRoutes(

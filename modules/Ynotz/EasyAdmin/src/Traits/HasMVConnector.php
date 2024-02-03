@@ -43,6 +43,7 @@ trait HasMVConnector {
                 $this->request->input('selected_ids', ''),
                 'results',
             );
+
             return $this->buildResponse($view, $result);
         } catch (AuthorizationException $e) {
             info($e);

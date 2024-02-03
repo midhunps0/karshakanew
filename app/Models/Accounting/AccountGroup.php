@@ -4,6 +4,7 @@ namespace App\Models\Accounting;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Accounting\LedgerAccount;
+use App\Models\District;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,11 @@ class AccountGroup extends Model
     public function accounts()
     {
         return $this->hasMany(LedgerAccount::class, 'group_id', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
     }
 
     public function parentGroup()

@@ -179,8 +179,13 @@ class SidebarService implements SidebarServiceInterface
                 ],
             ],
             [
-                'type' => 'menu_group',
+                'type' => 'menu_section',
                 'title' => 'Accounts',
+                'icon' => 'easyadmin::icons.users',
+            ],
+            [
+                'type' => 'menu_group',
+                'title' => 'Transactions',
                 'icon' => 'easyadmin::icons.gear',
                 // 'show' => auth()->user()->hasPermissionTo(''),
                 'show' => true,
@@ -217,6 +222,15 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showJournal()
                     ],
+                ]
+            ],
+            [
+                'type' => 'menu_group',
+                'title' => 'Ledger Accounts',
+                'icon' => 'easyadmin::icons.gear',
+                // 'show' => auth()->user()->hasPermissionTo(''),
+                'show' => true,
+                'menu_items' => [
                     [
                         'type' => 'menu_item',
                         'title' => 'Chart Of Accounts',
@@ -242,6 +256,36 @@ class SidebarService implements SidebarServiceInterface
                         'show' => $this->createLedgerPermission()
                     ],
                 ]
+            ],
+            [
+                'type' => 'menu_group',
+                'title' => 'Account Groups',
+                'icon' => 'easyadmin::icons.gear',
+                // 'show' => auth()->user()->hasPermissionTo(''),
+                'show' => true,
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Account Groups',
+                        'route' => 'accountgroups.index',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add Account Group',
+                        'route' => 'accountgroups.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                ]
+            ],
+            [
+                'type' => 'menu_section',
+                'title' => 'Settings',
+                'icon' => 'easyadmin::icons.gear',
             ],
             [
                 'type' => 'menu_group',
