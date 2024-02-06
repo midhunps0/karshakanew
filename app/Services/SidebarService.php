@@ -23,69 +23,79 @@ class SidebarService implements SidebarServiceInterface
                 'icon' => 'easyadmin::icons.users',
                 'show' => true
             ],
-            // [
-            //     'type' => 'menu_item',
-            //     'title' => 'Members',
-            //     'route' => 'members.index',
-            //     'route_params' => [],
-            //     'icon' => 'easyadmin::icons.users',
-            //     'show' => true
-            // ],
             [
-                'type' => 'menu_item',
-                'title' => 'Search Member',
-                'route' => 'members.search',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
+                'type' => 'menu_group',
+                'title' => 'Members',
+                'icon' => 'easyadmin::icons.gear',
+                // 'show' => auth()->user()->hasPermissionTo(''),
+                'show' => true,
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Search Member',
+                        'route' => 'members.search',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add Member',
+                        'route' => 'members.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Sync Member Data',
+                        'route' => 'members.sync',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                ]
             ],
             [
-                'type' => 'menu_item',
-                'title' => 'Add Member',
-                'route' => 'members.create',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Sync Member Data',
-                'route' => 'members.sync',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Search Receipts',
-                'route' => 'feecollections.search',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.search',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Add New Receipt',
-                'route' => 'feecollections.create',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Add Receipts - Bulk',
-                'route' => 'feecollections.bulk.create',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
-            ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Add Old Receipt',
-                'route' => 'feecollections.old.create',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => true
+                'type' => 'menu_group',
+                'title' => 'Receipts',
+                'icon' => 'easyadmin::icons.gear',
+                // 'show' => auth()->user()->hasPermissionTo(''),
+                'show' => true,
+                'menu_items' => [
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Search Receipts',
+                        'route' => 'feecollections.search',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.search',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add New Receipt',
+                        'route' => 'feecollections.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add Receipts - Bulk',
+                        'route' => 'feecollections.bulk.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Add Old Receipt',
+                        'route' => 'feecollections.old.create',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => true
+                    ],
+                ]
             ],
             [
                 'type' => 'menu_item',

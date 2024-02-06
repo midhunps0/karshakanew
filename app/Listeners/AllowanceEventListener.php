@@ -40,12 +40,12 @@ class AllowanceEventListener
                 break;
             case AllowanceEvent::$ACTION_APPROVED:
                 $d = District::find($event->districtId);
-                $d->pending_applications = $d->pending_applications - 1;
+                $d->pending_applications = $d->pending_applications == 0 ? 0: $d->pending_applications - 1;
                 $d->save();
                 break;
             case AllowanceEvent::$ACTION_DELETED:
                 $d = District::find($event->districtId);
-                $d->pending_applications = $d->pending_applications - 1;
+                $d->pending_applications = $d->pending_applications == 0 ? 0: $d->pending_applications - 1;
                 $d->save();
                 break;
         }

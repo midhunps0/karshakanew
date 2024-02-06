@@ -29,8 +29,6 @@
             el = document.getElementById(elid);
             elMaxHeight = el.clientHeight;
             collapse();
-            console.log('mh');
-            console.log(elMaxHeight);
         });
     "
     >
@@ -49,19 +47,19 @@
     </div>
     <div :id="elid" class="overflow-hidden transition-all duration-500" >
         @foreach ($sgf->subGroups as $sg)
-            <div class="pl-10">
+            <div class="pl-5">
                 <x-partials.account_group :sgf="$sg" />
             </div>
         @endforeach
         @foreach ($sgf->accounts as $sga)
-            <div class="pl-10">
+            <div class="pl-5">
                 <a href="" @click.prevent.stop="$dispatch('linkaction', {link: '{{route('accounts.account.statement')}}'+'?account_id='+{{$sga->id}}, route: 'accounts.account.statement'});" class="cursor-pointer">
                     {{$sga->name_with_district}}
                 </a>
             </div>
         @endforeach
         @if (count($sgf->accounts) == 0 && count($sgf->subGroups) == 0)
-            <div class="pl-10 text-warning opacity-80">No items in this group</div>
+            <div class="pl-5 text-warning opacity-80">No items in this group</div>
         @endif
     </div>
 </div>
