@@ -2,8 +2,10 @@
 namespace App\Services;
 
 use App\Helpers\AppHelper;
+use App\Models\Allowance;
 use App\Models\District;
 use App\Models\FeeType;
+use App\Models\WelfareScheme;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
@@ -103,6 +105,206 @@ class DashboardService
                 'data' => $data,
                 'taluks' => $taluks,
                 'fee_types' => $feeTypes
+            ];
+        }
+    }
+    public function dashboardAllowancesData($from, $to)
+    {
+		$from = AppHelper::formatDateForSave($from);
+        $to = AppHelper::formatDateForSave($to);
+        $result = null;
+        $data = [];
+        $level = null;
+        $allowanceTypes = WelfareScheme::all()->pluck('name')->toArray();
+        $ditricts = null;
+        $theTaluks = null;
+        /**
+         * @var \App\Models\User
+         */
+        $user = auth()->user();
+		//dd(collect($user->permissions())->pluck('name'));
+		//dd($user->hasPermissionTo('Dashboard: View All District Data'));
+        if ($user->hasPermissionTo('Dashboard: View All District Data')) {
+		//if (in_array('Dashboard: View All District Data',collect($user->permissions())->pluck('name'))) {
+			//dd('okay1');
+            $level = 'state';
+            $districts = District::withoutHo()->orderBy('display_code', 'asc')->get()->pluck('name')->toArray();
+            foreach ($districts as $d) {
+                $data[$d] = [];
+            }
+            $data['Total'] = [];
+            $result = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('districts as d', 'd.id', '=', 'a.district_id')
+                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->groupBy('ws.id', 'a.district_id',)
+                ->orderBy('d.display_code', 'asc')
+                ->get();
+            $pending = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('districts as d', 'd.id', '=', 'a.district_id')
+                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_PENDING)
+                ->groupBy('ws.id', 'a.district_id',)
+                ->orderBy('d.display_code', 'asc')
+                ->get();
+            $approved = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('districts as d', 'd.id', '=', 'a.district_id')
+                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_APPROVED)
+                ->groupBy('ws.id', 'a.district_id',)
+                ->orderBy('d.display_code', 'asc')
+                ->get();
+            $rejected = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('districts as d', 'd.id', '=', 'a.district_id')
+                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_REJECTED)
+                ->groupBy('ws.id', 'a.district_id',)
+                ->orderBy('d.display_code', 'asc')
+                ->get();
+
+                $data['Approved'] = [];
+                $data['Rejected'] = [];
+                $data['Pending'] = [];
+                foreach ($result as $r) {
+                    $data[$r->district][$r->scheme] = $r->applications_count;
+                    $data['Total'][$r->scheme] = $data['Total'][$r->scheme] ?? 0;
+                    $data['Total'][$r->scheme] += $r->applications_count;
+                    $data[$r->district]['Total'] = $data[$r->district]['Total'] ?? 0;
+                    $data[$r->district]['Total'] += $r->applications_count;
+                    $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
+                    $data['Total']['Total'] += $r->applications_count;
+                    $data['Pending'][$r->scheme] = $data['Pending'][$r->scheme] ?? 0;
+                    $data['Approved'][$r->scheme] = $data['Approved'][$r->scheme] ?? 0;
+                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                }
+                foreach ($approved as $a) {
+                    $data['Approved'][$a->scheme] = $data['Approved'][$a->scheme] ?? 0;
+                    $data['Approved'][$a->scheme] += $a->applications_count;
+                }
+                foreach ($rejected as $r) {
+                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                    $data['Rejected'][$r->scheme] += $r->applications_count;
+                }
+                foreach ($pending as $p) {
+                    $data['Pending'][$p->scheme] = $data['Pending'][$p->scheme] ?? 0;
+                    $data['Pending'][$p->scheme] += $p->applications_count;
+                }
+        } elseif ($user->hasPermissionTo('Dashboard: View Own District Data')) {
+			//dd('okay');
+            $level = 'district';
+            $d = District::find($user->district_id);
+            $theTaluks = $d->taluks->pluck('name')->toArray();
+            foreach ($theTaluks as $t) {
+                $data[$t] = [];
+            }
+            $data['Total'] = [];
+            $result = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('members as m', 'm.id', '=', 'a.member_id')
+                ->join('taluks as t', 't.id', '=', 'm.taluk_id')
+                // ->where('fc.district_id', $user->district_id)
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->orderBy('t.display_code', 'desc')
+                ->get();
+            $pending = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('members as m', 'm.id', '=', 'a.member_id')
+                ->join('taluks as t', 't.id', '=', 'm.taluk_id')
+                // ->where('fc.district_id', $user->district_id)
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_PENDING)
+                ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->orderBy('t.display_code', 'desc')
+                ->get();
+            $approved = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('members as m', 'm.id', '=', 'a.member_id')
+                ->join('taluks as t', 't.id', '=', 'm.taluk_id')
+                // ->where('fc.district_id', $user->district_id)
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_APPROVED)
+                ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->orderBy('t.display_code', 'desc')
+                ->get();
+            $rejected = DB::table('allowances', 'a')
+                ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+                ->join('members as m', 'm.id', '=', 'a.member_id')
+                ->join('taluks as t', 't.id', '=', 'm.taluk_id')
+                // ->where('fc.district_id', $user->district_id)
+                ->where('a.application_date', '>=', $from)
+                ->where('a.application_date', '<=', $to)
+                ->where('a.status', Allowance::$STATUS_REJECTED)
+                ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->orderBy('t.display_code', 'desc')
+                ->get();
+                $data['Approved'] = [];
+                $data['Rejected'] = [];
+                $data['Pending'] = [];
+                foreach ($result as $r) {
+                    $data[$r->taluk][$r->scheme] = $r->applications_count;
+                    $data['Total'][$r->scheme] = $data['Total'][$r->scheme] ?? 0;
+                    $data['Total'][$r->scheme] += $r->applications_count;
+                    $data[$r->taluk]['Total'] = $data[$r->taluk]['Total'] ?? 0;
+                    $data[$r->taluk]['Total'] += $r->applications_count;
+                    $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
+                    $data['Total']['Total'] += $r->applications_count;
+                    $data['Pending'][$r->scheme] = $data['Pending'][$r->scheme] ?? 0;
+                    $data['Approved'][$r->scheme] = $data['Approved'][$r->scheme] ?? 0;
+                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                }
+                foreach ($approved as $a) {
+                    $data['Approved'][$a->scheme] = $data['Approved'][$a->scheme] ?? 0;
+                    $data['Approved'][$a->scheme] += $a->applications_count;
+                }
+                foreach ($rejected as $r) {
+                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                    $data['Rejected'][$r->scheme] += $r->applications_count;
+                }
+                foreach ($pending as $p) {
+                    $data['Pending'][$p->scheme] = $data['Pending'][$p->scheme] ?? 0;
+                    $data['Pending'][$p->scheme] += $p->applications_count;
+                }
+        }
+        // $response = [
+        //     'level' => $level,
+        //     'data' => $data,
+        // ];
+        // dd($data);
+        if ($level == 'state') {
+            return [
+                'success' => true,
+                'level' => $level,
+                'data' => $data,
+                // 'districts' => $districts,
+                'schemes' => $allowanceTypes
+            ];
+        } elseif ($level == 'district') {
+            $taluks = $theTaluks;
+            return [
+                'success' => true,
+                'level' => $level,
+                'data' => $data,
+                'taluks' => $taluks,
+                'schemes' => $allowanceTypes
             ];
         }
     }

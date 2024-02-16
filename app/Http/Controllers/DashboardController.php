@@ -37,7 +37,13 @@ class DashboardController extends SmartController
         if($user->hasPermissionTo('Member Transfer: Edit In Own District')) {
             $data['transfer_requests'] = MemberTransfer::requestsReceived()->count();
         }
+        $monthStart = Carbon::today()->startOfMonth();
+        $data['new_registrations'] = Member::userAccessControlled()
+            ->where('created_at', '>=', $monthStart)->count();
+        $data['active_members'] = Member::userAccessControlled()
+            ->where('active', 1)->count();
         return $this->buildResponse('dashboard', $data);
+
     }
 
     public function dashboardData(Request $request, DashboardService $ds)
@@ -57,6 +63,24 @@ class DashboardController extends SmartController
                 ]
             );
         }
+    }
 
+    public function dashboardAllowancesData(Request $request, DashboardService $ds)
+    {
+        try {
+            return response()->json(
+                $ds->dashboardAllowancesData(
+                    $request->input('from'),
+                    $request->input('to'),
+                )
+            );
+        } catch (\Throwable $e) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'error' => $e->__toString()
+                ]
+            );
+        }
     }
 }
