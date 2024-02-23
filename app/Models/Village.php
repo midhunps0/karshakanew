@@ -48,7 +48,7 @@ class Village extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 $taluk = Taluk::find($this->taluk_id);
-                return $taluk->district->name;
+                return $taluk != null ? $taluk->district->name : '';
             }
         );
     }

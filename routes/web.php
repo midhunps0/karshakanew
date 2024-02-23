@@ -22,6 +22,7 @@ use App\Http\Controllers\Allowances\MedicalController;
 use App\Http\Controllers\Allowances\PostDeathController;
 use App\Http\Controllers\Allowances\SuperAnnuationController;
 use App\Http\Controllers\MemberTransferController;
+use App\Http\Controllers\ReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         ->name('members.report.new');
     Route::get('/members/report/status', [MemberController::class, 'reportStatus'])
         ->name('members.report.status');
+    Route::get('/members/report/custom', [MemberController::class, 'reportCustom'])
+        ->name('members.report.custom');
 
     Route::get('/members/download/gender', [MemberController::class, 'downloadGenders'])
         ->name('members.download.gender');
@@ -195,6 +198,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     Route::get('/allowances/search', [AllowanceController::class, 'search'])->name('allowances.search');
     Route::post('/allowances/search', [AllowanceController::class, 'getAllowance'])->name('allowances.search');
+
+
+    Route::get('reports/snapshot', [ReportsController::class, 'snapshot'])
+        ->name('snapshot.report');
 
     // Route::get('/account-group-all', [AccountGroupController::class, 'index']);
     // Route::get('/account-group-show/{id}', [AccountGroupController::class, 'show']);

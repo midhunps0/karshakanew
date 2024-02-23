@@ -162,6 +162,14 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showMembersReport()
                     ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Custom Report',
+                        'route' => 'members.report.custom',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showMembersReport()
+                    ],
                 ],
             ],
             [
@@ -182,6 +190,14 @@ class SidebarService implements SidebarServiceInterface
                         'type' => 'menu_item',
                         'title' => 'Allowances',
                         'route' => 'allowances.report',
+                        'route_params' => [],
+                        'icon' => 'easyadmin::icons.users',
+                        'show' => $this->showAllowancesReport()
+                    ],
+                    [
+                        'type' => 'menu_item',
+                        'title' => 'Monthly Snapshot',
+                        'route' => 'snapshot.report',
                         'route_params' => [],
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showAllowancesReport()

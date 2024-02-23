@@ -141,17 +141,17 @@
                 <div class="rounded-xl border border-base-content border-opacity-10 max-w-full overflow-x-scroll">
                     <table class="table-compact min-w-full">
                         <thead>
-                            <tr class="bg-base-200">
+                            <tr class="bg-base-200 text-left">
                                 <th><span x-text="level == 'state' ? 'Districts' : 'Taluks'"></span></th>
                                 <template x-for="ft in feeTypes">
-                                    <th class="w-32 break-words"><span x-text="ft"></span></th>
+                                    <th class="w-32 break-words text-center"><span x-text="ft"></span></th>
                                 </template>
-                                <th><span>Total</span></th>
+                                <th class="text-center"><span>Total</span></th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="key in Object.keys(data)">
-                                <tr :class="key != 'Total' || 'font-bold'">
+                                <tr :class="key != 'Total' || 'font-bold bg-base-200'">
                                     <td>
                                         <span x-text="key"></span>
                                     </td>
@@ -177,6 +177,7 @@
                     data: [],
                     level: null,
                     schemes: null,
+                    branches: null,
                     from: '',
                     to: '',
                     loading: false,
@@ -203,10 +204,12 @@
                             }
                         ).then((r)  => {
                             if (r.data.success) {
+                                console.log('data');
                                 console.log(r.data.data);
                                 this.data = r.data.data;
                                 this.level = r.data.level;
                                 this.schemes = r.data.schemes;
+                                this.branches = r.data.branches;
                             } else {
                                 console.log(r.data.error);
                             }
@@ -250,30 +253,36 @@
                     </div>
                 </form>
                 <div class="rounded-xl border border-base-content border-opacity-10 max-w-full overflow-x-scroll">
-                    <table class="table-compact">
+                    <table class="table-compact w-full">
                         <thead>
                             <tr class="bg-base-200">
                                 <th>
-                                    <span x-text="level == 'state' ? 'Districts' : 'Taluks'"></span>
+                                    <span>Schemes</span>
                                 </th>
-                                <template x-for="s in schemes">
-                                    <th class="w-48 break-words"><span x-text="s"></span></th>
+                                <template x-for="b in branches">
+                                    <th class="w-32 break-words"><span x-text="b"></span></th>
                                 </template>
                                 <th><span>Total</span></th>
+                                <th><span>APR.</span></th>
+                                <th><span>REJ.</span></th>
+                                <th><span>PEN.</span></th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(key, i) in Object.keys(data)">
-                                <tr :class="key != 'Total' || 'font-bold'">
+                                <tr :class="key != 'Total' || 'font-bold bg-base-200'">
                                     <td :class="{'text-warning' : ['Total', 'Pending'].includes(key), 'text-success' : key == 'Approved', 'text-error' : key == 'Rejected'}">
                                         <span x-text="key"></span>
                                     </td>
-                                    <template x-for="s in schemes">
+                                    <template x-for="b in branches">
                                         <td class="text-center" :class="{'text-warning' : ['Total', 'Pending'].includes(key), 'text-success' : key == 'Approved', 'text-error' : key == 'Rejected'}">
-                                            <span x-text="data[key][s] || 0"></span>
+                                            <span x-text="data[key][b] || 0"></span>
                                         </td>
                                     </template>
-                                    <td class="text-center text-warning font-bold"><span x-text="data[key]['Total'] || 0"></span></td>
+                                    <td class="text-center text-warning font-bold bg-base-200"><span x-text="data[key]['Total'] || 0"></span></td>
+                                    <td class="text-center text-success"><span x-text="data[key]['Approved'] || 0"></span></td>
+                                    <td class="text-center text-error"><span x-text="data[key]['Rejected'] || 0"></span></td>
+                                    <td class="text-center text-warning"><span x-text="data[key]['Pending'] || 0"></span></td>
                                 </tr>
                             </template>
                         </tbody>

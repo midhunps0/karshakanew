@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\ReportService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Ynotz\SmartPages\Http\Controllers\SmartController;
+
+class ReportsController extends SmartController
+{
+    public function snapshot(Request $request, ReportService $service)
+    {
+        $year_start = 2021;
+        $now = Carbon::now();
+        $year_now = $now->year;
+        $month = $request->input('month') ?? $now->month;
+        $year = $request->input('year') ?? $now->year;
+        $years = [];
+        for ($y = $year_start; $y <= $year_now; $y++) {
+            $years[] = $y;
+        }
+        $data = $service->snapshot($year, $month);
+        return $this->buildResponse(
+            'admin.reports.snapshot',
+            [
+                'years' => $years,
+                'year' => $year,
+                'month' => $month,
+                'collections' => $data['collections'],
+                'allowances' => $data['allowances']
+            ]
+        );
+    }
+}

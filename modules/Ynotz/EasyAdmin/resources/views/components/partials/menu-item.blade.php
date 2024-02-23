@@ -3,7 +3,7 @@
     @sidebarresize.window="collapsed = $event.detail.collapsed;"
     @click.prevent.stop="$dispatch('linkaction', {link: '{{$href}}', route: '{{$route}}'}); $dispatch('sidebarvisibility', {hidden: true});"
     href="{{$href}}" class="flex flex-row md:hidden items-center my-0 text-sm px-2 hover:bg-base-300"
-    :class="currentroute != '{{$route}}' || 'text-accent font-bold bg-base-300'">
+    :class="currentroute != '{{$route}}' || 'text-accent font-bold'">
     <x-easyadmin::display.icon icon="{{$icon}}" height="h-4" width="w-4"/>
     <span class="inline-block py-2 transition-all" :class="collapsed ? 'w-0 px-0' : 'w-40 px-3'" x-transition>
         <span class="block w-36 transition-opacity" :class="!collapsed || 'opacity-0'">{{$title}}</span>
@@ -13,7 +13,7 @@
     @sidebarresize.window="collapsed = $event.detail.collapsed;"
     @click.prevent.stop="$dispatch('linkaction', {link: '{{$href}}', route: '{{$route}}'});"
     href="{{$href}}" class="hidden md:flex md:flex-row items-center my-0 text-sm px-2 hover:bg-base-300"
-    :class="currentroute != '{{$route}}' || 'text-accent font-bold bg-base-300'">
+    :class="currentroute != '{{$route}}' || 'text-accent font-bold'">
     <x-easyadmin::display.icon icon="{{$icon}}" height="h-4" width="w-4"/>
     <span class="inline-block py-2 transition-all" :class="collapsed ? 'w-0 px-0' : 'w-40 px-3'" x-transition>
         <span class="block w-36 transition-opacity" :class="!collapsed || 'opacity-0'">{{$title}}</span>

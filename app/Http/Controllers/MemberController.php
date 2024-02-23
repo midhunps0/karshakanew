@@ -383,6 +383,21 @@ class MemberController extends SmartController
         ]);
     }
 
+    public function reportCustom(Request $request)
+    {
+        $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page')
+        );
+
+        return $this->buildResponse('admin.members.report-custom', [
+            'districts' => $districts,
+            'data' => $members
+        ]);
+    }
+
     public function downloadStatus(Request $request)
     {
         // $districts = District::memberEditAllowed()->withoutHO()->get();
@@ -401,6 +416,40 @@ class MemberController extends SmartController
                 'district.name',
                 'taluk.name',
             ];
+            $boolCols = [
+                'active' => ['Active', 'Inactive']
+            ];
+            $headings = [
+                'Name',
+                'Membership No',
+                'Aadhaar No',
+                'Permanent Address',
+                'Status',
+                'District',
+                'Taluk'
+            ];
+            return Excel::download(new MembersExport($members, $columns, $headings, $boolCols), 'members.csv');
+    }
+
+    public function downloadCustomReport(Request $request)
+    {
+        // $districts = District::memberEditAllowed()->withoutHO()->get();
+
+        $members = $this->connectorService->memberReport(
+            searches: $request->input('searches'),
+            page: $request->input('page'),
+            download: true,
+        );
+            // $columns = [
+            //     'name',
+            //     'membership_no',
+            //     'aadhaar_no',
+            //     'permanent_address',
+            //     'active',
+            //     'district.name',
+            //     'taluk.name',
+            // ];
+            $columns = explode(',',$request->columns);
             $boolCols = [
                 'active' => ['Active', 'Inactive']
             ];

@@ -128,15 +128,15 @@ class DashboardService
 		//if (in_array('Dashboard: View All District Data',collect($user->permissions())->pluck('name'))) {
 			//dd('okay1');
             $level = 'state';
-            $districts = District::withoutHo()->orderBy('display_code', 'asc')->get()->pluck('name')->toArray();
-            foreach ($districts as $d) {
-                $data[$d] = [];
+            $districts = District::withoutHo()->orderBy('display_code', 'asc')->get()->pluck('short_code')->toArray();
+            foreach ($allowanceTypes as $t) {
+                $data[$t] = [];
             }
             $data['Total'] = [];
             $result = DB::table('allowances', 'a')
                 ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
                 ->join('districts as d', 'd.id', '=', 'a.district_id')
-                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->select('d.short_code as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->groupBy('ws.id', 'a.district_id',)
@@ -145,7 +145,7 @@ class DashboardService
             $pending = DB::table('allowances', 'a')
                 ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
                 ->join('districts as d', 'd.id', '=', 'a.district_id')
-                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->select('d.short_code as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_PENDING)
@@ -155,7 +155,7 @@ class DashboardService
             $approved = DB::table('allowances', 'a')
                 ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
                 ->join('districts as d', 'd.id', '=', 'a.district_id')
-                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->select('d.short_code as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_APPROVED)
@@ -165,7 +165,7 @@ class DashboardService
             $rejected = DB::table('allowances', 'a')
                 ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
                 ->join('districts as d', 'd.id', '=', 'a.district_id')
-                ->select('d.name as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+                ->select('d.short_code as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_REJECTED)
@@ -173,39 +173,40 @@ class DashboardService
                 ->orderBy('d.display_code', 'asc')
                 ->get();
 
-                $data['Approved'] = [];
-                $data['Rejected'] = [];
-                $data['Pending'] = [];
+                // $data['Approved'] = [];
+                // $data['Rejected'] = [];
+                // $data['Pending'] = [];
                 foreach ($result as $r) {
-                    $data[$r->district][$r->scheme] = $r->applications_count;
-                    $data['Total'][$r->scheme] = $data['Total'][$r->scheme] ?? 0;
-                    $data['Total'][$r->scheme] += $r->applications_count;
-                    $data[$r->district]['Total'] = $data[$r->district]['Total'] ?? 0;
-                    $data[$r->district]['Total'] += $r->applications_count;
+                    $data[$r->scheme][$r->district] = $r->applications_count;
+                    $data[$r->scheme]['Total'] = $data[$r->scheme]['Total'] ?? 0;
+                    $data[$r->scheme]['Total'] += $r->applications_count;
+                    $data['Total'][$r->district] = $data['Total'][$r->district] ?? 0;
+                    $data['Total'][$r->district] += $r->applications_count;
                     $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
                     $data['Total']['Total'] += $r->applications_count;
-                    $data['Pending'][$r->scheme] = $data['Pending'][$r->scheme] ?? 0;
-                    $data['Approved'][$r->scheme] = $data['Approved'][$r->scheme] ?? 0;
-                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                    $data[$r->scheme]['Pending'] = $data[$r->scheme]['Pending'] ?? 0;
+                    $data[$r->scheme]['Approved'] = $data[$r->scheme]['Approved'] ?? 0;
+                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
                 }
                 foreach ($approved as $a) {
-                    $data['Approved'][$a->scheme] = $data['Approved'][$a->scheme] ?? 0;
-                    $data['Approved'][$a->scheme] += $a->applications_count;
+                    $data[$a->scheme]['Approved'] = $data[$a->scheme]['Approved'] ?? 0;
+                    $data[$a->scheme]['Approved'] += $a->applications_count;
                 }
                 foreach ($rejected as $r) {
-                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
-                    $data['Rejected'][$r->scheme] += $r->applications_count;
+                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
+                    $data[$r->scheme]['Rejected'] += $r->applications_count;
                 }
                 foreach ($pending as $p) {
-                    $data['Pending'][$p->scheme] = $data['Pending'][$p->scheme] ?? 0;
-                    $data['Pending'][$p->scheme] += $p->applications_count;
+                    $data[$p->scheme]['Pending'] = $data[$p->scheme]['Pending'] ?? 0;
+                    $data[$p->scheme]['Pending'] += $p->applications_count;
                 }
         } elseif ($user->hasPermissionTo('Dashboard: View Own District Data')) {
 			//dd('okay');
             $level = 'district';
             $d = District::find($user->district_id);
             $theTaluks = $d->taluks->pluck('name')->toArray();
-            foreach ($theTaluks as $t) {
+
+            foreach ($allowanceTypes as $t) {
                 $data[$t] = [];
             }
             $data['Total'] = [];
@@ -256,32 +257,32 @@ class DashboardService
                 ->groupBy('ws.id', 'm.taluk_id','t.id')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
-                $data['Approved'] = [];
-                $data['Rejected'] = [];
-                $data['Pending'] = [];
+                // $data['Approved'] = [];
+                // $data['Rejected'] = [];
+                // $data['Pending'] = [];
                 foreach ($result as $r) {
-                    $data[$r->taluk][$r->scheme] = $r->applications_count;
-                    $data['Total'][$r->scheme] = $data['Total'][$r->scheme] ?? 0;
-                    $data['Total'][$r->scheme] += $r->applications_count;
-                    $data[$r->taluk]['Total'] = $data[$r->taluk]['Total'] ?? 0;
-                    $data[$r->taluk]['Total'] += $r->applications_count;
+                    $data[$r->scheme][$r->taluk] = $r->applications_count;
+                    $data[$r->scheme]['Total'] = $data[$r->scheme]['Total'] ?? 0;
+                    $data[$r->scheme]['Total'] += $r->applications_count;
+                    $data['Total'][$r->taluk] = $data['Total'][$r->taluk] ?? 0;
+                    $data['Total'][$r->taluk] += $r->applications_count;
                     $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
                     $data['Total']['Total'] += $r->applications_count;
-                    $data['Pending'][$r->scheme] = $data['Pending'][$r->scheme] ?? 0;
-                    $data['Approved'][$r->scheme] = $data['Approved'][$r->scheme] ?? 0;
-                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
+                    $data[$r->scheme]['Pending'] = $data[$r->scheme]['Pending'] ?? 0;
+                    $data[$r->scheme]['Approved'] = $data[$r->scheme]['Approved'] ?? 0;
+                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
                 }
                 foreach ($approved as $a) {
-                    $data['Approved'][$a->scheme] = $data['Approved'][$a->scheme] ?? 0;
-                    $data['Approved'][$a->scheme] += $a->applications_count;
+                    $data[$a->scheme]['Approved'] = $data[$a->scheme]['Approved'] ?? 0;
+                    $data[$a->scheme]['Approved'] += $a->applications_count;
                 }
                 foreach ($rejected as $r) {
-                    $data['Rejected'][$r->scheme] = $data['Rejected'][$r->scheme] ?? 0;
-                    $data['Rejected'][$r->scheme] += $r->applications_count;
+                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
+                    $data[$r->scheme]['Rejected'] += $r->applications_count;
                 }
                 foreach ($pending as $p) {
-                    $data['Pending'][$p->scheme] = $data['Pending'][$p->scheme] ?? 0;
-                    $data['Pending'][$p->scheme] += $p->applications_count;
+                    $data[$p->scheme]['Pending'] = $data[$p->scheme]['Pending'] ?? 0;
+                    $data[$p->scheme]['Pending'] += $p->applications_count;
                 }
         }
         // $response = [
@@ -294,16 +295,15 @@ class DashboardService
                 'success' => true,
                 'level' => $level,
                 'data' => $data,
-                // 'districts' => $districts,
+                'branches' => $districts,
                 'schemes' => $allowanceTypes
             ];
         } elseif ($level == 'district') {
-            $taluks = $theTaluks;
             return [
                 'success' => true,
                 'level' => $level,
                 'data' => $data,
-                'taluks' => $taluks,
+                'branches' => $theTaluks,
                 'schemes' => $allowanceTypes
             ];
         }

@@ -830,9 +830,18 @@ class MemberService implements ModelViewConnector {
             ->userAccessControlled()
             ->with(
                 [
+                    'district' => function ($query) {
+                        $query->select('id', 'name');
+                    },
                     'taluk' => function ($query) {
                         $query->select('id', 'name');
-                    }
+                    },
+                    'village' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'tradeUnion' => function ($query) {
+                        $query->select('id', 'name');
+                    },
                 ]
             );
     }
@@ -2292,9 +2301,12 @@ info('member saved');
     }
 
     public function memberReport(
-        $searches, $indexMode = false, $itemsCount = 30, $page = 1, $download = false
-        )
-    {
+        $searches,
+        $indexMode = false,
+        $itemsCount = 30,
+        $page = 1,
+        $download = false,
+    ) {
         // $searches = $data['searches'] ?? [];
         if (!$this->authoriseIndex()) {
             throw new AuthorizationException('The user is not authorised to access thi data.');

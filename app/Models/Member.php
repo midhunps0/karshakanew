@@ -46,6 +46,7 @@ class Member extends Model
         'is_approved',
         'display_name',
         'display_current_address',
+        'display_permanent_address',
         'is_age_over'
     ];
 
@@ -81,7 +82,7 @@ class Member extends Model
 
     public function caste()
     {
-        return $this->belongsTo(Casre::class, 'caste_id', 'id');
+        return $this->belongsTo(Caste::class, 'caste_id', 'id');
     }
 
     public function tradeUnion()
@@ -376,6 +377,21 @@ class Member extends Model
                     return $this->current_address;
                 }
                 return $this->current_address_mal ?? '';
+            },
+        );
+    }
+
+    protected function displayPermanentAddress(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->permanent_address != null && $this->permanent_address != '') {
+                    if ($this->permanent_address_mal != null && $this->permanent_address_mal != '') {
+                        return $this->permanent_address . '(' .$this->permanent_address_mal .')';
+                    }
+                    return $this->permanent_address;
+                }
+                return $this->permanent_address_mal ?? '';
             },
         );
     }
