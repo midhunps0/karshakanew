@@ -33,7 +33,7 @@ class ReportService
         $renewalsQuery = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('ft.name', 'Annual Subscription')
+            ->where('ft.name', 'Amshadhayam')
             ->where('fc.created_at', '>=', $from)
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
@@ -44,7 +44,7 @@ class ReportService
         $renewalsQueryPrev = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('ft.name', 'Annual Subscription')
+            ->where('ft.name', 'Amshadhayam')
             ->where('fc.created_at', '>=', $pFrom)
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
@@ -95,7 +95,7 @@ class ReportService
         $renewalsQueryAmt = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('ft.name', 'Annual Subscription')
+            ->where('ft.name', 'Amshadhayam')
             ->where('fc.created_at', '>=', $from)
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
@@ -107,7 +107,7 @@ class ReportService
         $renewalsQueryPrevAmt = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('ft.name', 'Annual Subscription')
+            ->where('ft.name', 'Amshadhayam')
             ->where('fc.created_at', '>=', $pFrom)
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
