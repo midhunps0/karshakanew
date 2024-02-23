@@ -139,7 +139,7 @@ class DashboardService
                 ->select('d.short_code as district', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
-                ->groupBy('ws.id', 'a.district_id',)
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('d.display_code', 'asc')
                 ->get();
             $pending = DB::table('allowances', 'a')
@@ -149,7 +149,7 @@ class DashboardService
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_PENDING)
-                ->groupBy('ws.id', 'a.district_id',)
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('d.display_code', 'asc')
                 ->get();
             $approved = DB::table('allowances', 'a')
@@ -159,7 +159,7 @@ class DashboardService
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_APPROVED)
-                ->groupBy('ws.id', 'a.district_id',)
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('d.display_code', 'asc')
                 ->get();
             $rejected = DB::table('allowances', 'a')
@@ -169,37 +169,37 @@ class DashboardService
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_REJECTED)
-                ->groupBy('ws.id', 'a.district_id',)
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('d.display_code', 'asc')
                 ->get();
 
                 // $data['Approved'] = [];
                 // $data['Rejected'] = [];
                 // $data['Pending'] = [];
-                foreach ($result as $r) {
-                    $data[$r->scheme][$r->district] = $r->applications_count;
-                    $data[$r->scheme]['Total'] = $data[$r->scheme]['Total'] ?? 0;
-                    $data[$r->scheme]['Total'] += $r->applications_count;
-                    $data['Total'][$r->district] = $data['Total'][$r->district] ?? 0;
-                    $data['Total'][$r->district] += $r->applications_count;
-                    $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
-                    $data['Total']['Total'] += $r->applications_count;
-                    $data[$r->scheme]['Pending'] = $data[$r->scheme]['Pending'] ?? 0;
-                    $data[$r->scheme]['Approved'] = $data[$r->scheme]['Approved'] ?? 0;
-                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
-                }
-                foreach ($approved as $a) {
-                    $data[$a->scheme]['Approved'] = $data[$a->scheme]['Approved'] ?? 0;
-                    $data[$a->scheme]['Approved'] += $a->applications_count;
-                }
-                foreach ($rejected as $r) {
-                    $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
-                    $data[$r->scheme]['Rejected'] += $r->applications_count;
-                }
-                foreach ($pending as $p) {
-                    $data[$p->scheme]['Pending'] = $data[$p->scheme]['Pending'] ?? 0;
-                    $data[$p->scheme]['Pending'] += $p->applications_count;
-                }
+            foreach ($result as $r) {
+                $data[$r->scheme][$r->district] = $r->applications_count;
+                $data[$r->scheme]['Total'] = $data[$r->scheme]['Total'] ?? 0;
+                $data[$r->scheme]['Total'] += $r->applications_count;
+                $data['Total'][$r->district] = $data['Total'][$r->district] ?? 0;
+                $data['Total'][$r->district] += $r->applications_count;
+                $data['Total']['Total'] = $data['Total']['Total'] ?? 0;
+                $data['Total']['Total'] += $r->applications_count;
+                $data[$r->scheme]['Pending'] = $data[$r->scheme]['Pending'] ?? 0;
+                $data[$r->scheme]['Approved'] = $data[$r->scheme]['Approved'] ?? 0;
+                $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
+            }
+            foreach ($approved as $a) {
+                $data[$a->scheme]['Approved'] = $data[$a->scheme]['Approved'] ?? 0;
+                $data[$a->scheme]['Approved'] += $a->applications_count;
+            }
+            foreach ($rejected as $r) {
+                $data[$r->scheme]['Rejected'] = $data[$r->scheme]['Rejected'] ?? 0;
+                $data[$r->scheme]['Rejected'] += $r->applications_count;
+            }
+            foreach ($pending as $p) {
+                $data[$p->scheme]['Pending'] = $data[$p->scheme]['Pending'] ?? 0;
+                $data[$p->scheme]['Pending'] += $p->applications_count;
+            }
         } elseif ($user->hasPermissionTo('Dashboard: View Own District Data')) {
 			//dd('okay');
             $level = 'district';
@@ -218,7 +218,7 @@ class DashboardService
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $pending = DB::table('allowances', 'a')
@@ -230,7 +230,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_PENDING)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $approved = DB::table('allowances', 'a')
@@ -242,7 +242,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_APPROVED)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $rejected = DB::table('allowances', 'a')
@@ -254,7 +254,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_REJECTED)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 'm.taluk_id','t.id')
+                ->groupBy('ws.id', 'd.short_code', 'd.display_code')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
                 // $data['Approved'] = [];
