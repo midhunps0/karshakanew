@@ -132,7 +132,7 @@ class ReportService
             $collectionsQueryPrevAmt->where('fc.district_id', auth()->user()->district_id);
         }
         $r = $collectionsQueryPrevAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
-        $collections['amount']['collections'] = $r->total;
+        $collections['amount']['collections_previous'] = $r->total;
 
         $kuidissikaQueryAmt = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
