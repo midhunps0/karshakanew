@@ -5,8 +5,13 @@
                 years: [],
                 year: '',
                 month: '',
+                districtId: '',
+                allDistricts: [],
                 fetchData() {
                     let theLink = `{{route('snapshot.report')}}?year=${this.year}&month=${this.month}`;
+                    if (this.districtId.length > 0) {
+                        theLink += `&district=${this.districtId}`;
+                    }
                     $dispatch('linkaction', {route: 'snapshot.report', link: theLink});
                 }
             }"
@@ -14,6 +19,8 @@
                 years = {{Js::from($years)}};
                 year = {{Js::from($year)}};
                 month = {{Js::from($month)}};
+                districts = {{Js::from($districts)}};
+                districtId = {{Js::from($districtId)}};
             ">
             <form action="" @submit.prevent.stop="fetchData();">
                 <div class="flex flex-row space-x-4 items-end p-3 border border-base-content border-opacity-10 rounded-md">
@@ -46,6 +53,19 @@
                             </template>
                         </select>
                     </div>
+                    @if(auth()->user()->hasPermissionTo('Fee Collection: View In Any District'))
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                        <span class="label-text">District</span>
+                        </label>
+                        <select class="select select-bordered flex-grow" x-model="districtId">
+                            <option value="">All</option>
+                            <template x-for="d in districts">
+                                <option :value="d.id" :selected="districtId == d.id"><span x-text="d.name"></span></option>
+                            </template>
+                        </select>
+                    </div>
+                    @endif
                     <div>
                         <button type="submit" class="btn btn-success btn-sm">
                             Get Snapshot

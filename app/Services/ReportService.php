@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
-    public function snapshot($year, $month)
+    public function snapshot($year, $month, $chosenDistrictId = null)
     {
         $data = [];
         $date = Carbon::now();
@@ -26,9 +26,14 @@ class ReportService
             'count' => [],
             'amount' => []
         ];
-        $collections['count']['members'] = Member::where('reg_date', '<=', $to)
-            ->userAccessControlled()
-            ->count();
+
+        $membersQuery = Member::where('reg_date', '<=', $to);
+        if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
+            $membersQuery->where('district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $membersQuery->where('district_id', $chosenDistrictId);
+        }
+        $collections['count']['members'] = $membersQuery->count();
 
         $renewalsQuery = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
@@ -38,6 +43,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $renewalsQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $renewalsQuery->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['renewals'] = $renewalsQuery->count();
 
@@ -49,6 +56,8 @@ class ReportService
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $renewalsQueryPrev->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $renewalsQueryPrev->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['renewals_previous'] = $renewalsQueryPrev->count();
 
@@ -57,6 +66,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $collectionsQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $collectionsQuery->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['collections'] = $collectionsQuery->count();
 
@@ -65,6 +76,8 @@ class ReportService
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $collectionsQueryPrev->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $collectionsQueryPrev->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['collections_previous'] = $collectionsQueryPrev->count();
 
@@ -76,6 +89,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $kuidissikaQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $kuidissikaQuery->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['kudissika'] = $kuidissikaQuery->count();
 
@@ -87,6 +102,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $kuidissikaFineQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $kuidissikaFineQuery->where('fc.district_id', $chosenDistrictId);
         }
         $collections['count']['kudissika_fine'] = $kuidissikaFineQuery->count();
 
@@ -100,6 +117,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $renewalsQueryAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $renewalsQueryAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $renewalsQueryAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['renewals'] = $r->total;
@@ -112,6 +131,8 @@ class ReportService
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $renewalsQueryPrevAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $renewalsQueryPrevAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $renewalsQueryPrevAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['renewals_previous'] = $r->total;
@@ -121,6 +142,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $collectionsQueryAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $collectionsQueryAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $collectionsQueryAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['collections'] = $r->total;
@@ -130,6 +153,8 @@ class ReportService
             ->where('fc.created_at', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $collectionsQueryPrevAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $collectionsQueryPrevAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $collectionsQueryPrevAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['collections_previous'] = $r->total;
@@ -142,6 +167,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $kuidissikaQueryAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $kuidissikaQueryAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $kuidissikaQueryAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['kudissika'] = $r->total;
@@ -154,6 +181,8 @@ class ReportService
             ->where('fc.created_at', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $kuidissikaFineQueryAmt->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $kuidissikaFineQueryAmt->where('fc.district_id', $chosenDistrictId);
         }
         $r = $kuidissikaFineQueryAmt->selectRaw('SUM(fc.total_amount) as total')->get()->first();
         $collections['amount']['kudissika_fine'] = $r->total;

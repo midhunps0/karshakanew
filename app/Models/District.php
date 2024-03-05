@@ -69,7 +69,7 @@ class District extends Model
 
     public function scopeWithoutHo(Builder $query)
     {
-        $query->where('id', '<>', 15);
+        $query->where('short_code', '<>', 'HO');
         return $query;
     }
 
