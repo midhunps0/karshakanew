@@ -65,27 +65,29 @@
                         </thead>
                         <tbody>
                             @foreach ($received as $rr)
-                            <th class="rounded-bl-lg">{{$rr->member->name}}</th>
-                            <th>{{$rr->member->membership_no}}</th>
-                            <th>{{$rr->fromDistrict->name}}</th>
-                            <th>{{$rr->fromTaluk->name}}</th>
-                            <th>{{$rr->fromVillage->name}}</th>
-                            <td class="rounded-br-lg">
-                                @if ($rr->processedby_id == null)
-                                <div class="flex flex-row space-x-4">
-                                    <button class="btn btn-xs btn-success" type="button" @click.prevent.stop="currentId = {{$rr->id}}; showApprovalForm = true;" class="text-warning">
-                                        Approve
+                            <tr>
+                                <td class="rounded-bl-lg">{{$rr->member->name}}</td>
+                                <td>{{$rr->member->membership_no}}</td>
+                                <td>{{$rr->fromDistrict->name}}</td>
+                                <td>{{$rr->fromTaluk->name}}</td>
+                                <td>{{$rr->fromVillage->name}}</td>
+                                <td class="rounded-br-lg">
+                                    @if ($rr->processedby_id == null)
+                                    <div class="flex flex-row space-x-4">
+                                        <button class="btn btn-xs btn-success" type="button" @click.prevent.stop="currentId = {{$rr->id}}; showApprovalForm = true;" class="text-warning">
+                                            Approve
+                                        </button>
+                                        {{-- <button class="btn btn-xs btn-error btn-outline" type="button" @click.prevent.stop="" class="text-error">
+                                            Reject
+                                        </button> --}}
+                                    </div>
+                                    @else
+                                    <button class="btn btn-xs btn-outline !text-success" type="button" @click.prevent.stop="" class="text-error" disabled>
+                                        Approved
                                     </button>
-                                    {{-- <button class="btn btn-xs btn-error btn-outline" type="button" @click.prevent.stop="" class="text-error">
-                                        Reject
-                                    </button> --}}
-                                </div>
-                                @else
-                                <button class="btn btn-xs btn-outline !text-success" type="button" @click.prevent.stop="" class="text-error" disabled>
-                                    Approved
-                                </button>
-                                @endif
-                            </td class="rounded-b-lg">
+                                    @endif
+                                </td class="rounded-b-lg">
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
