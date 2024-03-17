@@ -44,44 +44,44 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
     {
         return [
             'wbPassbookFront' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_front'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_back'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/aadhaar_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/bank_passbook'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/bank_passbook'
             ],
             'unionCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/union_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/union_certificate'
             ],
             'rationCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/ration_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/ration_card'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/one_and_same_cert'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/one_and_same_cert'
             ],
             'medical_bills_proofs' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/medical_bills_proofs'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/medical_bills_proofs'
             ],
             'doctors_certificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/doctors_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/doctors_certificate'
             ],
             'op_card_discharge_summary' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/op_card_discharge_summary'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/medical/op_card_discharge_summary'
             ],
         ];
     }

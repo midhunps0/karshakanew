@@ -41,35 +41,35 @@ class DeathExgraciaApplication extends Model implements MediaOwner
     {
         return [
             'wbPassbookFront' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/bank_passbook'
             ],
             'rationCard' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/ration_card'
             ],
             'deathCertificate' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/death_certificate'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/one_and_same_cert'
             ],
             'minorAgeProof' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/dex/minor_age_proof'
             ],
         ];

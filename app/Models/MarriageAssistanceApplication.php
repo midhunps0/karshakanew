@@ -40,40 +40,40 @@ class MarriageAssistanceApplication extends Model implements MediaOwner
     {
         return [
             'wbPassbookFront' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_front'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_back'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/aadhaar_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/bank_passbook'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/bank_passbook'
             ],
             'unionCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/union_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/union_certificate'
             ],
             'rationCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/ration_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/ration_card'
             ],
             'casteCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/caste_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/caste_certificate'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/one_and_same_cert'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/one_and_same_cert'
             ],
             'marriageCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/marriage_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/marriage/marriage_certificate'
             ],
         ];
     }

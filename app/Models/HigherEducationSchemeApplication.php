@@ -45,44 +45,44 @@ class HigherEducationSchemeApplication extends Model implements MediaOwner
     {
         return [
             'markList'=> [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/mark_list'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/mark_list'
             ],
             'tc' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/tc'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/tc'
             ],
             'wbPassbookFront' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_front'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_back'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/aadhaar_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/bank_passbook'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/bank_passbook'
             ],
             'unionCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/union_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/union_certificate'
             ],
             'rationCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/ration_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/ration_card'
             ],
             'casteCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/caste_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/caste_certificate'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/one_and_same_cert'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/hedu/one_and_same_cert'
             ],
         ];
     }

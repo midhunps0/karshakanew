@@ -40,32 +40,32 @@ class SuperAnnuationApplication extends Model implements MediaOwner
     {
         return [
             'wbPassbookFront' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_front'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/wb_passbook_back'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/aadhaar_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/bank_passbook'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/bank_passbook'
             ],
             'unionCertificate' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/union_certificate'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/union_certificate'
             ],
             'rationCard' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/ration_card'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/ration_card'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
-                'folder' => 'public/images/applications/education/one_and_same_cert'
+                'disk' => 's3',
+                'folder' => 'public/images/applications/super_annuation/one_and_same_cert'
             ],
         ];
     }

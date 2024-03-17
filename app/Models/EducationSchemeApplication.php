@@ -44,43 +44,43 @@ class EducationSchemeApplication extends Model implements MediaOwner
     {
         return [
             'markList'=> [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/mark_list'
             ],
             'tc' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/tc'
             ],
             'wbPassbookFront' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/wb_passbook_front'
             ],
             'wbPassbookBack' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/wb_passbook_back'
             ],
             'aadhaarCard' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/aadhaar_card'
             ],
             'bankPassbook' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/bank_passbook'
             ],
             'unionCertificate' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/union_certificate'
             ],
             'rationCard' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/ration_card'
             ],
             'casteCertificate' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/caste_certificate'
             ],
             'oneAndSameCert' => [
-                'disk' => 'local',
+                'disk' => 's3',
                 'folder' => 'public/images/applications/education/one_and_same_cert'
             ],
         ];
