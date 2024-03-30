@@ -46,14 +46,14 @@ class DashboardController extends SmartController
             ->where('active', 1)->count();
         return $this->buildResponse('dashboard', $data);
 */
-        $data = [
-            'unapproved_members' => 0,
-            'show_unapproved' => 0,
-            'pending_applications' => 0,
-            'transfer_requests' => 0,
-            'new_registrations' => 0,
-            'active_members' => 0,
-        ];
+
+            $data['unapproved_members'] = 0;
+            $data['show_unapproved'] = 0;
+            $data['pending_applications'] = 0;
+            $data['transfer_requests'] = 0;
+            $data['new_registrations'] = 0;
+            $data['active_members'] = 0;
+
         return $this->buildResponse('dashboard', $data);
     }
 
