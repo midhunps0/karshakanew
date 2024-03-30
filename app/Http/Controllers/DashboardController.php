@@ -23,6 +23,8 @@ class DashboardController extends SmartController
         $data['show_pending_applications'] = false;
         $data['to'] = Carbon::now()->format('d-m-Y');
         $data['from'] = Carbon::now()->startOfMonth()->format('d-m-Y');
+
+        /*
         if ($user->hasPermissionTo('Member: Approve In Own District') ) {
             $data['unapproved_members'] = Member::userAccessControlled()->unapproved()->count();
             $data['show_unapproved'] = true;
@@ -43,7 +45,16 @@ class DashboardController extends SmartController
         $data['active_members'] = Member::userAccessControlled()
             ->where('active', 1)->count();
         return $this->buildResponse('dashboard', $data);
-
+*/
+        $data = [
+            'unapproved_members' => 0,
+            'show_unapproved' => 0,
+            'pending_applications' => 0,
+            'transfer_requests' => 0,
+            'new_registrations' => 0,
+            'active_members' => 0,
+        ];
+        return $this->buildResponse('dashboard', $data);
     }
 
     public function dashboardData(Request $request, DashboardService $ds)
