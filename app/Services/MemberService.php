@@ -33,6 +33,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Ynotz\MediaManager\Services\EAInputMediaValidator;
 
+use function PHPUnit\Framework\isNan;
+
 class MemberService implements ModelViewConnector {
     use IsModelViewConnector;
 
@@ -2000,6 +2002,9 @@ info('member saved');
         $fcIds = [];
         $success = true;
         foreach ($mids as $id) {
+            if ($id == "" || isNan($id)) {
+                continue;
+            }
             $member = Member::find($id);
             // info('__mid: '.$id);
             // info('__member: '.$member);
