@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\BusinessActionEvent;
 use App\Events\FeeCollectionEvent;
 use Exception;
+use Hamcrest\Type\IsNumeric;
 use Ynotz\EasyAdmin\Services\RowLayout;
 use Ynotz\EasyAdmin\Services\TabLayout;
 use Ynotz\EasyAdmin\Services\TabsPanel;
@@ -2002,7 +2003,7 @@ info('member saved');
         $fcIds = [];
         $success = true;
         foreach ($mids as $id) {
-            if ($id == "" || isNan($id)) {
+            if ($id == "" || intval($id) == 0) {
                 continue;
             }
             $member = Member::find($id);
