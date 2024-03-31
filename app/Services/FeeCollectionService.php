@@ -199,14 +199,14 @@ class FeeCollectionService implements ModelViewConnector {
         // 'datetype'
         // 'created_by'
         $datetype = $data['datetype'];
-        $from = Carbon::createFromFormat('d-m-Y', $data['start'])->format('Y-m-d');
-        $to = Carbon::createFromFormat('d-m-Y', $data['end'])->endOfDay()->format('Y-m-d');
+        $from = Carbon::createFromFormat('d-m-Y', $data['start'])->startOfDay()->format('Y-m-d');
+        $to = Carbon::createFromFormat('d-m-Y', $data['end'])->addDay()->startOfDay()->format('Y-m-d');
         // dd($from, $to);
         $query = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
             ->where('fc.created_at', '>=', $from)
-            ->where('fc.created_at', '<=', $to);
+            ->where('fc.created_at', '<', $to);
 
         if (isset($data['created_by'])) {
             $query->where('collected_by', $data['created_by']);
