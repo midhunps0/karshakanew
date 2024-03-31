@@ -218,11 +218,13 @@ class FeeCollectionService implements ModelViewConnector {
         }
 
         $aggregates = $query->select([
-            DB::raw("`ft`.`id` as ftid"),
-            DB::raw("`ft`.`name` as ftname"),
-            DB::raw("COUNT(DISTINCT `fc`.`id`) as c_count"),
-            DB::raw("SUM(`fi`.`amount`) as c_sum"),
+            DB::raw("ft.id as ftid"),
+            DB::raw("ft.name as ftname"),
+            DB::raw("COUNT(DISTINCT fc.id) as c_count"),
+            DB::raw("SUM(fi.amount) as c_sum"),
         ])->groupBy('ft.id')->get();
+        // dd($aggregates);
+        // ->get();
         // return $aggregates;
         $feeTypes = FeeType::orderBy('name')->get()->pluck('name');
 
@@ -247,6 +249,7 @@ class FeeCollectionService implements ModelViewConnector {
 
         $formatted['Total'] = $totItem;
         return $formatted;
+
     }
 
     public function search($data)
