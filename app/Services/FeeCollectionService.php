@@ -218,8 +218,8 @@ class FeeCollectionService implements ModelViewConnector {
         }
 
         $aggregates = $query->select([
-            'ft.id as ftid',
-            'ft.name as ftname',
+            DB::raw("`ft`.`id` as ftid"),
+            DB::raw("`ft`.`name` as ftname"),
             DB::raw("COUNT(DISTINCT `fc`.`id`) as c_count"),
             DB::raw("SUM(`fi`.`amount`) as c_sum"),
         ])->groupBy('ft.id')->get();
