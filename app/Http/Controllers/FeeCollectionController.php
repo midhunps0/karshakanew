@@ -77,8 +77,16 @@ class FeeCollectionController extends SmartController
         try {
             if ($start == null && $end == null) {
                 $result = [];
+                $aggregates = [];
             } else {
                 $result = $this->connectorService->report([
+                    'start' => $start,
+                    'end' => $end,
+                    'page' => $page,
+                    'datetype' => $request->input('datetype', 'receipt_date'),
+                    'created_by' => $request->input('created_by', null)
+                ]);
+                $aggregates = $this->connectorService->aggregates([
                     'start' => $start,
                     'end' => $end,
                     'page' => $page,
@@ -88,7 +96,12 @@ class FeeCollectionController extends SmartController
             }
             $user = User::find(auth()->user()->id);
             $appUsers = User::userAccessControlled()->get();
-            return $this->buildResponse('admin.feecollections.report', ['receipts' => $result, 'appUsers' => $appUsers, 'user' => $user]);
+            return $this->buildResponse('admin.feecollections.report', [
+                'aggregates' => $aggregates,
+                'receipts' => $result,
+                'appUsers' => $appUsers,
+                'user' => $user
+            ]);
         } catch (Throwable $e) {
             info($e);
             return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
@@ -110,8 +123,16 @@ class FeeCollectionController extends SmartController
                 'datetype' => $request->input('datetype', 'receipt_date'),
                 'created_by' => $request->input('created_by', null)
             ]);
+            $aggregates = $this->connectorService->aggregates([
+                'start' => $start,
+                'end' => $end,
+                'page' => $page,
+                'datetype' => $request->input('datetype', 'receipt_date'),
+                'created_by' => $request->input('created_by', null)
+            ]);
         }
         return response()->json([
+            'aggregates' => $aggregates,
             'receipts' => $result
         ]);
     }

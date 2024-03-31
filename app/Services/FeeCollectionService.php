@@ -7,6 +7,8 @@ use App\Helpers\AppHelper;
 use App\Models\FeeCollection;
 use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
+use App\Models\FeeType;
+use Illuminate\Support\Facades\DB;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -187,6 +189,64 @@ class FeeCollectionService implements ModelViewConnector {
                 page: $data['page']
             );
         }
+    }
+
+    public function aggregates($data)
+    {
+        // 'start'
+        // 'end'
+        // 'page'
+        // 'datetype'
+        // 'created_by'
+        $datetype = $data['datetype'];
+        $from = Carbon::createFromFormat('d-m-Y', $data['start'])->format('Y-m-d');
+        $to = Carbon::createFromFormat('d-m-Y', $data['end'])->endOfDay()->format('Y-m-d');
+        // dd($from, $to);
+        $query = DB::table('fee_collections as fc')
+            ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
+            ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
+            ->where('fc.created_at', '>=', $from)
+            ->where('fc.created_at', '<=', $to);
+
+        if (isset($data['created_by'])) {
+            $query->where('collected_by', $data['created_by']);
+        }
+        if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
+            $query->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $query->where('fc.district_id', $chosenDistrictId);
+        }
+
+        $aggregates = $query->select([
+            'ft.id as ftid',
+            'ft.name as ftname',
+            DB::raw("COUNT(DISTINCT `fc`.`id`) as c_count"),
+            DB::raw("SUM(`fi`.`amount`) as c_sum"),
+        ])->groupBy('ft.id')->get();
+        // return $aggregates;
+        $feeTypes = FeeType::orderBy('name')->get()->pluck('name');
+
+        $formatted = [];
+        $total = 0;
+        $tcount = 0;
+        foreach ($feeTypes as $f) {
+            foreach ($aggregates as $a) {
+                if ($a->ftname == $f) {
+                    $formatted[$f] = $a;
+                    $total += $a->c_sum;
+                    $tcount += $a->c_count;
+                    break;
+                }
+            }
+        }
+        $totItem = new \stdClass();
+        $totItem->ftid = null;
+        $totItem->ftname = 'Total';
+        $totItem->c_sum = $total;
+        $totItem->c_count = $tcount;
+
+        $formatted['Total'] = $totItem;
+        return $formatted;
     }
 
     public function search($data)
