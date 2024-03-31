@@ -276,29 +276,7 @@
         class="fixed top-0 left-0 z-50 w-full h-full flex flex-row justify-center items-center bg-base-200 bg-opacity-50 overflow-visible"
         >
         <div class="max-w-full max-h-full md:w-11/12 relative bg-base-100 bg-opacity-100 border border-base-content border-opacity-20 rounded-lg p-4 pt-20 overflow-y-scroll overflow-visible">
-            <div class="flex justify-center my-12">
-                <div class="border border-base-content border-opacity-20 rounded-xl">
-                <h2 class="font-bold m-3">Fee Collection Summary:</h2>
-                    <table class="table table-compact">
-                        <thead>
-                            <tr>
-                                <th>Fee Type</th>
-                                <th class="text-right">Total Count</th>
-                                <th class="text-right">Total Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="a in Object.values(aggregates)">
-                            <tr :class="a.ftname != 'Total' || 'font-bold'">
-                                <td x-text="a.ftname"></td>
-                                <td class="text-right" x-text="a.c_count"></td>
-                                <td class="text-right" x-text="a.c_sum"></td>
-                            </tr>
-                        </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
             <div class="w-full text-right fixed top-10 right-20 z-50 flex flex-row justify-end space-x-4 print:hidden">
                 <button @click="reset();" class="btn btn-error btn-sm">
                     Close <x-easyadmin::display.icon icon="easyadmin::icons.close"/>
@@ -309,6 +287,29 @@
             </div>
             <div id="receiptsprintdiv">
                 <h3 class="font-bold text-xl mb-4 mt-8 text-warning underline text-center">Fee Collections from <span x-text="fromdate"></span> to <span x-text="todate"></span></h3>
+                <div class="flex justify-center my-12">
+                    <div class="border border-base-content border-opacity-20 rounded-xl">
+                    <h2 class="font-bold m-3">Fee Collection Summary:</h2>
+                        <table class="table table-compact">
+                            <thead>
+                                <tr>
+                                    <th>Fee Type</th>
+                                    <th class="text-right">Total Count</th>
+                                    <th class="text-right">Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="a in Object.values(aggregates)">
+                                <tr :class="a.ftname != 'Total' || 'font-bold'">
+                                    <td x-text="a.ftname"></td>
+                                    <td class="text-right" x-text="a.c_count"></td>
+                                    <td class="text-right" x-text="a.c_sum"></td>
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div>
                     <div class="mx-auto border border-base-content border-opacity-10 rounded-lg  my-4">
                         <table class="table table-compact w-full">
