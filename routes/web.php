@@ -43,6 +43,7 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard-box-data', [DashboardController::class, 'boxData'])->name('dashboard.box-data');
     Route::get('/dashboard-data', [DashboardController::class, 'dashboardData'])->name('dashboard.data');
     Route::get('/dashboard-allowances-data', [DashboardController::class, 'dashboardAllowancesData'])->name('dashboard.allowances_data');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
