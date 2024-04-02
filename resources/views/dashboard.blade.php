@@ -1,9 +1,41 @@
 <x-easyadmin::partials.adminpanel>
     <div class="p-4">
         <div x-data="{
-                data: {}
-            }" class="flex flex-row justify-start space-x-4">
-            @if(isset($new_registrations))
+                data: {
+                    unapproved_members: 0,
+                    show_unapproved: 0,
+                    pending_applications: 0,
+                    transfer_requests: 0,
+                    new_registrations: 0,
+                    active_members: 0
+                },
+                fetchData() {
+                    this.loading = true;
+                    axios.get(
+                        '{{route('dashboard.box-data')}}',
+                        {
+                            params: { 'from': this.from, to: this.to }
+                        }
+                    ).then((r)  => {
+                        if (r.data.success) {
+                            console.log('d data');
+                            console.log(r.data);
+                            this.data = r.data.data;
+                        } else {
+                            console.log(r.data.error);
+                        }
+                        this.loading = false;
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+                }
+            }"
+            x-init="
+                fetchData();
+            "
+            class="flex flex-row justify-start space-x-4">
+            {{-- @if(isset($new_registrations)) --}}
             <span
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
@@ -11,35 +43,38 @@
                     Registrations<br><span class="font-normal">(Current Month)</span>
                 </div>
                 <div class="text-2xl text-center">
-                    {{$new_registrations ?? 0}}
+                    {{-- {{$new_registrations ?? 0}} --}}
+                    <span x-text="data.new_registrations"></span>
                 </div>
             </span>
-            @endif
-            @if(isset($active_members))
+            {{-- @endif --}}
+            {{-- @if(isset($active_members)) --}}
             <span class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Active Members<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{$active_members ?? 0}}
+                    {{-- {{$active_members ?? 0}} --}}
+                    <span x-text="data.active_members"></span>
                 </div>
             </span>
-            @endif
-            @if($show_unapproved)
-            <a href=""
+            {{-- @endif --}}
+            {{-- @if($show_unapproved) --}}
+            <a x-show="data.show_unapproved" href=""
             @click.prevent.stop="@if ($unapproved_members > 0) $dispatch('linkaction', {link: '{{route('members.unapproved')}}', route: 'members.unapproved'}); @endif"  class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$unapproved_members > 0) cursor-default @endif">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Unapproved Members<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{$unapproved_members ?? ''}}
+                    {{-- {{$unapproved_members ?? ''}} --}}
+                    <span x-text="data.unapproved_members"></span>
                 </div>
             </a>
-            @endif
+            {{-- @endif --}}
             @if($show_unapproved)
-            <a href=""
+            <a x-show="data.show_unapproved" href=""
             @click.prevent.stop="@if ($pending_applications > 0) $dispatch('linkaction', {link: '{{route('allowances.report').'?status=Pending'}}', route: 'allowances.pending'}); @endif"
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$unapproved_members > 0) cursor-pointer @endif">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
@@ -50,8 +85,8 @@
                     {{$pending_applications ?? 0}}
                 </div>
             </a>
-            @endif
-            @if(isset($transfer_requests))
+            {{-- @endif --}}
+            {{-- @if(isset($transfer_requests)) --}}
             <a href=""
             @click.prevent.stop="$dispatch('linkaction', {link: '{{route('members.transfer_requests').'?status=Pending'}}', route: 'members.transfer_requests'});"
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$transfer_requests > 0) cursor-pointer @endif">
@@ -60,10 +95,11 @@
                     Transfer Requests<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{$transfer_requests ?? 0}}
+                    {{-- {{$transfer_requests ?? 0}} --}}
+                    <span x-text="data.transfer_requests"></span>
                 </div>
             </a>
-            @endif
+            {{-- @endif --}}
         </div>
         <div class="my-8">
             <h3 class="py-3 font-bold text-warning">Fee Collections Data:</h3>

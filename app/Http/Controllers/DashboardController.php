@@ -16,6 +16,53 @@ class DashboardController extends SmartController
 {
     public function dashboard()
     {
+        // $data = [];
+        /** @var User */
+        /*
+        $user = User::find(auth()->user()->id);
+        $data['show_unapproved'] = false;
+        $data['show_pending_applications'] = false;
+        $data['to'] = Carbon::now()->format('d-m-Y');
+        $data['from'] = Carbon::now()->startOfMonth()->format('d-m-Y');
+
+
+        if ($user->hasPermissionTo('Member: Approve In Own District') ) {
+            $data['unapproved_members'] = Member::userAccessControlled()->unapproved()->count();
+            $data['show_unapproved'] = true;
+        }
+        if ($user->hasPermissionTo('Allowance: Approve In Own District')
+            || $user->hasPermissionTo('Allowance: Approve In Any District')
+        ) {
+            $data['pending_applications'] = (District::find($user->district_id))->pending_applications;
+            $data['show_pending_applications'] = true;
+        }
+
+        if($user->hasPermissionTo('Member Transfer: Edit In Own District')) {
+            $data['transfer_requests'] = MemberTransfer::requestsReceived()->count();
+        }
+        $monthStart = Carbon::today()->startOfMonth();
+        $data['new_registrations'] = Member::userAccessControlled()
+            ->where('created_at', '>=', $monthStart)->count();
+        $data['active_members'] = Member::userAccessControlled()
+            ->where('active', 1)->count();
+        */
+        // return $this->buildResponse('dashboard', $data);
+        return $this->buildResponse('dashboard');
+
+        /*
+            $data['unapproved_members'] = 0;
+            $data['show_unapproved'] = 0;
+            $data['pending_applications'] = 0;
+            $data['transfer_requests'] = 0;
+            $data['new_registrations'] = 0;
+            $data['active_members'] = 0;
+
+            return $this->buildResponse('dashboard', $data);
+        */
+    }
+
+    public function boxData()
+    {
         $data = [];
         /** @var User */
         $user = User::find(auth()->user()->id);
@@ -44,18 +91,12 @@ class DashboardController extends SmartController
             ->where('created_at', '>=', $monthStart)->count();
         $data['active_members'] = Member::userAccessControlled()
             ->where('active', 1)->count();
-        return $this->buildResponse('dashboard', $data);
 
-        /*
-            $data['unapproved_members'] = 0;
-            $data['show_unapproved'] = 0;
-            $data['pending_applications'] = 0;
-            $data['transfer_requests'] = 0;
-            $data['new_registrations'] = 0;
-            $data['active_members'] = 0;
-
-            return $this->buildResponse('dashboard', $data);
-        */
+        return response()->json(
+            [
+                'data' => $data
+            ]
+        );
     }
 
     public function dashboardData(Request $request, DashboardService $ds)
