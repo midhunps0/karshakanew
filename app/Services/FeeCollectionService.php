@@ -205,8 +205,8 @@ class FeeCollectionService implements ModelViewConnector {
         $query = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('fc.receipt_data', '>=', $from)
-            ->where('fc.receipt_data', '<', $to)
+            ->where('fc.receipt_date', '>=', $from)
+            ->where('fc.receipt_date', '<', $to)
             ->whereNotNull('fc.deleted_at');
 
         if (isset($data['created_by'])) {

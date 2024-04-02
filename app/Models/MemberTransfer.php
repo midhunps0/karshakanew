@@ -77,6 +77,6 @@ class MemberTransfer extends Model
 
     public function scopeRequestsApproved($query)
     {
-        $query->where('approvedby_id', auth()->user()->id);
+        $query->where('processedby_id', auth()->user()->id);
     }
 }
