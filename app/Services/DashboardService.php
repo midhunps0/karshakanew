@@ -219,7 +219,7 @@ class DashboardService
                 ->where('a.application_date', '>=', $from)
                 ->where('a.application_date', '<=', $to)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 't.display_code')
+                ->groupBy('ws.id', 't.name')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $pending = DB::table('allowances', 'a')
@@ -232,7 +232,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_PENDING)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 't.display_code')
+                ->groupBy('ws.id', 't.name')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $approved = DB::table('allowances', 'a')
@@ -245,7 +245,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_APPROVED)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 't.display_code')
+                ->groupBy('ws.id', 't.name')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
             $rejected = DB::table('allowances', 'a')
@@ -258,7 +258,7 @@ class DashboardService
                 ->where('a.application_date', '<=', $to)
                 ->where('a.status', Allowance::$STATUS_REJECTED)
                 ->select('t.name as taluk', 'ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-                ->groupBy('ws.id', 't.display_code')
+                ->groupBy('ws.id', 't.name')
                 ->orderBy('t.display_code', 'desc')
                 ->get();
                 // $data['Approved'] = [];
