@@ -73,7 +73,7 @@
                 </div>
             </a>
             {{-- @endif --}}
-            @if($show_unapproved)
+            {{-- @if($show_unapproved) --}}
             <a x-show="data.show_unapproved" href=""
             @click.prevent.stop="@if ($pending_applications > 0) $dispatch('linkaction', {link: '{{route('allowances.report').'?status=Pending'}}', route: 'allowances.pending'}); @endif"
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$unapproved_members > 0) cursor-pointer @endif">
