@@ -18,14 +18,14 @@ class DashboardController extends SmartController
     {
         // $data = [];
         /** @var User */
-        /*
-        $user = User::find(auth()->user()->id);
-        $data['show_unapproved'] = false;
-        $data['show_pending_applications'] = false;
+
+        // $user = User::find(auth()->user()->id);
+        // $data['show_unapproved'] = false;
+        // $data['show_pending_applications'] = false;
         $data['to'] = Carbon::now()->format('d-m-Y');
         $data['from'] = Carbon::now()->startOfMonth()->format('d-m-Y');
 
-
+/*
         if ($user->hasPermissionTo('Member: Approve In Own District') ) {
             $data['unapproved_members'] = Member::userAccessControlled()->unapproved()->count();
             $data['show_unapproved'] = true;
@@ -46,8 +46,8 @@ class DashboardController extends SmartController
         $data['active_members'] = Member::userAccessControlled()
             ->where('active', 1)->count();
         */
-        // return $this->buildResponse('dashboard', $data);
-        return $this->buildResponse('dashboard');
+        return $this->buildResponse('dashboard', $data);
+        // return $this->buildResponse('dashboard');
 
         /*
             $data['unapproved_members'] = 0;
@@ -94,6 +94,7 @@ class DashboardController extends SmartController
 
         return response()->json(
             [
+                'success' => true,
                 'data' => $data
             ]
         );

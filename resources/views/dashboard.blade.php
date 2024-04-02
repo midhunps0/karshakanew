@@ -1,6 +1,7 @@
 <x-easyadmin::partials.adminpanel>
     <div class="p-4">
         <div x-data="{
+                loading: false,
                 data: {
                     unapproved_members: 0,
                     show_unapproved: 0,
@@ -9,13 +10,11 @@
                     new_registrations: 0,
                     active_members: 0
                 },
-                fetchData() {
+                fetchBoxData() {
+                    console.log('fetching data..');
                     this.loading = true;
                     axios.get(
                         '{{route('dashboard.box-data')}}',
-                        {
-                            params: { 'from': this.from, to: this.to }
-                        }
                     ).then((r)  => {
                         if (r.data.success) {
                             console.log('d data');
@@ -32,7 +31,8 @@
                 }
             }"
             x-init="
-                fetchData();
+                console.log('init box data...>>')
+                fetchBoxData();
             "
             class="flex flex-row justify-start space-x-4">
             {{-- @if(isset($new_registrations)) --}}
