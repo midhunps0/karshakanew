@@ -62,7 +62,7 @@
             {{-- @endif --}}
             {{-- @if($show_unapproved) --}}
             <a x-show="data.show_unapproved" href=""
-            @click.prevent.stop="@if ($unapproved_members > 0) $dispatch('linkaction', {link: '{{route('members.unapproved')}}', route: 'members.unapproved'}); @endif"  class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$unapproved_members > 0) cursor-default @endif">
+            @click.prevent.stop="if (data.unapproved_members > 0) { $dispatch('linkaction', {link: '{{route('members.unapproved')}}', route: 'members.unapproved'});}"  class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md "  :class="data.unapproved_members > 0 || 'cursor-default'">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Unapproved Members<br>&nbsp;
@@ -75,21 +75,22 @@
             {{-- @endif --}}
             {{-- @if($show_unapproved) --}}
             <a x-show="data.show_unapproved" href=""
-            @click.prevent.stop="@if ($pending_applications > 0) $dispatch('linkaction', {link: '{{route('allowances.report').'?status=Pending'}}', route: 'allowances.pending'}); @endif"
-            class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$unapproved_members > 0) cursor-pointer @endif">
+            @click.prevent.stop="if (data.pending_applications > 0) { $dispatch('linkaction', {link: '{{route('allowances.report').'?status=Pending'}}', route: 'allowances.pending'}); }"
+            class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md" :class="data.unapproved_members == 0 || 'cursor-pointer'">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Pending Allowance Applications
                 </div>
                 <div class="text-2xl text-center">
-                    {{$pending_applications ?? 0}}
+                    {{-- {{$pending_applications ?? 0}} --}}
+                    <span x-text="data.pending_applications"></span>
                 </div>
             </a>
             {{-- @endif --}}
             {{-- @if(isset($transfer_requests)) --}}
             <a href=""
             @click.prevent.stop="$dispatch('linkaction', {link: '{{route('members.transfer_requests').'?status=Pending'}}', route: 'members.transfer_requests'});"
-            class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md @if (!$transfer_requests > 0) cursor-pointer @endif">
+            class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md" :class="data.transfer_requests == 0 || 'cursor-pointer'">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Transfer Requests<br>&nbsp;
