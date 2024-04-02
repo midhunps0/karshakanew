@@ -207,7 +207,7 @@ class FeeCollectionService implements ModelViewConnector {
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
             ->where('fc.receipt_date', '>=', $from)
             ->where('fc.receipt_date', '<', $to)
-            ->whereNotNull('fc.deleted_at');
+            ->whereNull('fc.deleted_at');
 
         if (isset($data['created_by'])) {
             $query->where('collected_by', $data['created_by']);

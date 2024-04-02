@@ -1,6 +1,8 @@
 <x-easyadmin::partials.adminpanel>
     <div class="p-4">
-        <div x-data class="flex flex-row justify-start space-x-4">
+        <div x-data="{
+                data: {}
+            }" class="flex flex-row justify-start space-x-4">
             @if(isset($new_registrations))
             <span
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md">
