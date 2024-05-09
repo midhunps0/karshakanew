@@ -73,10 +73,10 @@
                         <tbody>
 
                             <tr>
-                                <td>{{$application->allowanceable->member_bank_account['account_no']}}</td>
-                                <td>{{$application->allowanceable->member_bank_account['bank_name']}}</td>
-                                <td>{{$application->allowanceable->member_bank_account['bank_branch']}}</td>
-                                <td>{{$application->allowanceable->member_bank_account['ifsc_code']}}</td>
+                                <td>{{$application->allowanceable->applicant_bank_details['account_no']}}</td>
+                                <td>{{$application->allowanceable->applicant_bank_details['bank_name']}}</td>
+                                <td>{{$application->allowanceable->applicant_bank_details['bank_branch']}}</td>
+                                <td>{{$application->allowanceable->applicant_bank_details['ifsc_code']}}</td>
                             </tr>
                         </tbody>
                     </table>

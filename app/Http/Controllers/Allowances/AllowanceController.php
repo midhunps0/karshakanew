@@ -170,10 +170,17 @@ class AllowanceController extends SmartController
             $temp['status'] = $item->status;
             $temp['sanctioned_amount'] = $item->sanctioned_amount;
             $temp['sanctioned_date'] = $item->sanctioned_date;
-            $temp['payee_name'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_name'] : '';
-            $temp['bank_branch'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_branch'] : '';
-            $temp['account_no'] = $item->allowanceable != null ? strval($item->allowanceable->member_bank_account['account_no']) : '';
-            $temp['ifsc_code'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['ifsc_code'] : '';
+            if (isset($item->allowanceable) && isset($item->allowanceable->member_bank_account)) {
+                $temp['payee_name'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_name'] : '';
+                $temp['bank_branch'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['bank_branch'] : '';
+                $temp['account_no'] = $item->allowanceable != null ? strval($item->allowanceable->member_bank_account['account_no']) : '';
+                $temp['ifsc_code'] = $item->allowanceable != null ? $item->allowanceable->member_bank_account['ifsc_code'] : '';
+            } else if (isset($item->allowanceable) && isset($item->allowanceable->member_bank_account)) {
+                $temp['payee_name'] = $item->allowanceable != null ? $item->allowanceable->applicant_bank_details['bank_name'] : '';
+                $temp['bank_branch'] = $item->allowanceable != null ? $item->allowanceable->applicant_bank_details['bank_branch'] : '';
+                $temp['account_no'] = $item->allowanceable != null ? strval($item->allowanceable->applicant_bank_details['account_no']) : '';
+                $temp['ifsc_code'] = $item->allowanceable != null ? $item->allowanceable->applicant_bank_details['ifsc_code'] : '';
+            }
             $temp['payment_date'] = $item->payment_date;
             $temp['created_by'] = $item->createdBy->name;
             $temp['district'] = $item->district->name;

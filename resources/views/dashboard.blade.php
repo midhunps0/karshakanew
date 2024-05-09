@@ -11,14 +11,11 @@
                     active_members: 0
                 },
                 fetchBoxData() {
-                    console.log('fetching data..');
                     this.loading = true;
                     axios.get(
                         '{{route('dashboard.box-data')}}',
                     ).then((r)  => {
                         if (r.data.success) {
-                            console.log('d data');
-                            console.log(r.data);
                             this.data = r.data.data;
                         } else {
                             console.log(r.data.error);
