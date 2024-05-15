@@ -2,30 +2,30 @@
 
 namespace App\Events;
 
-use App\Models\FeeCollection;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
-class FeeCollectionEvent
+class MemberCountEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     static $ACTION_CREATED = 'created';
-    static $ACTION_DELETED = 'deleted';
     static $ACTION_UPDATED = 'updated';
+    static $ACTION_APPROVED = 'approved';
+    static $ACTION_DELETED = 'deleted';
+
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public int $districtId,
-        public FeeCollection $feeCollection,
-        public string $action
-    ) {}
+    public function __construct(public $member, public $districtId)
+    {
+        //
+    }
 
     /**
      * Get the channels the event should broadcast on.

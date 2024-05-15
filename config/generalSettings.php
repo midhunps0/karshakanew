@@ -88,6 +88,9 @@
             'district_executive' => [],
             'union_representative' => [],
             'member' => []
-        ]
+        ],
+        'amshadhayam' => 'Amshadhayam',
+        'kudissika' => 'Kudissika',
+        'kudissika_fine' => 'Kudissika Fine',
     ];
 ?>

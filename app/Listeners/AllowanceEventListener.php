@@ -37,6 +37,7 @@ class AllowanceEventListener
                 );
                 $d->pending_applications = $d->pending_applications + 1;
                 $d->save();
+                $this->setLastApplicationNo($event->allowance, $d);
                 break;
             case AllowanceEvent::$ACTION_APPROVED:
                 $d = District::find($event->districtId);
@@ -49,5 +50,10 @@ class AllowanceEventListener
                 $d->save();
                 break;
         }
+    }
+
+    public function setLastApplicationNo($allowance, $district)
+    {
+        # code...
     }
 }

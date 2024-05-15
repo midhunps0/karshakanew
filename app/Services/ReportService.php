@@ -23,9 +23,28 @@ class ReportService
         $pFrom = $pDate->startOfMonth()->format('Y-m-d H:i:s');
         $pTo = $pDate->endOfMonth()->format('Y-m-d H:i:s');
         $collections = [
-            'count' => [],
-            'amount' => []
+            'count' => [
+                'members' => 0,
+                'renewals' => 0,
+                'renewals_previous' => 0,
+                'collections' => 0,
+                'collections_previous' => 0,
+                'kudissika' => 0,
+                'kudissika_fine' => 0,
+            ],
+            'amount' => [
+                'renewals' => 0,
+                'renewals_previous' => 0,
+                'collections' => 0,
+                'collections_previous' => 0,
+                'kudissika' => 0,
+                'kudissika_fine' => 0,
+            ]
         ];
+
+        $amshadayam = config('generalSettings.amshadhayam');
+        $kudissika = config('generalSettings.kudissika');
+        $kudissika_fine = config('generalSettings.kudissika_fine');
 
         $membersQuery = Member::where('reg_date', '<=', $to);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
@@ -34,6 +53,87 @@ class ReportService
             $membersQuery->where('district_id', $chosenDistrictId);
         }
         $collections['count']['members'] = $membersQuery->count();
+
+        /***** */
+        $currentQuery = DB::table('fee_collections as fc')
+            ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
+            ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
+            ->where('fc.created_at', '>=', $from)
+            ->where('fc.created_at', '<=', $to);
+        if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
+            $currentQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $currentQuery->where('fc.district_id', $chosenDistrictId);
+        }
+            $currentQuery->groupBy('ft.name')
+            ->select(DB::raw('ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fc.total_amount) as total_amount'));
+        info('test sql:');
+        info($currentQuery->toSql());
+        $currentResult = $currentQuery->get();
+        info($currentResult);
+
+        foreach ($currentResult as $item) {
+            $collections['count']['collections'] += $item->fcount;
+            if ($item->name == $amshadayam) {
+                $collections['count']['renewals'] += $item->fcount;
+            }
+            if ($item->name == $kudissika) {
+                $collections['count']['kudissika'] += $item->fcount;
+            }
+            if ($item->name == $kudissika_fine) {
+                $collections['count']['kudissika_fine'] += $item->fcount;
+            }
+
+            $collections['amount']['collections'] += $item->total_amount;
+            if ($item->name == $amshadayam) {
+                $collections['amount']['renewals'] += $item->total_amount;
+            }
+            if ($item->name == $kudissika) {
+                $collections['amount']['kudissika'] += $item->total_amount;
+            }
+            if ($item->name == $kudissika_fine) {
+                $collections['amount']['kudissika_fine'] += $item->total_amount;
+            }
+        }
+        /******** */
+
+        /***** */
+        $prevQuery = DB::table('fee_collections as fc')
+            ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
+            ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
+            ->where('fc.created_at', '>=', $pFrom)
+            ->where('fc.created_at', '<=', $pTo);
+        if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
+            $prevQuery->where('fc.district_id', auth()->user()->district_id);
+        } else if (isset($chosenDistrictId)) {
+            $prevQuery->where('fc.district_id', $chosenDistrictId);
+        }
+        $prevQuery->groupBy('ft.name')
+        ->select(DB::raw('ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fc.total_amount) as total_amount'));
+
+        info('test sql:');
+        info($prevQuery->toSql());
+
+        $prevResult = $prevQuery->get();
+
+        info($prevResult);
+
+        foreach ($prevResult as $item) {
+            $collections['count']['collections_previous'] += $item->fcount;
+            if ($item->name == $amshadayam) {
+                $collections['count']['renewals_previous'] += $item->fcount;
+            }
+
+            $collections['amount']['collections_previous'] += $item->total_amount;
+            if ($item->name == $amshadayam) {
+                $collections['amount']['renewals_previous'] += $item->total_amount;
+            }
+        }
+        /******** */
+
+        $data['collections'] = $collections;
+
+        /*
 
         $renewalsQuery = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
@@ -107,7 +207,9 @@ class ReportService
         }
         $collections['count']['kudissika_fine'] = $kuidissikaFineQuery->count();
 
-        /**** AMOUNT */
+
+        --**** AMOUNT ****--
+
 
         $renewalsQueryAmt = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
@@ -189,6 +291,7 @@ class ReportService
 
         $data['collections'] = $collections;
 
+        */
 
         /***** ALLOWANCES DATA */
         $allowanceTypes = WelfareScheme::all()->pluck('name')->toArray();
@@ -202,101 +305,160 @@ class ReportService
             $allowances[$t]['name'] = $t;
         }
         $allowances['Total']['name'] = 'Total';
-        $pendingQuery = DB::table('allowances', 'a')
+
+        /***** */
+        $allowancesQuery = DB::table('allowances', 'a')
             ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
-            ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+            ->select('ws.name as scheme', 'a.status as status', DB::raw('COUNT(a.id) as applications_count'), DB::raw('SUM(a.sanctioned_amount) as amount'))
             ->where('a.application_date', '>=', $from)
             ->where('a.application_date', '<=', $to)
-            ->where('a.status', Allowance::$STATUS_PENDING)
+            // ->where('a.status', Allowance::$STATUS_PENDING)
             ->groupBy('ws.id', 'a.status')
             ->orderBy('ws.name', 'asc');
         if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
-            $pendingQuery->where('a.district_id', auth()->user()->district_id);
+            $allowancesQuery->where('a.district_id', auth()->user()->district_id);
         }
-        $pending = $pendingQuery->get();
-        foreach ($pending as $r) {
+        info('allowances query');
+        info($allowancesQuery->toSql());
+        $allowancesResult = $allowancesQuery->get();
+        foreach ($allowancesResult as $r) {
             $allowances[$r->scheme]['name'] = $r->scheme;
-            $allowances[$r->scheme]['pending'] = $r->applications_count;
-            $allowances['Total']['pending'] = $allowances['Total'] ['pending']?? 0;
-            $allowances['Total']['pending'] += $r->applications_count;
+            if ($r->status = Allowance::$STATUS_PENDING) {
+                $allowances[$r->scheme]['pending'] = $r->applications_count;
+                $allowances['Total']['pending'] = $allowances['Total']['pending']?? 0;
+                $allowances['Total']['pending'] += $r->applications_count;
+            }
+            if ($r->status = Allowance::$STATUS_PAID) {
+                $allowances[$r->scheme]['paid_count'] = $r->applications_count;
+                $allowances[$r->scheme]['paid_amount'] = $r->amount;
+                $allowances['Total']['paid_amount'] = $allowances['Total']['paid_amount'] ?? 0;
+                $allowances['Total']['paid_amount'] += $r->amount;
+            }
         }
 
-        $paidQueryCount = DB::table('allowances', 'a')
+        /******* */
+
+        // $pendingQuery = DB::table('allowances', 'a')
+        //     ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+        //     ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+        //     ->where('a.application_date', '>=', $from)
+        //     ->where('a.application_date', '<=', $to)
+        //     ->where('a.status', Allowance::$STATUS_PENDING)
+        //     ->groupBy('ws.id', 'a.status')
+        //     ->orderBy('ws.name', 'asc');
+        // if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
+        //     $pendingQuery->where('a.district_id', auth()->user()->district_id);
+        // }
+        // $pending = $pendingQuery->get();
+        // foreach ($pending as $r) {
+        //     $allowances[$r->scheme]['name'] = $r->scheme;
+        //     $allowances[$r->scheme]['pending'] = $r->applications_count;
+        //     $allowances['Total']['pending'] = $allowances['Total'] ['pending']?? 0;
+        //     $allowances['Total']['pending'] += $r->applications_count;
+        // }
+
+        // $paidQueryCount = DB::table('allowances', 'a')
+        //     ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+        //     ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+        //     ->where('a.application_date', '>=', $from)
+        //     ->where('a.application_date', '<=', $to)
+        //     ->where('a.status', Allowance::$STATUS_PAID)
+        //     ->groupBy('ws.id', 'a.status')
+        //     ->orderBy('ws.name', 'asc');
+        // if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
+        //     $paidQueryCount->where('a.district_id', auth()->user()->district_id);
+        // }
+        // $paid = $paidQueryCount->get();
+        // foreach ($paid as $r) {
+        //     $allowances[$r->scheme]['name'] = $r->scheme;
+        //     $allowances[$r->scheme]['paid_count'] = $r->applications_count;
+        //     $allowances['Total']['paid_count'] = $allowances['Total']['paid_count']?? 0;
+        //     $allowances['Total']['paid_count'] += $r->applications_count;
+        // }
+
+        // $paidQueryAmt = DB::table('allowances', 'a')
+        //     ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+        //     ->select('ws.name as scheme', DB::raw('SUM(a.sanctioned_amount) as amount'))
+        //     ->where('a.application_date', '>=', $from)
+        //     ->where('a.application_date', '<=', $to)
+        //     ->where('a.status', Allowance::$STATUS_PAID)
+        //     ->groupBy('ws.id', 'a.status')
+        //     ->orderBy('ws.name', 'asc');
+        // if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
+        //     $paidQueryAmt->where('a.district_id', auth()->user()->district_id);
+        // }
+        // $paid = $paidQueryAmt->get();
+        // foreach ($paid as $r) {
+        //     $allowances[$r->scheme]['name'] = $r->scheme;
+        //     $allowances[$r->scheme]['paid_amount'] = $r->amount;
+        //     $allowances['Total']['paid_amount'] = $allowances['Total'] ['paid_amount']?? 0;
+        //     $allowances['Total']['paid_amount'] += $r->amount;
+        // }
+
+        /*** TOTAL ALL-TIME PAID */
+
+        /******* */
+        $totalPaidQuery = DB::table('allowances', 'a')
             ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
-            ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-            ->where('a.application_date', '>=', $from)
-            ->where('a.application_date', '<=', $to)
+            ->select('ws.name as scheme', 'a.status as status', DB::raw('COUNT(a.id) as applications_count'), DB::raw('SUM(a.sanctioned_amount) as amount'))
             ->where('a.status', Allowance::$STATUS_PAID)
             ->groupBy('ws.id', 'a.status')
             ->orderBy('ws.name', 'asc');
         if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
-            $paidQueryCount->where('a.district_id', auth()->user()->district_id);
+            $totalPaidQuery->where('a.district_id', auth()->user()->district_id);
         }
-        $paid = $paidQueryCount->get();
+        $paid = $totalPaidQuery->get();
         foreach ($paid as $r) {
             $allowances[$r->scheme]['name'] = $r->scheme;
-            $allowances[$r->scheme]['paid_count'] = $r->applications_count;
-            $allowances['Total']['paid_count'] = $allowances['Total'] ['paid_count']?? 0;
-            $allowances['Total']['paid_count'] += $r->applications_count;
+            if ($r->status = Allowance::$STATUS_PAID) {
+                $allowances[$r->scheme]['total_paid_count'] = $r->applications_count;
+                $allowances['Total']['total_paid_count'] = $allowances['Total']['total_paid_count'] ?? 0;
+                $allowances['Total']['total_paid_count'] += $r->applications_count;
+                $allowances[$r->scheme]['total_paid_amount'] = $r->amount;
+                $allowances['Total']['total_paid_amount'] = $allowances['Total'] ['total_paid_amount']?? 0;
+                $allowances['Total']['total_paid_amount'] += $r->amount;
+            }
         }
 
-        $paidQueryAmt = DB::table('allowances', 'a')
-            ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
-            ->select('ws.name as scheme', DB::raw('SUM(a.sanctioned_amount) as amount'))
-            ->where('a.application_date', '>=', $from)
-            ->where('a.application_date', '<=', $to)
-            ->where('a.status', Allowance::$STATUS_PAID)
-            ->groupBy('ws.id', 'a.status')
-            ->orderBy('ws.name', 'asc');
-        if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
-            $paidQueryAmt->where('a.district_id', auth()->user()->district_id);
-        }
-        $paid = $paidQueryAmt->get();
-        foreach ($paid as $r) {
-            $allowances[$r->scheme]['name'] = $r->scheme;
-            $allowances[$r->scheme]['paid_amount'] = $r->amount;
-            $allowances['Total']['paid_amount'] = $allowances['Total'] ['paid_amount']?? 0;
-            $allowances['Total']['paid_amount'] += $r->amount;
-        }
+        /****** */
+        // $totalPaidQueryCount = DB::table('allowances', 'a')
+        //     ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+        //     ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
+        //     ->where('a.status', Allowance::$STATUS_PAID)
+        //     ->groupBy('ws.id', 'a.status')
+        //     ->orderBy('ws.name', 'asc');
+        // if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
+        //     $totalPaidQueryCount->where('a.district_id', auth()->user()->district_id);
+        // }
+        // $paid = $totalPaidQueryCount->get();
+        // foreach ($paid as $r) {
+        //     $allowances[$r->scheme]['name'] = $r->scheme;
+        //     $allowances[$r->scheme]['total_paid_count'] = $r->applications_count;
+        //     $allowances['Total']['total_paid_count'] = $allowances['Total'] ['total_paid_count']?? 0;
+        //     $allowances['Total']['total_paid_count'] += $r->applications_count;
+        // }
 
-        /*** TOTAL PAID */
-        $totalPaidQueryCount = DB::table('allowances', 'a')
-            ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
-            ->select('ws.name as scheme', DB::raw('COUNT(a.id) as applications_count'))
-            ->where('a.status', Allowance::$STATUS_PAID)
-            ->groupBy('ws.id', 'a.status')
-            ->orderBy('ws.name', 'asc');
-        if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
-            $totalPaidQueryCount->where('a.district_id', auth()->user()->district_id);
-        }
-        $paid = $totalPaidQueryCount->get();
-        foreach ($paid as $r) {
-            $allowances[$r->scheme]['name'] = $r->scheme;
-            $allowances[$r->scheme]['total_paid_count'] = $r->applications_count;
-            $allowances['Total']['total_paid_count'] = $allowances['Total'] ['total_paid_count']?? 0;
-            $allowances['Total']['total_paid_count'] += $r->applications_count;
-        }
-
-        $totalPaidQueryAmt = DB::table('allowances', 'a')
-            ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
-            ->select('ws.name as scheme', DB::raw('SUM(a.sanctioned_amount) as amount'))
-            ->where('a.status', Allowance::$STATUS_PAID)
-            ->groupBy('ws.id', 'a.status')
-            ->orderBy('ws.name', 'asc');
-        if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
-            $totalPaidQueryAmt->where('a.district_id', auth()->user()->district_id);
-        }
-        $paid = $totalPaidQueryAmt->get();
-        foreach ($paid as $r) {
-            $allowances[$r->scheme]['name'] = $r->scheme;
-            $allowances[$r->scheme]['total_paid_amount'] = $r->amount;
-            $allowances['Total']['total_paid_amount'] = $allowances['Total'] ['total_paid_amount']?? 0;
-            $allowances['Total']['total_paid_amount'] += $r->amount;
-        }
-
+        // $totalPaidQueryAmt = DB::table('allowances', 'a')
+        //     ->join('welfare_schemes as ws', 'a.welfare_scheme_id', '=', 'ws.id')
+        //     ->select('ws.name as scheme', DB::raw('SUM(a.sanctioned_amount) as amount'))
+        //     ->where('a.status', Allowance::$STATUS_PAID)
+        //     ->groupBy('ws.id', 'a.status')
+        //     ->orderBy('ws.name', 'asc');
+        // if (!auth()->user()->hasPermissionTo('Allowance: View Report In Any District')) {
+        //     $totalPaidQueryAmt->where('a.district_id', auth()->user()->district_id);
+        // }
+        // $paid = $totalPaidQueryAmt->get();
+        // foreach ($paid as $r) {
+        //     $allowances[$r->scheme]['name'] = $r->scheme;
+        //     $allowances[$r->scheme]['total_paid_amount'] = $r->amount;
+        //     $allowances['Total']['total_paid_amount'] = $allowances['Total'] ['total_paid_amount']?? 0;
+        //     $allowances['Total']['total_paid_amount'] += $r->amount;
+        // }
 
         $data['allowances'] = $allowances;
             // dd($allowances);
+        info('data');
+        info($data);
         return $data;
     }
 }

@@ -5,11 +5,11 @@
                 years: [],
                 year: '',
                 month: '',
-                districtId: '',
+                districtId: null,
                 allDistricts: [],
                 fetchData() {
                     let theLink = `{{route('snapshot.report')}}?year=${this.year}&month=${this.month}`;
-                    if (this.districtId.length > 0) {
+                    if (this.districtId != null) {
                         theLink += `&district=${this.districtId}`;
                     }
                     $dispatch('linkaction', {route: 'snapshot.report', link: theLink});
@@ -21,6 +21,7 @@
                 month = {{Js::from($month)}};
                 districts = {{Js::from($districts)}};
                 districtId = {{Js::from($districtId)}};
+                console.log('districtId inside snapshot: '+districtId);
             ">
             <form action="" @submit.prevent.stop="fetchData();">
                 <div class="flex flex-row space-x-4 items-end p-3 border border-base-content border-opacity-10 rounded-md">

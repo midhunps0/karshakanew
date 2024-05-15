@@ -31,6 +31,10 @@ class FeeCollectionEventListener
                 $d->last_receipt_date = $event->feeCollection->receipt_date;
                 $d->save();
                 break;
+            case FeeCollectionEvent::$ACTION_DELETED:
+                break;
+            case FeeCollectionEvent::$ACTION_UPDATED:
+                break;
         }
     }
 }
