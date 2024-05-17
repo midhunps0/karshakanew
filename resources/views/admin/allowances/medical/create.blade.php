@@ -17,6 +17,7 @@
                     fee_period_from: '',
                     fee_period_to: '',
                     application_date: '',
+                    application_no: '',
                     arrear_months: null,
                     bank_name: '',
                     bank_branch: '',
@@ -159,12 +160,27 @@
                     </div>
                 </div>
                 <hr class="border border-base-content border-opacity-20 my-4">
-                <div class="flex flex-row justify-start">
-                    <div class="form-control w-1/2">
+                <div class="flex flex-row justify-start gap-4">
+                    <div class="form-control w-1/3">
                         <label class="label opacity-70">
                         <span class="label-text">Application Date</span>
                         </label>
                         <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" placeholder="dd-mm-yyyy" required/>
+                    </div>
+                    <div x-data="{
+                            isOld: false,
+                        }"
+                        class="flex-grow flex flex-row justify-evenly items-center bg-base-200 p-2 rounded-md">
+                        <div>
+                            Is old?
+                            <input x-model="isOld" type="checkbox" class="checkbox checkbox-primary">
+                        </div>
+                        <div class="form-control w-1/3">
+                            <label class="label opacity-70">
+                            <span class="label-text">Application No.</span>
+                            </label>
+                            <input name="application_no" type="text" x-model="application_no" class="input input-bordered w-full m ax-w-xs input-sm read-only:bg-base-200" :required="isOld" :readonly="!isOld"/>
+                        </div>
                     </div>
                 </div>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">

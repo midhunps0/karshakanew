@@ -13,6 +13,7 @@ use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\HigherEducationSchemeApplication;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class HigherEducationAllowanceService
 {
@@ -43,10 +44,12 @@ class HigherEducationAllowanceService
 
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
+        DB::beginTransaction();
         /**
          * @var HigherEducationSchemeApplication
          */
         $esa = HigherEducationSchemeApplication::create($applnData);
+
         AppHelper::syncImageFromRequestData($esa, 'mark_list', $data);
         AppHelper::syncImageFromRequestData($esa, 'tc', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
@@ -76,16 +79,19 @@ class HigherEducationAllowanceService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => HigherEducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
         ];
+
         $allowance = Allowance::create($alData);
         AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_CREATED, $allowance);
         BusinessActionEvent::dispatch(
@@ -98,6 +104,7 @@ class HigherEducationAllowanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -128,7 +135,7 @@ class HigherEducationAllowanceService
             'member_aadhaar',
             'member_bank_account',
         ])->toArray();
-
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -182,6 +189,7 @@ class HigherEducationAllowanceService
             'Updated Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 

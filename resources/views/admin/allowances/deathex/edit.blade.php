@@ -10,6 +10,7 @@
                     member_address: '',
                     membership_no: '',
                     application_date: '',
+                    application_no: '',
                     arrears_months: null,
                     applicant_name: '',
                     applicant_address: '',
@@ -56,7 +57,8 @@
                     membership_no = `{{$allowance->member->membership_no}}`;
                     date_of_death = `{{$allowance->allowanceable->date_of_death}}`;
                     marital_status = `{{$allowance->allowanceable->marital_status}}`;
-                    application_date = `{{$today}}`;
+                    application_date = '{{$allowance->application_date}}';
+                    application_no = '{{$allowance->application_no}}';
                     applicant_name = `{{$allowance->allowanceable->applicant_name}}`;
                     applicant_address = `{{$allowance->allowanceable->applicant_address}}`;
                     applicant_phone = `{{$allowance->allowanceable->applicant_phone}}`;
@@ -117,6 +119,14 @@
                         <span class="label-text">Application Date</span>
                         </label>
                         <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full m ax-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="form-control w-1/3">
+                            <label class="label opacity-70">
+                            <span class="label-text">Application No.</span>
+                            </label>
+                            <input name="application_no" type="text" x-model="application_no" class="input input-bordered w-full m ax-w-xs input-sm read-only:bg-base-200" readonly/>
+                        </div>
                     </div>
                 </div>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">

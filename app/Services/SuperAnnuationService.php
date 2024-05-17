@@ -13,6 +13,7 @@ use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\SuperAnnuationApplication;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class SuperAnnuationService
 {
@@ -40,6 +41,7 @@ class SuperAnnuationService
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
         $applnData['member_dob'] = AppHelper::formatDateForSave($applnData['member_dob']);
 
+        DB::beginTransaction();
         /**
          * @var SuperAnnuationApplication
          */
@@ -70,12 +72,14 @@ class SuperAnnuationService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => SuperAnnuationApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
@@ -92,6 +96,7 @@ class SuperAnnuationService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -129,6 +134,7 @@ class SuperAnnuationService
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
         $applnData['member_dob'] = AppHelper::formatDateForSave($applnData['member_dob']);
 
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -179,6 +185,7 @@ class SuperAnnuationService
             'Updated Medical Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 

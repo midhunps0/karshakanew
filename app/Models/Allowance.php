@@ -70,6 +70,11 @@ class Allowance extends Model
         return $this->morphTo();
     }
 
+    public function payments()
+    {
+        return $this->hasMany(ApplicationPayment::class, 'allowance_application_id', 'id');
+    }
+
     protected function formattedCreatedAt(): Attribute
     {
         return Attribute::make(

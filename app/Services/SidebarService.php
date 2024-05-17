@@ -107,6 +107,14 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
+                'title' => 'Import Payments',
+                'route' => 'allowances.bulk_payment',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => true
+            ],
+            [
+                'type' => 'menu_item',
                 'title' => 'Transfer Requests',
                 'route' => 'members.transfer_requests',
                 'route_params' => [],

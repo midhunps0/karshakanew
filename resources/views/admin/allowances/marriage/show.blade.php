@@ -154,10 +154,10 @@
                                 </div>
                             </div>
                             <div class="md:w-1/5 p-1 my-1">
-                                <span class="text-warning">Death Certificate</span>
+                                <span class="text-warning">Marriage Certificate</span>
                                 <div class="block m-2 w-32 h-24">
-                                    @if ($application->allowanceable->getSingleMediaForDisplay('death_certificate') != null)
-                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('death_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('death_certificate')['path']}}" />
+                                    @if ($application->allowanceable->getSingleMediaForDisplay('marriage_certificate') != null)
+                                    <img @click="$dispatch('showimg', {src: '{{$application->allowanceable->getSingleMediaForDisplay('marriage_certificate')['path']}}'});" class="cursor-pointer max-h-full max-w-full hover:scale-110 transition-transform" src="{{$application->allowanceable->getSingleMediaForDisplay('marriage_certificate')['path']}}" />
                                     @else
                                     <span class="text-error text-opacity-80">Not submitted</span>
                                     @endif

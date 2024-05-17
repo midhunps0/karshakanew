@@ -14,6 +14,7 @@ use App\Http\Controllers\Accounting\LedgerController;
 use App\Http\Controllers\Accounting\TransactionController;
 use App\Http\Controllers\Accounting\AccountGroupController;
 use App\Http\Controllers\Accounting\AccountsReportsController;
+use App\Http\Controllers\AdhocController;
 use App\Http\Controllers\Allowances\AllowanceController;
 use App\Http\Controllers\Allowances\HigherEducationController;
 use App\Http\Controllers\Allowances\MarriageController;
@@ -199,6 +200,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     Route::get('/allowances/search', [AllowanceController::class, 'search'])->name('allowances.search');
     Route::post('/allowances/search', [AllowanceController::class, 'getAllowance'])->name('allowances.search');
+    Route::get('/allowances/bulk-payment', [AllowanceController::class, 'bulkPayment'])->name('allowances.bulk_payment');
+    Route::post('/allowances/bulk-payment', [AllowanceController::class, 'processPayment'])->name('allowances.process_payment');
 
 
     Route::get('reports/snapshot', [ReportsController::class, 'snapshot'])
@@ -248,6 +251,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/account-statement', [AccountsReportsController::class, 'accountStatement'])->name('accounts.account.statement');
     Route::get('/journal-statement', [AccountsReportsController::class, 'journalStatement'])->name('accounts.journal.statement');
     Route::get('/transaction-types', [AccountsReportsController::class, 'transactionTypes']);
+
+    Route::get('adhoc-seeder', [AdhocController::class, 'seedLastAllowanceApplNos'])->name('adhoc_seeder');
+    Route::get('app-no-correction', [AdhocController::class, 'applicationNosCorrection'])->name('app_no_correction');
 });
 
 

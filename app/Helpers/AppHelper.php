@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
 
+use App\Models\Allowance;
 use App\Models\Taluk;
 use App\Models\Member;
 use App\Models\Village;
@@ -8,6 +9,7 @@ use App\Models\District;
 use App\Models\FeeCollection;
 use App\Models\WelfareScheme;
 use Illuminate\Support\Carbon;
+use Ramsey\Uuid\Type\Integer;
 use Ynotz\MediaManager\Contracts\MediaOwner;
 
 class AppHelper
@@ -26,8 +28,16 @@ class AppHelper
         if ($inputFormat == null) {
             if (strpos($thedate, '/')) {
                 $inputFormat = 'd/m/Y';
+                $dtArr = explode('/', $thedate);
+                $dtArr[0] = str_pad($dtArr[0], 2, '0');
+                $dtArr[1] = str_pad($dtArr[1], 2, '0');
+                $thedate = implode('/', $dtArr);
             } elseif (strpos($thedate, '-')) {
                 $inputFormat = 'd-m-Y';
+                $dtArr = explode('-', $thedate);
+                $dtArr[0] = str_pad($dtArr[0], 2, '0');
+                $dtArr[1] = str_pad($dtArr[1], 2, '0');
+                $thedate = implode('-', $dtArr);
             }
         }
         $d = Carbon::createFromFormat($inputFormat, $thedate);
@@ -92,21 +102,45 @@ class AppHelper
     public static function getWelfareApplicationNumber($member, $schemeCode): string
     {
         $district = District::find($member->district_id);
-        if ($district->last_application_date != null) {
-            $lastApplnYear = Carbon::createFromFormat('Y-m-d', $district->last_application_date)->year;
-        } else {
-            $lastApplnYear = Carbon::today()->year;
-        }
-        $todayYear = Carbon::today()->year;
-        if ($lastApplnYear < $todayYear) {
-            $newApplnNumeric = 1;
-        } else {
-            $newApplnNumeric = $district->last_application_no + 1;
+        $scheme = WelfareScheme::where('code', $schemeCode)->get()->first();
+        $date = Carbon::today();
+        $finYearStart = $date->setMonth(Carbon::APRIL)->startOfMonth();
+        $lastApplication = Allowance::where(
+            'application_date', '>', $finYearStart->format('Y-m-d H:i:s')
+            )
+            ->where('welfare_scheme_id', $scheme->id)
+            ->where('district_id', $district->id)
+            ->orderBy('created_at', 'desc')
+            ->get()->first();
+        $aplNumeric = 0;
+        if ($lastApplication != null) {
+            $lastAppArr = explode('/', $lastApplication->application_no);
+            $aplStr = array_pop($lastAppArr);
+            $aplNumeric = intval($aplStr) + 1;
         }
 
         return $schemeCode.'/'.Self::getFinancialYearCode().'/'
-            .$district->short_code.'/'.$newApplnNumeric;
+            .$district->short_code.'/'.$aplNumeric;
     }
+
+    // public static function getWelfareApplicationNumber($member, $schemeCode): string
+    // {
+    //     $district = District::find($member->district_id);
+    //     if ($district->last_application_date != null) {
+    //         $lastApplnYear = Carbon::createFromFormat('Y-m-d', $district->last_application_date)->year;
+    //     } else {
+    //         $lastApplnYear = Carbon::today()->year;
+    //     }
+    //     $todayYear = Carbon::today()->year;
+    //     if ($lastApplnYear < $todayYear) {
+    //         $newApplnNumeric = 1;
+    //     } else {
+    //         $newApplnNumeric = $district->last_application_no + 1;
+    //     }
+
+    //     return $schemeCode.'/'.Self::getFinancialYearCode().'/'
+    //         .$district->short_code.'/'.$newApplnNumeric;
+    // }
 
     public static function getReceiptNumber(int|District $district)
     {

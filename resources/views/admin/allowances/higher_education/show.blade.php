@@ -367,7 +367,7 @@
                         </form>
                     </div>
                 @endif
-
+                <!--
                 <form x-data="{
                         status: 'Pending',
                         paid: false,
@@ -410,7 +410,7 @@
                     x-transition action="" class="md:w-3/5 mx-auto flex flex-row justify-center rounded-md overflow-hidden my-8">
                     <Button x-show="status == 'Approved' && !paid" type="button" class="btn btn-sm btn-primary" @click.prevent.stop="doSubmit();">Mark As Paid</Button>
                 </form>
-
+            -->
             </div>
         @else
         <div class="border border-base-content border-opacity-20 rounded-md py-4 my-4">

@@ -13,6 +13,7 @@ use App\Events\ApplicationCreateEvent;
 use App\Models\DeathExgraciaApplication;
 use Ynotz\MediaManager\Models\MediaItem;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class PostDeathAllowanceService
 {
@@ -37,6 +38,7 @@ class PostDeathAllowanceService
         ])->toArray();
         $applnData['member_reg_date'] = AppHelper::formatDateForSave($member->reg_date);
         $applnData['date_of_death'] = AppHelper::formatDateForSave($applnData['date_of_death']);
+        DB::beginTransaction();
         /**
          * @var DeathExgraciaApplication
          */
@@ -68,12 +70,14 @@ class PostDeathAllowanceService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => DeathExgraciaApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
@@ -90,6 +94,7 @@ class PostDeathAllowanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -120,7 +125,7 @@ class PostDeathAllowanceService
             'member_aadhaar',
             'member_bank_account',
         ])->toArray();
-
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -174,6 +179,7 @@ class PostDeathAllowanceService
             'Updated Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 

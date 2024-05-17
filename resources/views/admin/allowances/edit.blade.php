@@ -15,6 +15,7 @@
                     fee_period_to: '',
                     student_name: '',
                     application_date: '',
+                    application_no: '',
                     arrears_months: null,
                     mobile_no: '',
                     aadhaar_no: '',
@@ -164,6 +165,7 @@
                     mobile_no = '{{$allowance->allowanceable->member_phone}}';
                     aadhaar_no = '{{$allowance->allowanceable->member_aadhaar}}';
                     application_date = '{{$allowance->application_date}}';
+                    application_no = '{{$allowance->application_no}}';
                     arrears_months = '{{$allowance->allowanceable->arrear_months_exdt}}';
                     passed_exam_details = {
                         exam_name: `{{$allowance->allowanceable->passed_exam_details['exam_name']}}`,
@@ -259,18 +261,26 @@
                     </fieldset>
                 </div>
                 <hr class="border border-base-content border-opacity-20 my-4">
-                <div class="flex flex-row justify-between">
-                    <div class="form-control w-1/3">
+                <div class="flex flex-row justify-between gap-4">
+                    <div class="form-control w-2/5">
                         <label class="label opacity-70">
                         <span class="label-text">Name of Student</span>
                         </label>
                         <input name="student_name" type="text" class="input input-bordered w-full max-w-xs input-sm" value="{{$allowance->allowanceable->student_name}}" required/>
                     </div>
-                    <div class="form-control w-1/3">
+                    <div class="form-control w-1/5">
                         <label class="label opacity-70">
                         <span class="label-text">Application Date</span>
                         </label>
                         <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full max-w-xs input-sm" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required/>
+                    </div>
+                    <div class="w-2/5">
+                        <div class="form-control w-1/3">
+                            <label class="label opacity-70">
+                            <span class="label-text">Application No.</span>
+                            </label>
+                            <input name="application_no" type="text" x-model="application_no" class="input input-bordered w-full m ax-w-xs input-sm read-only:bg-base-200" readonly/>
+                        </div>
                     </div>
                 </div>
                 <fieldset class="flex flex-row p-2 my-2 py-4 space-x-2 border border-base-content border-opacity-10 rounded-md w-full">

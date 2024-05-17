@@ -303,7 +303,7 @@
                         </form>
                     </div>
                 @endif
-
+                    <!--
                 <form x-data="{
                         status: 'Pending',
                         paid: false,
@@ -324,9 +324,6 @@
                                     this.paid = true;
                                     $dispatch('showtoast', {message: 'Application marked as paid', mode: 'success', });
                                     $dispatch('applnstatusupdated', {status: 'Paid'});
-                                    {{-- setTimeout(() => {
-                                        $dispatch('linkaction', {link: '{{route('allowances.education.showallowances.show', '_X_')}}'.replace('_X_', r.data.application.id), route: 'allowances.education.show'})
-                                    }, 500); --}}
                                 } else {
                                     $dispatch('shownotice', {message: 'Application updation failed', mode: 'error', });
                                 }
@@ -346,7 +343,7 @@
                     x-transition action="" class="md:w-3/5 mx-auto flex flex-row justify-center rounded-md overflow-hidden my-8">
                     <Button x-show="status == 'Approved' && !paid" type="button" class="btn btn-sm btn-primary" @click.prevent.stop="doSubmit();">Mark As Paid</Button>
                 </form>
-
+            -->
             </div>
         @else
         <div class="border border-base-content border-opacity-20 rounded-md py-4 my-4">

@@ -15,6 +15,7 @@
                     fee_period_from: '',
                     fee_period_to: '',
                     application_date: '',
+                    application_no: '',
                     delivery_date: null,
                     delivery_count: null,
                     arrears_months: null,
@@ -58,6 +59,7 @@
                     member_phone = '{{$allowance->member->mobile_no}}';
                     member_aadhaar = '{{$allowance->member->aadhaar_no}}';
                     application_date = '{{$allowance->application_date}}';
+                    application_no = '{{$allowance->application_no}}';
                     delivery_date = '{{$allowance->allowanceable->delivery_date}}';
                     delivery_count = '{{$allowance->allowanceable->delivery_count}}';
                     previous_count = '{{$allowance->allowanceable->previous_availed_counts}}'
@@ -134,12 +136,20 @@
                     </div>
                 </div>
                 <hr class="border border-base-content border-opacity-20 my-4">
-                <div class="flex flex-row justify-between">
+                <div class="flex flex-row justify-between gap-4">
                     <div class="form-control w-1/3">
                         <label class="label opacity-70">
                         <span class="label-text">Application Date</span>
                         </label>
                         <input name="application_date" type="text" placeholder="dd-mm-yyyy" x-model="application_date" class="input input-bordered w-full m ax-w-xs input-sm required:bg-base-200" pattern="[0-3][0-9]-[0-1][0-9]-[0-2][0-9][0-9][0-9]" required readonly/>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="form-control w-1/3">
+                            <label class="label opacity-70">
+                            <span class="label-text">Application No.</span>
+                            </label>
+                            <input name="application_no" type="text" x-model="application_no" class="input input-bordered w-full m ax-w-xs input-sm read-only:bg-base-200" readonly/>
+                        </div>
                     </div>
                 </div>
                 <fieldset class="my-8 p-2 flex flex-row flex-wrap space-x-2 border border-base-content border-opacity-10 rounded-md w-full">

@@ -10,9 +10,12 @@ use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Events\ApplicationCreateEvent;
+use App\Imports\AllowancePaymentImport;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\EducationSchemeApplication;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AllowanceService
 {
@@ -43,6 +46,7 @@ class AllowanceService
 
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
+        DB::beginTransaction();
         /**
          * @var EducationSchemeApplication
          */
@@ -76,12 +80,14 @@ class AllowanceService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => EducationSchemeApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
@@ -98,6 +104,7 @@ class AllowanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -128,7 +135,7 @@ class AllowanceService
             'member_aadhaar',
             'member_bank_account',
         ])->toArray();
-
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -182,6 +189,7 @@ class AllowanceService
             'Updated Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -241,6 +249,24 @@ class AllowanceService
         return Allowance::where('status', $ps)
             ->where('district_id', $did)
             ->get();
+    }
+
+    public function processPayment($file)
+    {
+        $import = new AllowancePaymentImport();
+        Excel::import(
+            $import,
+            $file
+        );
+
+        $msg = "{$import->getImportedCount()} of {$import->getTotalCount()} leads imported";
+
+        $failed = $import->getFailedList();
+
+        return [
+            'message' => $msg,
+            'failed' => $failed
+        ];
     }
 
     public function report($data)

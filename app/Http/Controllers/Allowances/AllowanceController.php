@@ -221,73 +221,6 @@ class AllowanceController extends SmartController
         ), 'allowances.csv');
     }
 
-    // public function show($id)
-    // {
-    //     $application = Allowance::with(['allowanceable', 'welfareScheme', 'member'])->where('id', $id)->get()->first();
-    //     if (auth()->user()->can('view', $application)) {
-    //         return $this->buildResponse('admin.allowances.show', ['application' => $application]);
-    //     } else {
-    //         return $this->buildResponse('admin.allowances.show', ['error' => 'You are not authorised to view this receipt.', 'application' => null]);
-    //     }
-    // }
-/*
-    public function educationCreate()
-    {
-        $memberId = $this->request->input('member_id', null);
-        $member = $memberId != null ? Member::with(['feePayments'])->where('id', $memberId)->get()->first() : null;
-        $schemeCode = WelfareScheme::where('name', 'Education Assistance')->get()->first()->code;
-        $today = Carbon::today()->format('d-m-Y');
-        return $this->buildResponse(
-            'admin.allowances.create',
-            [
-                'member' => $member,
-                'scheme_code' => $schemeCode,
-                'today' => $today
-            ]);
-    }
-
-    public function educationEdit($id)
-    {
-        $allowance = Allowance::find($id);
-        $today = Carbon::today()->format('d-m-Y');
-        return $this->buildResponse(
-            'admin.allowances.edit',
-            [
-                'allowance' => $allowance,
-                'today' => $today
-            ]);
-    }
-
-    public function educationStore()
-    {
-        $result = $this->allowanceService->storeEducationSchemeApplication($this->request->all());
-        if ($result == false) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An application is already submitted for this student register number.'
-            ]);
-        }
-        return response()->json([
-            'success' => true,
-            'application' => $result
-        ]);
-    }
-
-    public function educationUpdate($id)
-    {
-        $result = $this->allowanceService->updateEducationSchemeApplication($id, $this->request->all());
-        if ($result == false) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An application is already submitted for this student register number.'
-            ]);
-        }
-        return response()->json([
-            'success' => true,
-            'application' => $result
-        ]);
-    }
-*/
     public function approve($id)
     {
         $result = $this->allowanceService->approve(
@@ -297,6 +230,19 @@ class AllowanceController extends SmartController
             $this->request->input('rejection_reason', null),
         );
 
+        return response()->json($result);
+    }
+
+    public function bulkPayment()
+    {
+        return $this->buildResponse('admin.allowances.bulk_payments');
+    }
+
+    public function processPayment()
+    {
+        $result = $this->allowanceService->processPayment(
+            $this->request->file('file')
+        );
         return response()->json($result);
     }
 }

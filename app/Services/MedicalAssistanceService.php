@@ -13,6 +13,7 @@ use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\MedicalAssistanceApplication;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class MedicalAssistanceService
 {
@@ -50,6 +51,7 @@ class MedicalAssistanceService
         $applnData['bills_total'] = floatval($applnData['bills_total']);
         info($applnData);
 
+        DB::beginTransaction();
         /**
          * @var MedicalAssistanceApplication
          */
@@ -83,12 +85,14 @@ class MedicalAssistanceService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => MedicalAssistanceApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
@@ -105,6 +109,7 @@ class MedicalAssistanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -149,6 +154,7 @@ class MedicalAssistanceService
         $applnData['treatment_period_to'] = AppHelper::formatDateForSave($applnData['treatment_period_to']);
         $applnData['has_availed'] = Str::lower($applnData['has_availed']) == 'yes';
 
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -202,6 +208,7 @@ class MedicalAssistanceService
             'Updated Medical Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 

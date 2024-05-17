@@ -13,6 +13,7 @@ use App\Events\ApplicationCreateEvent;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\MaternityAssistanceApplication;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 class MaternityAssistanceService
 {
@@ -42,9 +43,8 @@ class MaternityAssistanceService
         $applnData['delivery_date'] = AppHelper::formatDateForSave($applnData['delivery_date']);
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
-        /**
-         *
-         */
+
+        DB::beginTransaction();
         $esa = MaternityAssistanceApplication::create($applnData);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_front', $data);
         AppHelper::syncImageFromRequestData($esa, 'wb_passbook_back', $data);
@@ -73,12 +73,14 @@ class MaternityAssistanceService
             }
         }
 
+        $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
             'allowanceable_type' => MaternityAssistanceApplication::class,
             'allowanceable_id' => $esa->id,
-            'application_no' => AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']),
+            'application_no' => $applNo,
             'application_date' => AppHelper::formatDateForSave($data['application_date']),
             'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
             'created_by' => auth()->user()->id
@@ -95,6 +97,7 @@ class MaternityAssistanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
@@ -134,6 +137,7 @@ class MaternityAssistanceService
         $applnData['fee_period_from'] = AppHelper::formatDateForSave($applnData['fee_period_from']);
         $applnData['fee_period_to'] = AppHelper::formatDateForSave($applnData['fee_period_to']);
 
+        DB::beginTransaction();
         $esa->update($applnData);
         $esa->save();
         $esa->refresh();
@@ -185,6 +189,7 @@ class MaternityAssistanceService
             'Updated Allowance with id: '.$allowance->id,
             $member->district_id
         );
+        DB::commit();
         return $allowance;
     }
 
