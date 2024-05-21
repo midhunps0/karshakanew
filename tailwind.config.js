@@ -175,7 +175,7 @@ module.exports = {
                     'info': '#2094f3',
                     'success': '#009485',
                     // 'warning': '#ff9900',
-                    'warning': '#decb5a',
+                    'warning': '#b2d241',
                     'error': '#ff5724',
                 },
             },
