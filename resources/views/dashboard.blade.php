@@ -98,10 +98,10 @@
                         @else
                             <th class="bg-secondary text-white">Taluk</th>
                         @endif
-                        <th class="bg-secondary text-white">Total Approved Members</th>
-                        <th class="bg-secondary text-white">Active Members</th>
-                        <th class="bg-secondary text-white">Inactive Members</th>
-                        <th class="bg-secondary text-white">Members above 60 yrs</th>
+                        <th class="bg-secondary text-white text-center">Total Approved Members</th>
+                        <th class="bg-secondary text-white text-center">Active Members</th>
+                        <th class="bg-secondary text-white text-center">Inactive Members</th>
+                        <th class="bg-secondary text-white text-center">Members above 60 yrs</th>
                     </tr>
                 </thead>
 
