@@ -502,7 +502,12 @@ class MemberController extends SmartController
         //     return $this->buildResponse($this->errorView, ['error' => $e->__toString()]);
         // }
     }
-
+    public function doAggregates()
+    {
+        return response()->json(
+            ['success' => $this->connectorService->doAggregates()]
+        );
+    }
     // public function transferForm($id)
     // {
     //     return $this->buildResponse(

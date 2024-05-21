@@ -1,16 +1,19 @@
 <x-easyadmin::partials.adminpanel>
     <div class="p-4">
+        <h3 class="py-3 font-bold text-warning">Members' Data:</h3>
         <div x-data="{
                 loading: false,
+                tableData: [],
+                accessLevel: 'state',
                 data: {
                     unapproved_members: 0,
                     show_unapproved: 0,
                     pending_applications: 0,
                     transfer_requests: 0,
                     new_registrations: 0,
-                    active_members: 0
+                    active_members: 0,
                 },
-                fetchBoxData() {
+                {{-- fetchBoxData() {
                     this.loading = true;
                     axios.get(
                         '{{route('dashboard.box-data')}}',
@@ -25,39 +28,153 @@
                     .catch((e) => {
                         console.log(e);
                     });
+                }, --}}
+                fetchTableData() {
+                    this.loading = true;
+                    axios.get(
+                        '{{route('dashboard.table-data')}}',
+                    ).then((r)  => {
+                        if (r.data.success) {
+                            console.log('tableData');
+                            console.log(r.data);
+                            this.tableData = r.data.data;
+                            this.accessLevel = r.data.level;
+                        } else {
+                            console.log(r.data.error);
+                        }
+                        this.loading = false;
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+                },
+                showVillagesData(tid, show = true) {
+                    if (show) {
+                        if(typeof this.tableData[tid].villages == 'undefined' || this.tableData[tid].villages == null) {
+                            this.fetchVillagesData(tid);
+                        } else {
+                            this.tableData[tid].showVillages = show;
+                        }
+                    } else {
+                        this.tableData[tid].showVillages = false;
+                    }
+                },
+                fetchVillagesData(tid) {
+                    this.loading = true;
+                    axios.get(
+                        '{{route('dashboard.villages-data')}}',
+                        {
+                            params: {'taluk_id': tid}
+                        }
+                    ).then((r)  => {
+                        if (r.data.success) {
+                            console.log('villagesData');
+                            console.log(r.data);
+                            console.log(`this.tabledata[${tid}]:`);
+                            this.tableData[tid].villages = r.data.data;
+                            console.log(this.tableData[tid]);
+                            this.tableData[tid].showVillages = true;
+                        } else {
+                            console.log(r.data.error);
+                        }
+                        this.loading = false;
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
                 }
             }"
             x-init="
                 console.log('init box data...>>')
-                fetchBoxData();
+                {{-- fetchBoxData(); --}}
+                fetchTableData();
             "
-            class="flex flex-row justify-start space-x-4">
-            {{-- @if(isset($new_registrations)) --}}
-            <span
+            class="border border-base-200 rounded-lg overflow-hidden">
+            <table class="table table-compact w-full">
+                <thead>
+                    <tr>
+                        @if (auth()->user()->hasPermissionTo('Dashboard: View All District Data'))
+                            <th class="bg-secondary text-white">District</th>
+                        @else
+                            <th class="bg-secondary text-white">Taluk</th>
+                        @endif
+                        <th class="bg-secondary text-white">Total Approved Members</th>
+                        <th class="bg-secondary text-white">Active Members</th>
+                        <th class="bg-secondary text-white">Inactive Mambers</th>
+                        <th class="bg-secondary text-white">Members above 60 yrs</th>
+                    </tr>
+                </thead>
+
+                    <template x-for="item in tableData">
+                        <tbody>
+                        <tr>
+                            <td class="text-left flex justify-between items-center" :class="item.name == 'Total' ? 'bg-base-200 font-bold' : ''">
+                                <span x-text="item.name"></span>
+                                <template x-if="accessLevel == 'district' && item.name != 'Total'">
+                                <button @click.prevent.stop="showVillagesData(item.id, !item.showVillages);" type="button" class="text-xs btn-xs bg-opacity-50 rounded-full" :class="item.showVillages ? 'btn-secondary' : 'btn-warning'">Villages <span x-text="item.showVillages ? '-' : '+'"></span></button>
+                                </template>
+                            </td>
+                            <td class="text-center" :class="item.name == 'Total' ? 'bg-base-200 font-bold' : ''" x-text="item.total_approved_members"></td>
+                            <td class="text-center" :class="item.name == 'Total' ? 'bg-base-200 font-bold' : ''" x-text="item.active_members"></td>
+                            <td class="text-center" :class="item.name == 'Total' ? 'bg-base-200 font-bold' : ''" x-text="item.inactive_members"></td>
+                            <td class="text-center" :class="item.name == 'Total' ? 'bg-base-200 font-bold' : ''" x-text="item.ageover_members"></td>
+                        </tr>
+                        <template x-if="item.showVillages != undefined && item.showVillages">
+                            <tr>
+                                <td colspan="5" class="bg-secondary bg-opacity-40">
+                                    <div class="font-bold text-center my-2 text-base-content underline">
+                                        Villages Members' Data For <span x-text="item.name"></span>.
+                                    </div>
+                                    <div class="w-full rounded-lg overflow-hidden">
+                                        <table class="table table-compact w-full">
+                                            <thead>
+                                                <tr>
+                                                    <th class="rounded-none">Village</th>
+                                                    <th class="rounded-none text-center">Total Approved Members</th>
+                                                    <th class="rounded-none text-center">Active Members</th>
+                                                    <th class="rounded-none text-center">Inactive Mambers</th>
+                                                    <th class="rounded-none text-center">Members above 60 yrs</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="v in Object.keys(item.villages)">
+                                                <tr>
+                                                    <td class="rounded-none" x-text="item.villages[v].name"  :class="item.villages[v].name == 'Total' ? 'bg-base-300 font-bold' : ''"></td>
+                                                    <td class="rounded-none text-center" x-text="item.villages[v].total_approved_members"  :class="item.villages[v].name == 'Total' ? 'bg-base-300 font-bold' : ''"></td>
+                                                    <td class="rounded-none text-center" x-text="item.villages[v].active_members"  :class="item.villages[v].name == 'Total' ? 'bg-base-300 font-bold' : ''"></td>
+                                                    <td class="rounded-none text-center" x-text="item.villages[v].inactive_members"  :class="item.villages[v].name == 'Total' ? 'bg-base-300 font-bold' : ''"></td>
+                                                    <td class="rounded-none text-center" x-text="item.villages[v].ageover_members"  :class="item.villages[v].name == 'Total' ? 'bg-base-300 font-bold' : ''"></td>
+                                                </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    </template>
+
+            </table>
+            {{-- <span
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Registrations<br><span class="font-normal">(Current Month)</span>
                 </div>
                 <div class="text-2xl text-center">
-                    {{-- {{$new_registrations ?? 0}} --}}
                     <span x-text="data.new_registrations"></span>
                 </div>
             </span>
-            {{-- @endif --}}
-            {{-- @if(isset($active_members)) --}}
             <span class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
                 <div class="font-bold text-center">
                     Active Members<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{-- {{$active_members ?? 0}} --}}
                     <span x-text="data.active_members"></span>
                 </div>
             </span>
-            {{-- @endif --}}
-            {{-- @if($show_unapproved) --}}
             <a x-show="data.show_unapproved" href=""
             @click.prevent.stop="if (data.unapproved_members > 0) { $dispatch('linkaction', {link: '{{route('members.unapproved')}}', route: 'members.unapproved'});}"  class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md "  :class="data.unapproved_members > 0 || 'cursor-default'">
                 <x-easyadmin::display.icon icon="easyadmin::icons.info" height="h-10" width="h-10" class="text-warning"/>
@@ -65,12 +182,9 @@
                     Unapproved Members<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{-- {{$unapproved_members ?? ''}} --}}
                     <span x-text="data.unapproved_members"></span>
                 </div>
             </a>
-            {{-- @endif --}}
-            {{-- @if($show_unapproved) --}}
             <a x-show="data.show_unapproved" href=""
             @click.prevent.stop="if (data.pending_applications > 0) { $dispatch('linkaction', {link: '{{route('allowances.report').'?status=Pending'}}', route: 'allowances.pending'}); }"
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md" :class="data.unapproved_members == 0 || 'cursor-pointer'">
@@ -79,12 +193,9 @@
                     Pending Allowance Applications
                 </div>
                 <div class="text-2xl text-center">
-                    {{-- {{$pending_applications ?? 0}} --}}
                     <span x-text="data.pending_applications"></span>
                 </div>
             </a>
-            {{-- @endif --}}
-            {{-- @if(isset($transfer_requests)) --}}
             <a href=""
             @click.prevent.stop="$dispatch('linkaction', {link: '{{route('members.transfer_requests').'?status=Pending'}}', route: 'members.transfer_requests'});"
             class="w-48 min-h-32 flex flex-col space-y-4 items-center bg-base-200 border border-base-300 border-opacity-80 rounded-md p-4 shadow-md" :class="data.transfer_requests == 0 || 'cursor-pointer'">
@@ -93,11 +204,9 @@
                     Transfer Requests<br>&nbsp;
                 </div>
                 <div class="text-2xl text-center">
-                    {{-- {{$transfer_requests ?? 0}} --}}
                     <span x-text="data.transfer_requests"></span>
                 </div>
-            </a>
-            {{-- @endif --}}
+            </a> --}}
         </div>
         <div class="my-8">
             <h3 class="py-3 font-bold text-warning">Fee Collections Data:</h3>
@@ -178,11 +287,11 @@
                     <table class="table-compact min-w-full">
                         <thead>
                             <tr class="bg-base-200 text-left">
-                                <th><span x-text="level == 'state' ? 'Districts' : 'Taluks'"></span></th>
+                                <th class="bg-secondary text-white"><span x-text="level == 'state' ? 'Districts' : 'Taluks'"></span></th>
                                 <template x-for="ft in feeTypes">
-                                    <th class="w-32 break-words text-center"><span x-text="ft"></span></th>
+                                    <th class="w-32 break-words text-center bg-secondary text-white"><span x-text="ft"></span></th>
                                 </template>
-                                <th class="text-center"><span>Total</span></th>
+                                <th class="text-center bg-secondary text-white"><span>Total</span></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -292,16 +401,16 @@
                     <table class="table-compact w-full">
                         <thead>
                             <tr class="bg-base-200">
-                                <th>
+                                <th class="bg-secondary text-white">
                                     <span>Schemes</span>
                                 </th>
                                 <template x-for="b in branches">
-                                    <th class="w-32 break-words"><span x-text="b"></span></th>
+                                    <th class="w-32 break-words bg-secondary text-white"><span x-text="b"></span></th>
                                 </template>
-                                <th><span>Total</span></th>
-                                <th><span>APR.</span></th>
-                                <th><span>REJ.</span></th>
-                                <th><span>PEN.</span></th>
+                                <th class="bg-secondary text-white"><span>Total</span></th>
+                                <th class="bg-secondary text-white"><span>APR.</span></th>
+                                <th class="bg-secondary text-white"><span>REJ.</span></th>
+                                <th class="bg-secondary text-white"><span>PEN.</span></th>
                             </tr>
                         </thead>
                         <tbody>

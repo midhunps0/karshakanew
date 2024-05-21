@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('districts', function (Blueprint $table) {
-            $table->json('last_appl_no_json')->nullable()->after('last_application_no');
-            $table->json('snapshot')->nullable()->after('enabled');
+        Schema::table('taluks', function (Blueprint $table) {
             $table->integer('ageover_members')->default(0)->after('enabled');
             $table->integer('inactive_members')->default(0)->after('enabled');
             $table->integer('active_members')->default(0)->after('enabled');
             $table->integer('total_approved_members')->default(0)->after('enabled');
-            $table->integer('applied_members')->default(0)->after('enabled');
+            $table->integer('total_applied_members')->default(0)->after('enabled');
         });
     }
 
@@ -27,15 +25,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('districts', function (Blueprint $table) {
+        Schema::table('taluks', function (Blueprint $table) {
             $table->dropColumn([
-                'last_appl_no_json',
-                'snapshot',
-                'applied_members',
-                'total_approved_members',
-                'active_members',
+                'ageover_members',
                 'inactive_members',
-                'ageover_members'
+                'active_members',
+                'total_approved_members',
+                'total_applied_members'
             ]);
         });
     }

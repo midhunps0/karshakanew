@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Events\MemberCountEvent;
 use Carbon\Carbon;
 use App\Models\Taluk;
 use App\Models\Member;
@@ -150,10 +151,13 @@ class MemberTransferService implements ModelViewConnector {
     {
         $transfer = MemberTransfer::find($id);
         $member = Member::find($transfer->member->id);
+        MemberCountEvent::dispatch($member, MemberCountEvent::$ACTION_TRANSFER_OUT);
         $member->district_id = $transfer->district_id;
         $member->taluk_id = $transfer->taluk_id;
         $member->village_id = $transfer->village_id;
         $member->save();
+        $member->refresh();
+        MemberCountEvent::dispatch($member, MemberCountEvent::$ACTION_TRANSFER_IN);
         $transfer->processedby_id = auth()->user()->id;
         $transfer->processed_date = Carbon::now()->format('Y-m-d');
         $transfer->save();

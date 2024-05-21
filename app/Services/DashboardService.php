@@ -5,11 +5,124 @@ use App\Helpers\AppHelper;
 use App\Models\Allowance;
 use App\Models\District;
 use App\Models\FeeType;
+use App\Models\Taluk;
+use App\Models\Village;
 use App\Models\WelfareScheme;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
+    public function newDashboardData()
+    {
+        $user = auth()->user();
+        if ($user->hasPermissionTo('Dashboard: View All District Data')) {
+            $districts = District::withoutHo()
+                ->select(
+                    'id',
+                    'name',
+                    'ageover_members',
+                    'inactive_members',
+                    'active_members',
+                    'total_approved_members',
+                    'total_applied_members',
+                )->get();
+            $total = new \stdClass();
+            $total->name = 'Total';
+            $total->ageover_members = 0;
+            $total->inactive_members = 0;
+            $total->active_members = 0;
+            $total->total_approved_members = 0;
+            $total->total_applied_members = 0;
+            $districtsData = [
+                'total' => $total,
+            ];
+            foreach ($districts as $d) {
+                $districtsData[$d->id] = $d;
+                $districtsData['total']->ageover_members += $d->ageover_members;
+                $districtsData['total']->inactive_members += $d->inactive_members;
+                $districtsData['total']->active_members += $d->active_members;
+                $districtsData['total']->total_approved_members += $d->total_approved_members;
+                $districtsData['total']->total_applied_members += $d->total_applied_members;
+            }
+            return [
+                'success' => true,
+                'level' => 'state',
+                'data' => $districtsData
+            ];
+        } else {
+            $taluks = Taluk::where('district_id', $user->district_id)
+                ->select(
+                    'id',
+                    'name',
+                    'ageover_members',
+                    'inactive_members',
+                    'active_members',
+                    'total_approved_members',
+                    'total_applied_members',
+                )->get();
+            $total = new \stdClass();
+            $total->name = 'Total';
+            $total->ageover_members = 0;
+            $total->inactive_members = 0;
+            $total->active_members = 0;
+            $total->total_approved_members = 0;
+            $total->total_applied_members = 0;
+            $taluksData = [
+                'total' => $total
+            ];
+            foreach ($taluks as $t) {
+                $taluksData[$t->id] = $t;
+                $taluksData['total']->ageover_members += $t->ageover_members;
+                $taluksData['total']->inactive_members += $t->inactive_members;
+                $taluksData['total']->active_members += $t->active_members;
+                $taluksData['total']->total_approved_members += $t->total_approved_members;
+                $taluksData['total']->total_applied_members += $t->total_applied_members;
+            }
+            return [
+                'success' => true,
+                'level' => 'district',
+                'data' => $taluksData
+            ];
+        }
+    }
+
+    public function villagesData($talukId)
+    {
+        $taluk = Taluk::find($talukId);
+        $villages = Village::where('taluk_id', $talukId)
+            ->select(
+                'id',
+                'name',
+                'ageover_members',
+                'inactive_members',
+                'active_members',
+                'total_approved_members',
+                'total_applied_members',
+            )->get();
+        $total = new \stdClass();
+        $total->name = 'Total';
+        $total->ageover_members = 0;
+        $total->inactive_members = 0;
+        $total->active_members = 0;
+        $total->total_approved_members = 0;
+        $total->total_applied_members = 0;
+        $villagesData = [
+            'total' => $total
+        ];
+        foreach ($villages as $v) {
+            $villagesData[$v->id] = $v;
+            $villagesData['total']->ageover_members += $v->ageover_members;
+            $villagesData['total']->inactive_members += $v->inactive_members;
+            $villagesData['total']->active_members += $v->active_members;
+            $villagesData['total']->total_approved_members += $v->total_approved_members;
+            $villagesData['total']->total_applied_members += $v->total_applied_members;
+        }
+        return [
+            'success' => true,
+            'data' => $villagesData
+        ];
+    }
+
     public function dashboardData($from, $to)
     {
 		$from = AppHelper::formatDateForSave($from);

@@ -36,6 +36,13 @@
         <h3 class="text-xl font-bold pb-3 print:hidden">
             <span>Allowances Bulk Payment</span>
         </h3>
+        <div class="p-3 my-3 border border-base-200 rounded-md bg-base-200 flex flex-col gap-2">
+            <p>
+                <a class="text-secondary" href="/downloads/payment-import.xlsx">Download Import Format</a>
+            </p>
+            <p class="text-warning">Note: The date value shall be in the format dd-mm-yyyy</p>
+
+        </div>
         <form id="payment-import-form" action="" class="flex flex-col gap-6 w-1/2 m-3 p-3 border border-base-300 rounded-md" @submit.prevent.stop="doSubmit();">
             <div >
                 <input X-on:change="file = Object.values($event.target.files)[0];" type="file" name="file" id="import-file">

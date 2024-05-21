@@ -16,6 +16,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Events\BusinessActionEvent;
 use App\Events\FeeCollectionEvent;
+use App\Events\MemberCountEvent;
+use App\Events\MemberStatusEvent;
+use App\Listeners\MemberStatusListener;
 use Exception;
 use Hamcrest\Type\IsNumeric;
 use Ynotz\EasyAdmin\Services\RowLayout;
@@ -1686,6 +1689,8 @@ class MemberService implements ModelViewConnector {
             $member->merged = 1;
             $member->save();
 info('member saved');
+            MemberCountEvent::dispatch($member, MemberCountEvent::$ACTION_CREATED);
+            MemberStatusEvent::dispatch($member, MemberStatusEvent::$ACTION_ENABLED);
             foreach ($data->subscriptions as $s) {
                 //get matching fee_type_id for subscription_type_id
                 $feeTypeId = config('generalSettings.fee_types_map')[$s->subscription_type_id];
@@ -2360,6 +2365,89 @@ info('member saved');
             $responseData['results'] = null;
         }
         return $responseData;
+    }
+
+    public function doAggregates()
+    {
+        try {
+            $dobLimit = Carbon::today()->subYears(60)->format('Y-m-d');
+            $query = DB::table('members', 'm')
+                ->select(
+                    'district_id',
+                    DB::raw("COUNT(id) as total_applied_members"),
+                    DB::raw("COUNT(IF(approved_at IS NOT NULL, 1, NULL)) as total_approved_members"),
+                    DB::raw("COUNT(IF(active = 1, 1, NULL)) as active_members"),
+                    DB::raw("COUNT(IF(active = 0, 1, NULL)) as inactive_members"),
+                    DB::raw("COUNT(IF(dob < $dobLimit, 1, NULL)) as ageover_members"),
+                )->where('deleted_at', null)
+                ->groupBy('district_id');
+
+            $result = $query->get();
+            info('starting to set data');
+            foreach ($result as $row) {
+                $district = District::find($row->district_id);
+                $district->ageover_members = $row->ageover_members;
+                $district->inactive_members = $row->inactive_members;
+                $district->active_members = $row->active_members;
+                $district->total_approved_members = $row->total_approved_members;
+                $district->total_applied_members = $row->total_applied_members;
+                $district->save();
+            }
+            info('districts done');
+
+            $tquery = DB::table('members', 'm')
+                ->select(
+                    'taluk_id',
+                    DB::raw("COUNT('id') as total_applied_members"),
+                    DB::raw("COUNT(IF(approved_at IS NOT NULL, 1, NULL)) as total_approved_members"),
+                    DB::raw("COUNT(IF(active = 1, 1, NULL)) as active_members"),
+                    DB::raw("COUNT(IF(active = 0, 1, NULL)) as inactive_members"),
+                    DB::raw("COUNT(IF(dob < $dobLimit, 1, NULL)) as ageover_members"),
+                )->where('deleted_at', null)
+                ->groupBy('taluk_id');
+
+            $tresult = $tquery->get();
+
+            foreach ($tresult as $r) {
+                $taluk = Taluk::find($r->taluk_id);
+                $taluk->ageover_members = $r->ageover_members;
+                $taluk->inactive_members = $r->inactive_members;
+                $taluk->active_members = $r->active_members;
+                $taluk->total_approved_members = $r->total_approved_members;
+                $taluk->total_applied_members = $r->total_applied_members;
+                $taluk->save();
+            }
+            info('taluks done');
+
+            $vquery = DB::table('members', 'm')
+                ->select(
+                    'village_id',
+                    DB::raw("COUNT('id') as total_applied_members"),
+                    DB::raw("COUNT(IF(approved_at IS NOT NULL, 1, NULL)) as total_approved_members"),
+                    DB::raw("COUNT(IF(active = 1, 1, NULL)) as active_members"),
+                    DB::raw("COUNT(IF(active = 0, 1, NULL)) as inactive_members"),
+                    DB::raw("COUNT(IF(dob < $dobLimit, 1, NULL)) as ageover_members"),
+                )->where('deleted_at', null)
+                ->groupBy('village_id');
+
+            $vresult = $vquery->get();
+
+            foreach ($vresult as $r) {
+                $village = Village::find($r->village_id);
+                $village->ageover_members = $r->ageover_members;
+                $village->inactive_members = $r->inactive_members;
+                $village->active_members = $r->active_members;
+                $village->total_approved_members = $r->total_approved_members;
+                $village->total_applied_members = $r->total_applied_members;
+                $village->save();
+            }
+
+            info('villages done');
+
+            return true;
+        } catch (\Throwable $e) {
+            return $e->__toString();
+        }
     }
 }
 

@@ -18,11 +18,13 @@ class MemberCountEvent
     static $ACTION_UPDATED = 'updated';
     static $ACTION_APPROVED = 'approved';
     static $ACTION_DELETED = 'deleted';
+    static $ACTION_TRANSFER_OUT = 'transfered_out';
+    static $ACTION_TRANSFER_IN = 'transfered_in';
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public $member, public $districtId)
+    public function __construct(public $member, public $action)
     {
         //
     }

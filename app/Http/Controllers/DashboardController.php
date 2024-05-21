@@ -61,6 +61,18 @@ class DashboardController extends SmartController
         */
     }
 
+    public function tableData(DashboardService $ds)
+    {
+        $result = $ds->newDashboardData();
+        return response()->json($result);
+    }
+
+    public function villagesMembersData(Request $request, DashboardService $ds)
+    {
+        $result = $ds->villagesData($request->input('taluk_id'));
+        return response()->json($result);
+    }
+
     public function boxData()
     {
         $data = [];

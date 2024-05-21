@@ -15,7 +15,8 @@ return new class extends Migration
             $table->integer('ageover_members')->default(0)->after('enabled');
             $table->integer('inactive_members')->default(0)->after('enabled');
             $table->integer('active_members')->default(0)->after('enabled');
-            $table->integer('total_members')->default(0)->after('enabled');
+            $table->integer('total_approved_members')->default(0)->after('enabled');
+            $table->integer('total_applied_members')->default(0)->after('enabled');
         });
     }
 
@@ -26,10 +27,11 @@ return new class extends Migration
     {
         Schema::table('villages', function (Blueprint $table) {
             $table->dropColumn([
-                'total_members',
-                'active_members',
+                'ageover_members',
                 'inactive_members',
-                'ageover_members'
+                'active_members',
+                'total_approved_members',
+                'total_applied_members'
             ]);
         });
     }

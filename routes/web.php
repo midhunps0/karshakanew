@@ -45,6 +45,8 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard-box-data', [DashboardController::class, 'boxData'])->name('dashboard.box-data');
+    Route::get('/dashboard-table-data', [DashboardController::class, 'tableData'])->name('dashboard.table-data');
+    Route::get('/dashboard-villages-data', [DashboardController::class, 'villagesMembersData'])->name('dashboard.villages-data');
     Route::get('/dashboard-data', [DashboardController::class, 'dashboardData'])->name('dashboard.data');
     Route::get('/dashboard-allowances-data', [DashboardController::class, 'dashboardAllowancesData'])->name('dashboard.allowances_data');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -254,7 +256,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     Route::get('adhoc-seeder', [AdhocController::class, 'seedLastAllowanceApplNos'])->name('adhoc_seeder');
     Route::get('app-no-correction', [AdhocController::class, 'applicationNosCorrection'])->name('app_no_correction');
+
 });
 
+
+Route::get('do-aggregates', [MemberController::class, 'doAggregates'])->name('aggregaes.members');
 
 require __DIR__.'/auth.php';
