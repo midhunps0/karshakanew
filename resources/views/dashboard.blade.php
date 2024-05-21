@@ -100,7 +100,7 @@
                         @endif
                         <th class="bg-secondary text-white">Total Approved Members</th>
                         <th class="bg-secondary text-white">Active Members</th>
-                        <th class="bg-secondary text-white">Inactive Mambers</th>
+                        <th class="bg-secondary text-white">Inactive Members</th>
                         <th class="bg-secondary text-white">Members above 60 yrs</th>
                     </tr>
                 </thead>

@@ -2376,8 +2376,8 @@ info('member saved');
                     'district_id',
                     DB::raw("COUNT(id) as total_applied_members"),
                     DB::raw("COUNT(CASE WHEN approved_at IS NOT NULL THEN  1 ELSE  NULL END) as total_approved_members"),
-                    DB::raw("COUNT(CASE WHEN active = 1 THEN 1 ELSE NULL END) as active_members"),
-                    DB::raw("COUNT(CASE WHEN active = 0 THEN 1 ELSE NULL END) as inactive_members"),
+                    DB::raw("COUNT(CASE WHEN approved_at IS NOT NULL AND active = 1 THEN 1 ELSE NULL END) as active_members"),
+                    DB::raw("COUNT(CASE WHEN  approved_at IS NOT NULL AND active = 0 THEN 1 ELSE NULL END) as inactive_members"),
                     DB::raw("COUNT(CASE WHEN dob < '$dobLimit' THEN 1 ELSE NULL END) as ageover_members"),
                 )->where('deleted_at', null)
                 ->groupBy('district_id');
@@ -2401,8 +2401,8 @@ info('query:');
                     'taluk_id',
                     DB::raw("COUNT('id') as total_applied_members"),
                     DB::raw("COUNT(CASE WHEN approved_at IS NOT NULL THEN 1 ELSE NULL END) as total_approved_members"),
-                    DB::raw("COUNT(CASE WHEN active = 1 THEN 1 ELSE NULL END) as active_members"),
-                    DB::raw("COUNT(CASE WHEN active = 0 THEN 1 ELSE NULL END) as inactive_members"),
+                    DB::raw("COUNT(CASE WHEN approved_at IS NOT NULL AND active = 1 THEN 1 ELSE NULL END) as active_members"),
+                    DB::raw("COUNT(CASE WHEN approved_at IS NOT NULL AND active = 0 THEN 1 ELSE NULL END) as inactive_members"),
                     DB::raw("COUNT(CASE WHEN dob < '$dobLimit' THEN 1 ELSE NULL END) as ageover_members"),
                 )->where('deleted_at', null)
                 ->groupBy('taluk_id');
