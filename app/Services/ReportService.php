@@ -58,8 +58,8 @@ class ReportService
         $currentQuery = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('fc.created_at', '>=', $from)
-            ->where('fc.created_at', '<=', $to)
+            ->where('fc.receipt_date', '>=', $from)
+            ->where('fc.receipt_date', '<=', $to)
             ->whereNull('fc.deleted_at');
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $currentQuery->where('fc.district_id', auth()->user()->district_id);
