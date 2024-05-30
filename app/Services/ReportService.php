@@ -59,7 +59,8 @@ class ReportService
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
             ->where('fc.created_at', '>=', $from)
-            ->where('fc.created_at', '<=', $to);
+            ->where('fc.created_at', '<=', $to)
+            ->whereNull('fc.deleted_at');
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $currentQuery->where('fc.district_id', auth()->user()->district_id);
         } else if (isset($chosenDistrictId)) {
