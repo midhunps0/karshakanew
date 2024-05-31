@@ -13,10 +13,14 @@ class ReportService
     public function snapshot($year, $month, $chosenDistrictId = null)
     {
         $data = [];
-        $from = Carbon::create($year, $month)->month($month)->startOfMonth()->format('Y-m-d');
+        $fromDate = Carbon::create($year, $month)->startOfMonth();
+        $toDate = Carbon::create($year, $month)->endOfMonth();
+        $from = Carbon::create($year, $month)->startOfMonth()->format('Y-m-d');
         $to = Carbon::create($year, $month)->endOfMonth()->format('Y-m-d');
-        $pFrom = Carbon::now()->subYear()->startOfMonth()->format('Y-m-d');
-        $pTo = Carbon::now()->subYear()->endOfMonth()->format('Y-m-d');
+        $pFrom = $fromDate->subYear()->format('Y-m-d');
+        $pTo = $toDate->subYear()->format('Y-m-d');
+        info("from $from");
+        info("from $to");
         $collections = [
             'count' => [
                 'members' => 0,
