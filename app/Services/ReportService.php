@@ -13,12 +13,10 @@ class ReportService
     public function snapshot($year, $month, $chosenDistrictId = null)
     {
         $data = [];
-        $from = Carbon::create($year, $month)->month($month)->startOfMonth()->format('Y-m-d H:i:s');
-        $to = Carbon::create($year, $month)->endOfMonth()->format('Y-m-d H:i:s');
-        $pDate = Carbon::now();
-        $pDate->subYear();
-        $pFrom = $pDate->startOfMonth()->format('Y-m-d H:i:s');
-        $pTo = $pDate->endOfMonth()->format('Y-m-d H:i:s');
+        $from = Carbon::create($year, $month)->month($month)->startOfMonth()->format('Y-m-d');
+        $to = Carbon::create($year, $month)->endOfMonth()->format('Y-m-d');
+        $pFrom = Carbon::now()->subYear()->startOfMonth()->format('Y-m-d');
+        $pTo = Carbon::now()->subYear()->endOfMonth()->format('Y-m-d');
         $collections = [
             'count' => [
                 'members' => 0,
@@ -99,8 +97,8 @@ class ReportService
         $prevQuery = DB::table('fee_collections as fc')
             ->join('fee_items as fi', 'fi.fee_collection_id', '=', 'fc.id')
             ->join('fee_types as ft', 'fi.fee_type_id', '=', 'ft.id')
-            ->where('fc.created_at', '>=', $pFrom)
-            ->where('fc.created_at', '<=', $pTo);
+            ->where('fc.receipt_date', '>=', $pFrom)
+            ->where('fc.receipt_date', '<=', $pTo);
         if (!auth()->user()->hasPermissionTo('Fee Collection: View In Any District')) {
             $prevQuery->where('fc.district_id', auth()->user()->district_id);
         } else if (isset($chosenDistrictId)) {
