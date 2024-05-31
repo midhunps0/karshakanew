@@ -66,7 +66,7 @@ class ReportService
             $currentQuery->where('fc.district_id', $chosenDistrictId);
         }
             $currentQuery->groupBy('ft.id')
-            ->select(DB::raw('ft.id, ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fc.total_amount) as total_amount'));
+            ->select(DB::raw('ft.id, ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fi.amount) as total_amount'));
         info('test sql:');
         info($currentQuery->toSql());
         $currentResult = $currentQuery->get();
@@ -74,24 +74,17 @@ class ReportService
 
         foreach ($currentResult as $item) {
             $collections['count']['collections'] += $item->fcount;
-            if ($item->name == $amshadayam) {
-                $collections['count']['renewals'] += $item->fcount;
-            }
-            if ($item->name == $kudissika) {
-                $collections['count']['kudissika'] += $item->fcount;
-            }
-            if ($item->name == $kudissika_fine) {
-                $collections['count']['kudissika_fine'] += $item->fcount;
-            }
-
             $collections['amount']['collections'] += $item->total_amount;
             if ($item->name == $amshadayam) {
+                $collections['count']['renewals'] += $item->fcount;
                 $collections['amount']['renewals'] += $item->total_amount;
             }
             if ($item->name == $kudissika) {
+                $collections['count']['kudissika'] += $item->fcount;
                 $collections['amount']['kudissika'] += $item->total_amount;
             }
             if ($item->name == $kudissika_fine) {
+                $collections['count']['kudissika_fine'] += $item->fcount;
                 $collections['amount']['kudissika_fine'] += $item->total_amount;
             }
         }
