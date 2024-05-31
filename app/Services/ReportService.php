@@ -65,8 +65,8 @@ class ReportService
         } else if (isset($chosenDistrictId)) {
             $currentQuery->where('fc.district_id', $chosenDistrictId);
         }
-            $currentQuery->groupBy('ft.name')
-            ->select(DB::raw('ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fc.total_amount) as total_amount'));
+            $currentQuery->groupBy('ft.id')
+            ->select(DB::raw('ft.id, ft.name, COUNT(DISTINCT fc.id) as fcount, SUM(fc.total_amount) as total_amount'));
         info('test sql:');
         info($currentQuery->toSql());
         $currentResult = $currentQuery->get();
