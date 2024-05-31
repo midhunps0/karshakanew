@@ -13,11 +13,8 @@ class ReportService
     public function snapshot($year, $month, $chosenDistrictId = null)
     {
         $data = [];
-        $date = Carbon::now();
-        $date->year($year);
-        $date->month($month);
-        $from = $date->startOfMonth()->format('Y-m-d H:i:s');
-        $to = $date->endOfMonth()->format('Y-m-d H:i:s');
+        $from = Carbon::date()->year($year)->month($month)->startOfMonth()->format('Y-m-d H:i:s');
+        $to = Carbon::date()->year($year)->month($month)->endOfMonth()->format('Y-m-d H:i:s');
         $pDate = Carbon::now();
         $pDate->subYear();
         $pFrom = $pDate->startOfMonth()->format('Y-m-d H:i:s');
