@@ -263,6 +263,8 @@ class FeeCollectionService implements ModelViewConnector {
             $query->where('receipt_number','LIKE', $data['receipt_no'].'%');
             info('search query:');
             info($query->toSql());
+            info('receipt_number');
+            info($data['receipt_no'].'%');
         } else {
             $datetype = $data['searchBy'];
             if (isset($data['start'])) {
