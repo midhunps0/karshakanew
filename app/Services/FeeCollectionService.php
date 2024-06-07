@@ -260,13 +260,11 @@ class FeeCollectionService implements ModelViewConnector {
         );
         $query->userDistrictConstrained();
         if ($data['searchBy'] == 'receipt_no' && isset($data['receipt_no'])) {
-            $rno = '\''.$data['receipt_no'].'%\'';
+            $rno = $data['receipt_no'].'%';
             $query->where('receipt_number','LIKE', $rno);
             info('search query:');
 
-            vsprintf(str_replace('?', '%s', $query->toSql()), collect($query->getBindings())->map(function ($binding) {
-                return is_numeric($binding) ? $binding : "{$binding}";
-            })->toArray());
+            info($query->toSql());
 
             info('receipt_number');
             info($rno);
