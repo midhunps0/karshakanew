@@ -263,9 +263,9 @@ class FeeCollectionService implements ModelViewConnector {
             $rno = '\''.$data['receipt_no'].'%\'';
             $query->where('receipt_number','LIKE', $rno);
             info('search query:');
-            info($query->toSql());
+            print_r( $query->getBindings() );
             info('receipt_number');
-            info($data['receipt_no'].'%');
+            info($rno);
         } else {
             $datetype = $data['searchBy'];
             if (isset($data['start'])) {
