@@ -263,7 +263,7 @@ class FeeCollectionService implements ModelViewConnector {
             $rno = '\''.$data['receipt_no'].'%\'';
             $query->where('receipt_number','LIKE', $rno);
             info('search query:');
-            print_r( $query->getBindings() );
+            print_r( $query->toRawSql() );
             info('receipt_number');
             info($rno);
         } else {
