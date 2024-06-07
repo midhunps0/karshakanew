@@ -278,6 +278,12 @@ class FeeCollectionService implements ModelViewConnector {
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
+            $result = $query->paginate(
+                perPage: 20,
+                page: $data['page']
+            );
+            info($result);
+            return $result;
             return $query->paginate(
                 perPage: 20,
                 page: $data['page']
