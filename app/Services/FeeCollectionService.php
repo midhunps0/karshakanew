@@ -260,13 +260,13 @@ class FeeCollectionService implements ModelViewConnector {
         );
         $query->userDistrictConstrained();
         if ($data['searchBy'] == 'receipt_no' && isset($data['receipt_no'])) {
-            $rno = $data['receipt_no'].'%';
+            // $rno = $data['receipt_no'].'%';
             $query->where('receipt_number', $data['receipt_no']);
-            info('search query:');
-            info($query->toSql());
+            // info('search query:');
+            // info($query->toSql());
 
-            info('receipt_number');
-            info($rno);
+            // info('receipt_number');
+            // info($rno);
         } else {
             $datetype = $data['searchBy'];
             if (isset($data['start'])) {
@@ -280,13 +280,13 @@ class FeeCollectionService implements ModelViewConnector {
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
-            $result = $query->paginate(
-                perPage: 20,
-                page: $data['page']
-            );
-            info('query results');
-            info($result);
-            return $result;
+            // $result = $query->paginate(
+            //     perPage: 20,
+            //     page: $data['page']
+            // );
+            // info('query results');
+            // info($result);
+            // return $result;
             return $query->paginate(
                 perPage: 20,
                 page: $data['page']
