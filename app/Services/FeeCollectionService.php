@@ -282,6 +282,7 @@ class FeeCollectionService implements ModelViewConnector {
                 perPage: 20,
                 page: $data['page']
             );
+            info('query results');
             info($result);
             return $result;
             return $query->paginate(
