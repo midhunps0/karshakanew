@@ -113,7 +113,7 @@
             </form>
             @if(count($receipts) > 0)
             <div>
-                <div class="mx-auto border border-base-content border-opacity-10 rounded-lg h-96 overflow-scroll my-4">
+                <div class="mx-auto border border-base-content border-opacity-10 rounded-lg max-h-[500px] overflow-scroll my-4">
                     <table class="table table-compact w-full">
                         <thead>
                             <tr>
