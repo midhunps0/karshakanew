@@ -119,6 +119,8 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Receipt No.</th>
+                                <th>Membership No.</th>
+                                <th>Member Name</th>
                                 <th>particulars</th>
                                 <th>From</th>
                                 <th>To</th>
@@ -156,9 +158,12 @@
                                             <span>{{$fp->receipt_number}}</span>
                                         @endif
                                     @endif</td>
+                                <td>{{$fp->member->membership_no}}</td>
+                                <td>{{$fp->member->display_name}}</td>
                                 <td>{{$fi->feeType->name}}</td>
-                                <td>{{$fi->period_from ?? '--'}}</td>
-                                <td>{{$fi->period_to ?? '--'}}</td>
+                                <td>{{$fi->feeType->name}}</td>
+                                <td>{{$fi->formatted_period_from ?? '--'}}</td>
+                                <td>{{$fi->formatted_period_to ?? '--'}}</td>
                                 <td>{{$fi->tenure ?? '--'}}</td>
                                 <td>{{$fi->amount ?? ''}}</td>
                                 <td>@if ($loop->first){{$fp->total_amount}}@endif</td>

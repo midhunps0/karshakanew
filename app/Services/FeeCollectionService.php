@@ -261,13 +261,7 @@ class FeeCollectionService implements ModelViewConnector {
         $query->userDistrictConstrained();
         if ($data['searchBy'] == 'receipt_no' && isset($data['receipt_no'])) {
             $rno = trim($data['receipt_no']).'%';
-            // $query->where('receipt_number', $data['receipt_no']);
             $query->where('receipt_number', 'like', $rno);
-            // info('search query:');
-            // info($query->toSql());
-
-            // info('receipt_number');
-            // info($rno);
         } else {
             $datetype = $data['searchBy'];
             if (isset($data['start'])) {
@@ -277,7 +271,7 @@ class FeeCollectionService implements ModelViewConnector {
                 $query->where($datetype, '<=', AppHelper::formatDateForSave($data['end']));
             }
         }
-
+        $query->orderBy('id', 'asc');
         if (isset($data['fullreport']) && $data['fullreport']) {
             return $query->get();
         } else {
