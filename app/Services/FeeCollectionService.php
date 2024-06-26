@@ -117,7 +117,7 @@ class FeeCollectionService implements ModelViewConnector {
     {
         $fc = FeeCollection::where('id', $id)->with(['feeItems', 'member'])->get()->first();
         $member = $fc->member;
-        if (!Gate::allows('update', $member)) {
+        if (!$fc->is_editable_period) {
             throw new UnauthorizedException('You are not allowed to update this resource.');
         }
         $oldFc = $fc;
