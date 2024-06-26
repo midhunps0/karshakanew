@@ -329,11 +329,12 @@
         </div>
         <form x-show="showform"
             @submit.prevent.stop="doSubmit();"
-            @formresponse.window="console.log($event.detail);
+            @formresponse.window="
+                console.log($event.detail);
                 console.log('fr captured');
                 if ($event.detail.target == $el.id) {
                     if ($event.detail.content.success) {
-                console.log($event.detail.content.receipt);
+                        console.log($event.detail.content.receipt);
                         receipt = $event.detail.content.receipt;
                         console.log(receipt);
                         showform = false;

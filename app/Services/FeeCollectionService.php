@@ -9,6 +9,8 @@ use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Models\FeeType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\UnauthorizedException;
 use Ynotz\EasyAdmin\Services\FormHelper;
 use Ynotz\EasyAdmin\Services\IndexTable;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -114,6 +116,10 @@ class FeeCollectionService implements ModelViewConnector {
     public function update($data, $id)
     {
         $fc = FeeCollection::where('id', $id)->with(['feeItems', 'member'])->get()->first();
+        $member = $fc->member;
+        if (!Gate::allows('update', $member)) {
+            throw new UnauthorizedException('You are not allowed to update this resource.');
+        }
         $oldFc = $fc;
         $sum = 0;
         if ($fc != null) {

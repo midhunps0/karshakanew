@@ -28,8 +28,16 @@ class FeeCollectionController extends SmartController
 
     public function update($id)
     {
-        $result = $this->connectorService->update($this->request->all(), $id);
-        return response()->json($result);
+        try {
+            $result = $this->connectorService->update($this->request->all(), $id);
+            return response()->json($result);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->__toString()
+            ]);
+        }
+
     }
 
     public function createOld()
