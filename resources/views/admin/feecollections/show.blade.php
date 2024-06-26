@@ -108,11 +108,11 @@
             </div>
             <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
                 <button @click.prevent.stop="printReceipt()" class="btn btn-sm btn-warning">Print</button>
-                @if (Gate::allows('update', $member))
+                {{-- @if (Gate::allows('update', $member)) --}}
                 <a href="" @click.prevent.stop="$dispatch('linkaction', {
                     link: '{{route('feecollections.edit', $model['item']['id'])}}', route: 'feecollections.edit'
                 });" class="btn btn-sm btn-accent">Edit</a>
-                @endif
+                {{-- @endif --}}
                 <a href="" @click.prevent.stop="history.back();" class="btn btn-sm">Back</a>
             </div>
         </div>
