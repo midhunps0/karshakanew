@@ -20,7 +20,8 @@ class GovApiService
             ->join('villages as v', 'v.id', '=', 'm.village_id')
             ->select(
                 config('generalSettings.gov_member_data_list')
-            )->whereNull('m.deleted_at');
+            )->whereNotNull('m.aadhaar_no')
+            ->whereNull('m.deleted_at');
         if (!$pagination) {
             return ['data' => $query->get()];
         }

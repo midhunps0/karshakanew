@@ -13,7 +13,7 @@ class GovApiController extends Controller
     {
         $ipAddress = trim($request->ip());
         $govToken = trim($request->header('GOV-TOKEN'));
-        if ($govToken == config('generalSettings.gov_token') && $ipAddress == config('generalSettings.gov_ip_address')) {
+        if ($govToken == config('generalSettings.gov_token') && (config('generalSettings.gov_ip_address') == null || $ipAddress == config('generalSettings.gov_ip_address'))) {
             return (new GovApiService)->membersData(
                 $request->input('pagination', true),
                 $request->input('page', 1),

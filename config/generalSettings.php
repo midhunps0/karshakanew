@@ -93,7 +93,7 @@
         'kudissika' => 'Kudissika',
         'kudissika_fine' => 'Kudissika Fine',
         'gov_token' => '$2y$10$ScAQ42urJvGJcCqO9r5txuOvTcrn.GYj1eXFTTPHY7HUdpNjYwPcS',
-        'gov_ip_address' => '172.19.0.1',
+        'gov_ip_address' => null,
         'gov_member_data_list' => [
             'd.name as district_name',
             't.name as taluk_name',
