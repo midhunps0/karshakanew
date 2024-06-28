@@ -116,7 +116,6 @@ class FeeCollectionService implements ModelViewConnector {
     public function update($data, $id)
     {
         $fc = FeeCollection::where('id', $id)->with(['feeItems', 'member'])->get()->first();
-        $member = $fc->member;
         if (!($fc->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))) {
             throw new UnauthorizedException('You are not allowed to update this resource.');
         }
