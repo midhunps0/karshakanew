@@ -4,6 +4,7 @@
     <div class="w-full"
         x-data="{
                 receipt: null,
+                can_edit: false,
                 printReceipt() {
                     let divContents = document.getElementById('receipt').innerHTML;
                     let a = window.open('', '', 'width=210');
@@ -23,6 +24,9 @@
         x-init="
             theData = {{Js::from($model)}};
             receipt = theData.item;
+            let user_district_id = {{auth()->user()->district_id}};
+            let can_edit_any_time_in_own_district = {{auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time')? 'true' : 'false'}};
+            can_edit = (user_district_id == receipt.district_id) && can_edit_any_time_in_own_district;
         "
         >
         <div class="w-full md:w-10/12 m-auto p-3 border border-base-content border-opacity-50 rounded-md my-8 min-w-48 overflow-x-scroll">
@@ -109,7 +113,7 @@
             <div class="flex flex-row space-x-4 justify-center items-center p-4 mt-4 print:hidden">
                 <button @click.prevent.stop="printReceipt()" class="btn btn-sm btn-warning">Print</button>
                 {{-- @if (Gate::allows('update', $member)) --}}
-                <a x-show="receipt.is_editable_period" href="" @click.prevent.stop="$dispatch('linkaction', {
+                <a x-show="receipt.is_editable_period || can_edit" href="" @click.prevent.stop="$dispatch('linkaction', {
                     link: '{{route('feecollections.edit', $model['item']['id'])}}', route: 'feecollections.edit'
                 });" class="btn btn-sm btn-accent">Edit</a>
                 {{-- @endif --}}

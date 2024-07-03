@@ -412,14 +412,14 @@
                                                 </div>
                                             </div>
                                             @endif
-                                            {{-- @if ($fp->is_editable_period || auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time'))
+                                            @if ($fp->is_editable_period || (auth()->user()->hasPermissionTo('Fee Collection: Edit In Own District Any Time') && $fp->district_id == auth()->user()->district_id))
                                             <a href="" @click.prevent.stop="$dispatch('linkaction', {
                                                 link: '{{route('feecollections.edit', $fp->id)}}', route: 'feecollections.edit'
                                             });">
 
                                                 <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-5" width="w-5" class="text-warning font-bold"/>
                                             </a>
-                                            @endif --}}
+                                            @endif
                                         </div>
                                         @endif
                                     </td>
