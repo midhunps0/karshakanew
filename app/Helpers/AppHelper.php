@@ -112,7 +112,7 @@ class AppHelper
             ->where('district_id', $district->id)
             ->orderBy('created_at', 'desc')
             ->get()->first();
-        $aplNumeric = 0;
+        $aplNumeric = 1;
         if ($lastApplication != null) {
             $lastAppArr = explode('/', $lastApplication->application_no);
             $aplStr = array_pop($lastAppArr);
