@@ -43,31 +43,31 @@ class MedicalAssistanceApplication extends Model implements MediaOwner
     public function getMediaStorage(): array
     {
         return [
-            'wbPassbookFront' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/wb_passbook_back'
             ],
-            'aadhaarCard' => [
+            'aadhaar_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/bank_passbook'
             ],
-            'unionCertificate' => [
+            'union_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/union_certificate'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/ration_card'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/medical/one_and_same_cert'
             ],

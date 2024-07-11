@@ -39,39 +39,39 @@ class MarriageAssistanceApplication extends Model implements MediaOwner
     public function getMediaStorage(): array
     {
         return [
-            'wbPassbookFront' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/wb_passbook_back'
             ],
-            'aadhaarCard' => [
+            'aadhaar_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/bank_passbook'
             ],
-            'unionCertificate' => [
+            'union_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/union_certificate'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/ration_card'
             ],
-            'casteCertificate' => [
+            'caste_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/caste_certificate'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/one_and_same_cert'
             ],
-            'marriageCertificate' => [
+            'marriage_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/marriage/marriage_certificate'
             ],

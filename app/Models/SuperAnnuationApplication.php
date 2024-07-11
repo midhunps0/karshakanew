@@ -39,31 +39,31 @@ class SuperAnnuationApplication extends Model implements MediaOwner
     public function getMediaStorage(): array
     {
         return [
-            'wbPassbookFront' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/wb_passbook_back'
             ],
-            'aadhaarCard' => [
+            'aadhaar_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/bank_passbook'
             ],
-            'unionCertificate' => [
+            'union_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/union_certificate'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/ration_card'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/super_annuation/one_and_same_cert'
             ],

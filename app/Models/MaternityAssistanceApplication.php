@@ -40,35 +40,35 @@ class MaternityAssistanceApplication extends Model implements MediaOwner
     public function getMediaStorage(): array
     {
         return [
-            'wbPassbookFront' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/wb_passbook_back'
             ],
-            'aadhaarCard' => [
+            'aadhaar_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/bank_passbook'
             ],
-            'unionCertificate' => [
+            'union_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/union_certificate'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/ration_card'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/one_and_same_cert'
             ],
-            'birthCertificate' => [
+            'marriage_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/maternity/marriage_certificate'
             ],

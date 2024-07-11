@@ -44,7 +44,7 @@ class HigherEducationSchemeApplication extends Model implements MediaOwner
     public function getMediaStorage(): array
     {
         return [
-            'markList'=> [
+            'mark_list'=> [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/mark_list'
             ],
@@ -52,35 +52,35 @@ class HigherEducationSchemeApplication extends Model implements MediaOwner
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/tc'
             ],
-            'wbPassbookFront' => [
+            'wb_passbook_front' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/wb_passbook_front'
             ],
-            'wbPassbookBack' => [
+            'wb_passbook_back' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/wb_passbook_back'
             ],
-            'aadhaarCard' => [
+            'aadhaar_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/aadhaar_card'
             ],
-            'bankPassbook' => [
+            'bank_passbook' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/bank_passbook'
             ],
-            'unionCertificate' => [
+            'union_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/union_certificate'
             ],
-            'rationCard' => [
+            'ration_card' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/ration_card'
             ],
-            'casteCertificate' => [
+            'caste_certificate' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/caste_certificate'
             ],
-            'oneAndSameCert' => [
+            'one_and_same_cert' => [
                 'disk' => 's3',
                 'folder' => 'public/images/applications/hedu/one_and_same_cert'
             ],
