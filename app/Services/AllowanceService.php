@@ -81,7 +81,11 @@ class AllowanceService
         }
 
         $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
-
+        $existingAllowances = Allowance::where('application_no', $applNo)->get();
+        while(count($existingAllowances) > 0) {
+            $applNo = AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+            $existingAllowances = Allowance::where('application_no', $applNo)->get();
+        }
         $alData = [
             'member_id' => $data['member_id'],
             'district_id' => $member->district_id,
