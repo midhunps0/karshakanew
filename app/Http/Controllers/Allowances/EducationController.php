@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Allowances;
 
+use App\Exceptions\DuplicateApplicationNumberException;
 use Throwable;
 use App\Models\User;
 use App\Models\Member;
@@ -74,17 +75,30 @@ class EducationController extends SmartController
 
     public function store()
     {
-        $result = $this->allowanceService->storeEducationSchemeApplication($this->request->all());
-        if ($result == false) {
+        try {
+            $result = $this->allowanceService->storeEducationSchemeApplication($this->request->all());
+            if ($result == false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'An application is already submitted for this student register number.'
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'application' => $result
+            ]);
+        } catch (DuplicateApplicationNumberException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An application is already submitted for this student register number.'
+                'message' => $e->getMessage()
+            ]);
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
             ]);
         }
-        return response()->json([
-            'success' => true,
-            'application' => $result
-        ]);
+
     }
 
     public function update($id)

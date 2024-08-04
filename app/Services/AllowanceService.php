@@ -10,6 +10,7 @@ use App\Events\AllowanceEvent;
 use Illuminate\Support\Carbon;
 use App\Events\BusinessActionEvent;
 use App\Events\ApplicationCreateEvent;
+use App\Exceptions\DuplicateApplicationNumberException;
 use App\Imports\AllowancePaymentImport;
 use Ynotz\MediaManager\Models\MediaItem;
 use App\Models\EducationSchemeApplication;
@@ -72,6 +73,12 @@ class AllowanceService
                 $esa->attachMedia($mi, $property);
             }
         }
+        if (isset($data['application_no'])) {
+            $existingAllowances = Allowance::where('application_no', $data['application_no'])->get()->first();
+            if($existingAllowances != null) {
+                throw new DuplicateApplicationNumberException("The application number: ".$data['application_no']." is already in use.");
+            }
+        }
 
         $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
         $existingAllowances = Allowance::where('application_no', $applNo)->get();
@@ -85,16 +92,21 @@ class AllowanceService
             $applNo = implode('/', [...$lastAppArr, $aplNumeric]);
             $existingAllowances = Allowance::where('application_no', $applNo)->get();
         }
-        $alData = [
-            'member_id' => $data['member_id'],
-            'district_id' => $member->district_id,
-            'allowanceable_type' => EducationSchemeApplication::class,
-            'allowanceable_id' => $esa->id,
-            'application_no' => $applNo,
-            'application_date' => AppHelper::formatDateForSave($data['application_date']),
-            'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
-            'created_by' => auth()->user()->id
-        ];
+        try {
+            $alData = [
+                'member_id' => $data['member_id'],
+                'district_id' => $member->district_id,
+                'allowanceable_type' => EducationSchemeApplication::class,
+                'allowanceable_id' => $esa->id,
+                'application_no' => $applNo,
+                'unique_application_no' => $applNo,
+                'application_date' => AppHelper::formatDateForSave($data['application_date']),
+                'welfare_scheme_id' => WelfareScheme::where('code', $data['scheme_code'])->get()->first()->id,
+                'created_by' => auth()->user()->id
+            ];
+        } catch (\Throwable $e) {
+            # code...
+        }
         $allowance = Allowance::create($alData);
         DB::commit();
         AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_CREATED, $allowance);
