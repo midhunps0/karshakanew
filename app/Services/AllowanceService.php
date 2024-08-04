@@ -21,7 +21,10 @@ class AllowanceService
 {
     public function storeEducationSchemeApplication($data)
     {
-        $appln = EducationSchemeApplication::whereJsonContains('passed_exam_details->exam_reg_no', $data['passed_exam_details']['exam_reg_no'])->get()->first();
+        $appln = EducationSchemeApplication::whereJsonContains('passed_exam_details->exam_reg_no', $data['passed_exam_details']['exam_reg_no'])
+        ->whereJsonContains('passed_exam_details->exam_name', $data['passed_exam_details']['exam_name'])
+        ->whereJsonContains('passed_exam_details->exam_start_date', $data['passed_exam_details']['exam_start_date'])
+        ->get()->first();
         if ($appln != null) {
             return false;
         }
