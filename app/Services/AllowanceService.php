@@ -62,16 +62,6 @@ class AllowanceService
         AppHelper::syncImageFromRequestData($esa, 'caste_certificate', $data);
         AppHelper::syncImageFromRequestData($esa, 'one_and_same_certificate', $data);
 
-        BusinessActionEvent::dispatch(
-            EducationSchemeApplication::class,
-            $esa->id,
-            'Created',
-            auth()->user()->id,
-            null,
-            $esa,
-            'Created EducationAllowanceApplication with id: '.$esa->id,
-            $member->district_id
-        );
 
         if (isset($data['existing'])) {
             foreach ($data['existing'] as $property => $ulid) {
@@ -83,7 +73,7 @@ class AllowanceService
         $applNo = $data['application_no'] != null && strlen(trim($data['application_no'])) > 0 ? $data['application_no'] : AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
         $existingAllowances = Allowance::where('application_no', $applNo)->get();
         while(count($existingAllowances) > 0) {
-            $applNo = AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
+            // $applNo = AppHelper::getWelfareApplicationNumber($member, $data['scheme_code']);
             // if ($lastApplication != null) {
             $lastAppArr = explode('/', $applNo);
             $aplStr = array_pop($lastAppArr);
@@ -103,7 +93,18 @@ class AllowanceService
             'created_by' => auth()->user()->id
         ];
         $allowance = Allowance::create($alData);
+        DB::commit();
         AllowanceEvent::dispatch($member->district_id, AllowanceEvent::$ACTION_CREATED, $allowance);
+        BusinessActionEvent::dispatch(
+            EducationSchemeApplication::class,
+            $esa->id,
+            'Created',
+            auth()->user()->id,
+            null,
+            $esa,
+            'Created EducationAllowanceApplication with id: '.$esa->id,
+            $member->district_id
+        );
         BusinessActionEvent::dispatch(
             Allowance::class,
             $allowance->id,
@@ -114,7 +115,6 @@ class AllowanceService
             'Created Allowance with id: '.$allowance->id,
             $member->district_id
         );
-        DB::commit();
         return $allowance;
     }
 
